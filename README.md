@@ -14,6 +14,7 @@ engine/voice/    音声合成（Open JTalk + HTS voice）
 engine/tools/    ビルド・確認・動画書き出し
 works/NNN-xxx/   作品ごとの台本(lines.json)・場面(scenes*.js)・進行(story.js)・完成HTML(index.html)
 blog/            Blogger用CSS・記事本文
+brand/           チャンネル用アイコン・バナー（brand_art.js で生成）
 ```
 
 ## 1作品を作る流れ
@@ -23,6 +24,15 @@ python3 engine/tools/build.py works/001-kumo-no-ito         # 1ファイルHTML�
 node engine/tools/export_video.js works/001-kumo-no-ito/index.html wide out_wide.mp4   # YouTube 16:9
 node engine/tools/export_video.js works/001-kumo-no-ito/index.html tall out_tall.mp4   # Shorts/TikTok 9:16
 ```
+投稿（Blogger / YouTube。認証情報は環境変数。詳しくは `engine/tools/publish.py` 冒頭）:
+```bash
+python3 engine/tools/publish.py - whoami                          # 接続確認
+python3 engine/tools/publish.py works/001-kumo-no-ito blog        # ブログ記事
+python3 engine/tools/publish.py works/001-kumo-no-ito youtube     # 本編・ショート
+python3 engine/tools/publish.py works/001-kumo-no-ito link        # 相互リンクを埋めて説明文・記事を更新、tiktok.txt を出力
+```
+チャンネル画像（`brand/icon.png` `brand/banner.png` `brand/profile.png`）: `node engine/tools/brand_art.js works/001-kumo-no-ito/index.html brand`
+
 必要なもの: Python 3 + `pip install pyopenjtalk-plus numpy`、Node.js + Playwright(Chromium)、ffmpeg
 
 ## クレジット
