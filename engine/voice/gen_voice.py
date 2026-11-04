@@ -28,9 +28,9 @@ def voice_copy(src, alpha, name, out):
     open(p, 'wb').write(data.replace(a, new))
     return p
 
-# DOT TELLER voice cast: name -> (voice file, alpha (formant warp), half_tone, speed)
+# ドット語り voice cast: name -> (voice file, alpha (formant warp), half_tone, speed)
 SPEAKERS = {
-    'narrator': ('nitech_jp_atr503_m001.htsvoice', 0.60, -0.5, 0.92),   # 記録の神 (青空文庫シリーズの語り部)
+    'narrator': ('nitech_jp_atr503_m001.htsvoice', 0.55, 2.0, 0.88),    # 記録の神 (青空文庫シリーズの語り部): やさしいおじいさん, 約142Hz
     'lamp':     ('nitech_jp_atr503_m001.htsvoice', 0.50, -2.0, 0.86),   # 灯の神 (Wikipediaシリーズの語り部)
     'spider':   ('mei_happy.htsvoice', 0.53, 3.0, 1.02),
     'buddha':   ('nitech_jp_atr503_m001.htsvoice', 0.58, -4.5, 0.80),

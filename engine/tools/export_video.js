@@ -1,4 +1,4 @@
-// Export a built DOT TELLER work to mp4.
+// Export a built ドット語り work to mp4.
 // usage: node engine/tools/export_video.js works/001-kumo-no-ito/index.html wide out.mp4 [fps] [tail]
 //   wide = 1920x1080 (YouTube), tall = 1080x1920 (Shorts / TikTok)
 const { chromium } = require('playwright');

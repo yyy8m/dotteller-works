@@ -1,34 +1,26 @@
-/* ================= DOT TELLER branding: logo, intro scene, title, video frames ================= */
+/* ================= ドット語り. branding: logo, intro scene, title, video frames ================= */
 const BR = { bg: '#0c2418', bg2: '#123222', bg3: '#1c4430', cream: '#f4ecd8', orange: '#f49a1c', dark: '#06140c', paper: '#ecdcb4', paper2: '#d4bc8c', ink: '#2c2018' };
 const SERIES = { bunko: { name: '文庫', narrator: 'narrator' }, kiroku: { name: '記録', narrator: 'lamp' } };
-const GLYPH = {
-  D: ['####.', '#...#', '#...#', '#...#', '####.'], O: ['.###.', '#...#', '#...#', '#...#', '.###.'], T: ['#####', '..#..', '..#..', '..#..', '..#..'],
-  E: ['#####', '#....', '####.', '#....', '#####'], L: ['#....', '#....', '#....', '#....', '#####'], R: ['####.', '#...#', '####.', '#..#.', '#...#'], ' ': ['..', '..', '..', '..', '..'], '.': ['.', '.', '.', '.', '#']
-};
-function blockText(c, str, x, y, s, col, sh) {
-  let cx = x;
-  for (const ch of str) {
-    const g = GLYPH[ch]; if (!g) { cx += 4 * s; continue; }
-    for (let r = 0; r < 5; r++) for (let k = 0; k < g[r].length; k++) if (g[r][k] === '#') { if (sh) R(c, cx + k * s + Math.max(1, s / 3), y + r * s + Math.max(1, s / 3), s, s, sh); R(c, cx + k * s, y + r * s, s, s, col); }
-    cx += (g[0].length + 1) * s;
-  }
-  return cx - x - s;
+const BRAND = { name: 'ドット語り', roman: 'DOTGATARI', reading: 'どっとがたり', copy: 'ドットで描く、物語と記録。', tiktok: '@dotgatari', youtube: '@dotgatari' };
+const brandHandles = () => BRAND.tiktok === BRAND.youtube ? ['YouTube・TikTok ' + BRAND.youtube] : ['YouTube ' + BRAND.youtube, 'TikTok ' + BRAND.tiktok];
+/* logo: "ドット語り" in DotGothic16 (cream + dark drop shadow) + a blinking orange "." */
+function logoMetrics(size) { const tw = textSpr(BRAND.name, size, BR.cream).width - 2, d = Math.max(2, Math.round(size / 8)); return { tw, d, w: tw + Math.round(d / 2) + d }; }
+function logoAt(c, x, y, size, t, col) {
+  const { tw, d } = logoMetrics(size), sh = Math.max(1, Math.round(size / 16));
+  c.drawImage(textSpr(BRAND.name, size, BR.dark), Math.round(x) + sh * 2, Math.round(y) + sh * 2);
+  c.drawImage(textSpr(BRAND.name, size, col || BR.cream), Math.round(x), Math.round(y));
+  const on = (Math.floor(t * 2) & 1) === 0, dx = Math.round(x + tw + Math.round(d / 2)), dy = Math.round(y + size - d);
+  R(c, dx + sh * 2, dy + sh * 2, d, d, BR.dark); R(c, dx, dy, d, d, on ? BR.orange : '#b06c10');
 }
-const blockW = (str, s) => { let w = 0; for (const ch of str) w += ((GLYPH[ch] ? GLYPH[ch][0].length : 3) + 1) * s; return w - s; };
-function logoLine(c, cx, y, s, t) { // "DOT TELLER." centered
-  const w = blockW('DOT TELLER', s) + s * 2, x = Math.round(cx - w / 2);
-  const x2 = x + blockText(c, 'DOT ', x, y, s, BR.cream, BR.dark) + s;
-  const x3 = x2 + blockText(c, 'TELLER', x2, y, s, BR.cream, BR.dark);
-  const on = (Math.floor(t * 2) & 1) === 0;
-  R(c, x3 + s, y + 4 * s, s, s, on ? BR.orange : '#b06c10');
-  return w;
+function logoLine(c, cx, y, size, t) { // "ドット語り." centered, one line
+  const { w } = logoMetrics(size); logoAt(c, Math.round(cx - w / 2), y, size, t); return w;
 }
-function logoStack(c, cx, y, s, t) { // DOT over TELLER (icon style)
-  const w1 = blockW('DOT', s), w2 = blockW('TELLER', s);
-  blockText(c, 'DOT', Math.round(cx - w1 / 2), y, s, BR.cream, BR.dark);
-  blockText(c, 'TELLER', Math.round(cx - w2 / 2), y + 6 * s, s, BR.orange, BR.dark);
-  const sx = Math.round(cx + w1 / 2 + s), sy = y - s, k = (Math.floor(t * 3) % 3);
-  if (k) { P(c, sx + 1, sy, BR.cream); P(c, sx, sy + 1, BR.cream); P(c, sx + 2, sy + 1, BR.cream); P(c, sx + 1, sy + 2, BR.cream); }
+function logoStack(c, cx, y, size, t) { // "ドット" over "語り." (narrow columns)
+  const a = 'ドット', b = BRAND.name.slice(a.length), w1 = textSpr(a, size, BR.cream).width - 2, w2 = textSpr(b, size, BR.cream).width - 2;
+  const d = Math.max(2, Math.round(size / 8)), sh = Math.max(1, Math.round(size / 16)), x1 = Math.round(cx - w1 / 2), x2 = Math.round(cx - (w2 + d + 1) / 2), y2 = y + size + 2;
+  for (const [s, x, yy, col] of [[a, x1, y, BR.cream], [b, x2, y2, BR.orange]]) { c.drawImage(textSpr(s, size, BR.dark), x + sh, yy + sh); c.drawImage(textSpr(s, size, col), x, yy); }
+  const on = (Math.floor(t * 2) & 1) === 0, dx = x2 + w2 + 1, dy = y2 + size - d;
+  R(c, dx + sh, dy + sh, d, d, BR.dark); R(c, dx, dy, d, d, on ? BR.cream : '#9c9480');
 }
 function brandBg(c, x, y, w, h, t) {
   R(c, x, y, w, h, BR.bg);
@@ -44,13 +36,13 @@ function narratorSpr(t, expr, mouth) { return facePortrait(SERIES[WORK.series].n
 
 /* ---- S0: brand intro (narrator unrolls a scroll) ---- */
 const S0 = {
-  name: 'DOT TELLER', bgm: null,
+  name: BRAND.name, bgm: null,
   init(S) { const L = S.lines[0]; S.dur = L.se + 1.3; },
   sfx(S, ev) { ev(0.35, 'end'); ev(1.0, 'shine', 0.6); },
   draw(c, t, S) {
     brandBg(c, 0, 0, W, H, t);
-    logoLine(c, 160, 12, 3, t);
-    TX(c, SERIES[WORK.series].name + '　#' + WORK.no, 160 - 40, 34, BR.orange);
+    logoLine(c, 160, 2, 32, t);
+    TX(c, SERIES[WORK.series].name + '　#' + WORK.no, 160 - 40, 38, BR.orange);
     // scroll unrolling
     const k = eOut(sg(t, 0.6, 1.5)), sw = Math.round(170 * k), sx = 210 - sw / 2;
     if (k > 0) {
@@ -76,12 +68,13 @@ const S0 = {
 /* ---- title screen (before start) ---- */
 function drawTitle(t, fade) {
   const c = ctx; brandBg(c, 0, 0, W, H, t);
-  logoLine(c, 160, 14, 3, t);
-  TX(c, SERIES[WORK.series].name + '　#' + WORK.no, 120, 36, BR.orange);
+  logoLine(c, 160, 6, 32, t);
+  TX(c, SERIES[WORK.series].name + '　#' + WORK.no, 120, 42, BR.orange);
   if (typeof TITLE_DECO === 'function') TITLE_DECO(c, t);
   const tt = textSpr(WORK.title, 32, C.uiY), w = tt.width;
-  c.drawImage(textSpr(WORK.title, 32, BR.dark), Math.round(160 - w / 2) + 2, 64 + 2); c.drawImage(tt, Math.round(160 - w / 2), 64);
-  TX(c, '原作　' + WORK.author, 160 - textSpr('原作　' + WORK.author, 16, BR.cream).width / 2, 102, BR.cream);
+  c.drawImage(textSpr(WORK.title, 32, BR.dark), Math.round(160 - w / 2) + 2, 70 + 2); c.drawImage(tt, Math.round(160 - w / 2), 70);
+  TX(c, '原作　' + WORK.author, 160 - textSpr('原作　' + WORK.author, 16, BR.cream).width / 2, 108, BR.cream);
+  TX(c, BRAND.youtube, W - 6 - textSpr(BRAND.youtube, 16, BR.orange).width, H - 22, BR.orange);
   blit(c, narratorSpr(t, 'smile', 0), 56, 186 + Math.round(Math.sin(t * 2.2)), 25, 25, { s: 2 });
   if (fade) { c.fillStyle = DA('#000000', fade); c.fillRect(0, 0, W, H); }
 }
@@ -95,19 +88,19 @@ function composeFrame(mode, T) {
   brandBg(f, 0, 0, fw, fh, t);
   if (mode === 'wide') {
     pxFrame(f, 80, 15, W, H); f.drawImage(cv, 80, 15);
-    logoStack(f, 40, 22, 2, t);
-    TX(f, SERIES[WORK.series].name, 24, 56, BR.orange); TX(f, '#' + WORK.no, 24, 74, BR.cream);
+    logoStack(f, 39, 16, 16, t);
+    TX(f, SERIES[WORK.series].name, 24, 60, BR.orange); TX(f, '#' + WORK.no, 24, 78, BR.cream);
     blit(f, narratorSpr(t, 'normal', 0), 40, 232 + Math.round(Math.sin(t * 2.2)), 25, 25, { s: 1 });
     const y2 = vText(f, WORK.title, 433, 26, BR.cream); vText(f, WORK.author, 433, y2 + 10, BR.orange);
   } else {
-    logoLine(f, 180, 22, 3, t);
-    TX(f, SERIES[WORK.series].name + '　#' + WORK.no, 180 - 40, 46, BR.orange);
-    const tt = textSpr(WORK.title, 32, C.uiY); f.drawImage(textSpr(WORK.title, 32, BR.dark), Math.round(180 - tt.width / 2) + 2, 74); f.drawImage(tt, Math.round(180 - tt.width / 2), 72);
-    TX(f, '原作　' + WORK.author, 180 - textSpr('原作　' + WORK.author, 16, BR.cream).width / 2, 112, BR.cream);
+    logoLine(f, 180, 14, 32, t);
+    TX(f, SERIES[WORK.series].name + '　#' + WORK.no, 180 - 40, 52, BR.orange);
+    const tt = textSpr(WORK.title, 32, C.uiY); f.drawImage(textSpr(WORK.title, 32, BR.dark), Math.round(180 - tt.width / 2) + 2, 80); f.drawImage(tt, Math.round(180 - tt.width / 2), 78);
+    TX(f, '原作　' + WORK.author, 180 - textSpr('原作　' + WORK.author, 16, BR.cream).width / 2, 116, BR.cream);
     pxFrame(f, 20, 150, W, H); f.drawImage(cv, 20, 150);
     blit(f, narratorSpr(t, 'smile', 0), 180, 450 + Math.round(Math.sin(t * 2.2)), 25, 25, { s: 2 });
-    TX(f, '▶ ドットで描く、物語と記録。', 180 - 108, 520, BR.cream);
-    TX(f, '@dotteller', 180 - 40, 546, BR.orange);
+    const cp = '▶ ' + BRAND.copy; TX(f, cp, 180 - textSpr(cp, 16, BR.cream).width / 2, 516, BR.cream);
+    brandHandles().forEach((h, i) => TX(f, h, 180 - textSpr(h, 16, BR.orange).width / 2, 544 + i * 22, BR.orange));
   }
   return fc;
 }

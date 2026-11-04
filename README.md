@@ -1,9 +1,11 @@
-# DOT TELLER works
+# ドット語り. works
 
 ■ ドットで描く、物語と記録。
 
 - 作品一覧（GitHub Pages）: https://yyy8m.github.io/dotteller-works/
-- YouTube: https://www.youtube.com/@dotteller
+- YouTube: https://www.youtube.com/@dotgatari
+- TikTok: https://www.tiktok.com/@dotgatari
+- ブランド名などの設定: `engine/src/brand.js` の `BRAND`
 
 ## 構成
 ```

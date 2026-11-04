@@ -1,10 +1,10 @@
-"""Build one DOT TELLER work into a single self-contained HTML.
+"""Build one ドット語り. work into a single self-contained HTML.
 usage: python3 engine/tools/build.py works/001-kumo-no-ito
 Inputs : <work>/lines.json, <work>/build/voices.js (from engine/voice/gen_voice.py),
          <work>/scenes*.js, <work>/story.js
 Output : <work>/index.html
 """
-import glob, json, os, sys
+import glob, json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ENGINE = os.path.join(ROOT, 'engine', 'src')
@@ -12,6 +12,8 @@ work = os.path.abspath(sys.argv[1])
 cfg = json.load(open(os.path.join(work, 'lines.json'), encoding='utf-8'))
 W = cfg['work']
 rd = lambda p: open(p, encoding='utf-8').read()
+# brand settings live in one place: engine/src/brand.js (const BRAND = {...})
+BRAND = dict(re.findall(r"(\w+): '([^']*)'", re.search(r'const BRAND = \{(.*?)\};', rd(os.path.join(ENGINE, 'brand.js'))).group(1)))
 
 parts = [rd(os.path.join(ENGINE, f)) for f in ['core.js', 'chars.js', 'env.js']]
 parts += [rd(p) for p in sorted(glob.glob(os.path.join(work, 'scenes*.js')))]
@@ -19,7 +21,7 @@ parts += [rd(os.path.join(ENGINE, 'brand.js')), rd(os.path.join(ENGINE, 'audio.j
 js = 'const WORK = ' + json.dumps(W, ensure_ascii=False) + ';\n' + '\n'.join(parts)
 voices = rd(os.path.join(work, 'build', 'voices.js'))
 series = {'bunko': '文庫', 'kiroku': '記録'}[W['series']]
-title = f"{W['title']}｜DOT TELLER {series} #{W['no']}"
+title = f"{W['title']}｜{BRAND['name']} {series} #{W['no']}"
 
 html = f'''<!DOCTYPE html>
 <html lang="ja">
@@ -27,7 +29,7 @@ html = f'''<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title>
-<meta name="description" content="DOT TELLER {series} #{W['no']}「{W['title']}」（原作：{W['author']}）。ボタンを押すと始まる、ドット絵の物語。">
+<meta name="description" content="{BRAND['name']} {series} #{W['no']}「{W['title']}」（原作：{W['author']}）。ボタンを押すと始まる、ドット絵の物語。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
@@ -45,7 +47,7 @@ button:active{{transform:translate(3px,3px);box-shadow:3px 3px 0 #f49a1c}}
 </head>
 <body>
 <!--
-  DOT TELLER {series} #{W['no']}「{W['title']}」 原作：{W['author']}（{W['source']}）
+  {BRAND['name']} {series} #{W['no']}「{W['title']}」 原作：{W['author']}（{W['source']}）
   映像・音楽・効果音：すべてコードで描画／合成
   音声：Open JTalk + HTS voice "mei" (c) Nagoya Institute of Technology, CC BY 3.0
         / "nitech_jp_atr503_m001" (c) Nagoya Institute of Technology, Modified BSD

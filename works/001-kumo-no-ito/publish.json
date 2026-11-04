@@ -1,23 +1,59 @@
 {
   "blog": {
-    "title": "【DOT TELLER 文庫 #001】蜘蛛の糸｜芥川龍之介",
+    "title": "【ドット語り 文庫 #001】蜘蛛の糸｜芥川龍之介",
     "content_file": "blog/posts/001-kumo-no-ito.html",
-    "labels": ["青空文庫シリーズ", "芥川龍之介", "DOT TELLER 文庫"]
+    "labels": [
+      "青空文庫シリーズ",
+      "芥川龍之介",
+      "ドット語り 文庫"
+    ]
   },
   "youtube": [
     {
       "kind": "main",
       "video": "build/video/001_wide.mp4",
-      "title": "【ドット絵】蜘蛛の糸／芥川龍之介｜DOT TELLER 文庫 #001",
-      "tags": ["ドット絵", "ピクセルアート", "蜘蛛の糸", "芥川龍之介", "青空文庫", "朗読", "名作文学", "アニメ", "DOT TELLER"],
-      "description": "■■■■■■■■■■■■■■■■■■■■\n▶ DOT TELLER 文庫 #001\n　蜘 蛛 の 糸\n■■■■■■■■■■■■■■■■■■■■\n\n◆ あらすじ\n　極楽の蓮池から地獄をのぞいたお釈迦様。\n　血の池でもがく大泥棒・犍陀多に、\n　一本の蜘蛛の糸が垂らされる――。\n\n◆ 原作\n　芥川龍之介「蜘蛛の糸」（青空文庫）\n　▶ https://www.aozora.gr.jp/cards/000879/card92.html\n\n◆ ボタンを押して遊べるブログ版\n　▶ https://yyy8m.github.io/dotteller-works/works/001-kumo-no-ito/\n\n◆ 語り部\n　記録の神（DOT TELLER 文庫）\n\n□■□■□■□■□■□■□■□■□■\n◆ クレジット\n　映像・音楽・効果音：すべてプログラムで描画／合成\n　音声：Open JTalk / HTS voice \"mei\"\n　　（名古屋工業大学・CC BY 3.0）\n　　\"nitech_jp_atr503_m001\"（名古屋工業大学・修正BSD）\n　フォント：DotGothic16（SIL OFL）\n□■□■□■□■□■□■□■□■□■\n\n■ DOT TELLER ── ドットで描く、物語と記録。\n▶ チャンネル登録：https://www.youtube.com/@dotteller?sub_confirmation=1\n\n#ドット絵 #蜘蛛の糸 #芥川龍之介 #青空文庫 #DOTTELLER"
+      "title": "【ドット絵】蜘蛛の糸／芥川龍之介｜ドット語り 文庫 #001",
+      "tags": [
+        "ドット絵",
+        "ピクセルアート",
+        "蜘蛛の糸",
+        "芥川龍之介",
+        "青空文庫",
+        "朗読",
+        "名作文学",
+        "アニメ",
+        "ドット語り",
+        "DOTGATARI"
+      ],
+      "description": "■■■■■■■■■■■■■■■■■■■■\n▶ ドット語り 文庫 #001\n　蜘 蛛 の 糸\n■■■■■■■■■■■■■■■■■■■■\n\n◆ あらすじ\n　極楽の蓮池から地獄をのぞいたお釈迦様。\n　血の池でもがく大泥棒・犍陀多に、\n　一本の蜘蛛の糸が垂らされる――。\n\n◆ 原作\n　芥川龍之介「蜘蛛の糸」（青空文庫）\n　▶ https://www.aozora.gr.jp/cards/000879/card92.html\n\n◆ ブログ記事（ボタンを押して遊べます）\n　▶ {BLOG_URL}\n◆ 全画面で遊ぶ\n　▶ https://yyy8m.github.io/dotteller-works/works/001-kumo-no-ito/\n◆ ショート版（縦動画）\n　▶ {SHORT_URL}\n◆ TikTok\n　▶ {TIKTOK_URL}\n\n◆ 語り部\n　記録の神（ドット語り 文庫）\n\n□■□■□■□■□■□■□■□■□■\n◆ クレジット\n　映像・音楽・効果音：すべてプログラムで描画／合成\n　音声：Open JTalk / HTS voice \"mei\"\n　　（名古屋工業大学・CC BY 3.0）\n　　\"nitech_jp_atr503_m001\"（名古屋工業大学・修正BSD）\n　フォント：DotGothic16（SIL OFL）\n□■□■□■□■□■□■□■□■□■\n\n■ ドット語り ── ドットで描く、物語と記録。\n▶ チャンネル登録：https://www.youtube.com/@dotgatari?sub_confirmation=1\n\n#ドット絵 #蜘蛛の糸 #芥川龍之介 #青空文庫 #ドット語り #DOTGATARI"
     },
     {
       "kind": "short",
       "video": "build/video/001_tall.mp4",
-      "title": "【ドット絵】蜘蛛の糸、ぷつり。｜DOT TELLER 文庫 #001 #Shorts",
-      "tags": ["ドット絵", "ピクセルアート", "蜘蛛の糸", "芥川龍之介", "Shorts", "DOT TELLER"],
-      "description": "■■■■■■■■■■■■■■\n▶ DOT TELLER 文庫 #001\n　蜘 蛛 の 糸\n■■■■■■■■■■■■■■\n原作：芥川龍之介（青空文庫）\n\n▶ ブログ版（ボタンで遊べる）\nhttps://yyy8m.github.io/dotteller-works/works/001-kumo-no-ito/\n\n音声：Open JTalk / HTS voice \"mei\"（名古屋工業大学・CC BY 3.0）\n\n#Shorts #ドット絵 #蜘蛛の糸 #芥川龍之介 #DOTTELLER"
+      "title": "【ドット絵】蜘蛛の糸、ぷつり。｜ドット語り 文庫 #001 #Shorts",
+      "tags": [
+        "ドット絵",
+        "ピクセルアート",
+        "蜘蛛の糸",
+        "芥川龍之介",
+        "Shorts",
+        "ドット語り",
+        "DOTGATARI"
+      ],
+      "description": "■■■■■■■■■■■■■■\n▶ ドット語り 文庫 #001\n　蜘 蛛 の 糸\n■■■■■■■■■■■■■■\n原作：芥川龍之介（青空文庫）\n\n▶ 本編（フルサイズ）\n{MAIN_URL}\n▶ ブログ記事（ボタンで遊べる）\n{BLOG_URL}\n▶ TikTok\n{TIKTOK_URL}\n\n音声：Open JTalk / HTS voice \"mei\"（名古屋工業大学・CC BY 3.0）\n　\"nitech_jp_atr503_m001\"（名古屋工業大学・修正BSD）\n\n#Shorts #ドット絵 #蜘蛛の糸 #芥川龍之介 #ドット語り #DOTGATARI"
     }
-  ]
+  ],
+  "tiktok": {
+    "caption": "【ドット絵】蜘蛛の糸、ぷつり。｜ドット語り 文庫 #001\n原作：芥川龍之介（青空文庫）\n\n▶ 本編（YouTube）\n{MAIN_URL}\n▶ ブログ記事（ボタンで遊べる）\n{BLOG_URL}",
+    "hashtags": [
+      "ドット絵",
+      "ピクセルアート",
+      "蜘蛛の糸",
+      "芥川龍之介",
+      "青空文庫",
+      "名作文学",
+      "ドット語り",
+      "DOTGATARI"
+    ]
+  }
 }

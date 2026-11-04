@@ -8,7 +8,7 @@ Blogger の管理画面（https://www.blogger.com/）で手で変える必要が
 ## 1. ブログ名・説明（設定 → 基本）
 - タイトル（「そもそも帖」をこれに置き換え）
 ```
-DOT TELLER
+ドット語り.
 ```
 - 説明
 ```
@@ -20,18 +20,19 @@ DOT TELLER
 - 「Blogger のプロフィールを編集」から:
   - 表示名
 ```
-DOT TELLER
+ドット語り.
 ```
   - 自己紹介
 ```
-■ DOT TELLER（ドットテラー）
+■ ドット語り.（どっとがたり）
 ドットで描く、物語と記録。
 
-▶ DOT TELLER 文庫 … 語り部「記録の神」が名作文学をドット絵で語ります
-▶ DOT TELLER 記録 … 語り部「灯の神」が本当にあった出来事を語ります（準備中）
+▶ ドット語り 文庫 … 語り部「記録の神」が名作文学をドット絵で語ります
+▶ ドット語り 記録 … 語り部「灯の神」が本当にあった出来事を語ります（準備中）
 
 ボタンを押すと始まる物語を、ひとつずつ置いていきます。
-YouTube ▶ @dotteller
+YouTube ▶ @dotgatari
+TikTok ▶ @dotgatari
 ```
   - プロフィール画像: [`blog/profile.png`](profile.png)（768×768。開いて「Download raw file」で保存）
 
@@ -41,7 +42,7 @@ YouTube ▶ @dotteller
 3. [`blog/theme.html`](theme.html) を開き、右上の「Copy raw file」で全部コピー
 4. HTML の中の `</head>` のすぐ上に貼り付けて、右上の保存アイコン
    - `</head>` が見つけにくいときは、いちばん上のほうにある `<head>` のすぐ下に貼ってもOK
-5. 元に戻したいときは、貼った「▼▼ DOT TELLER ドット調デザイン ここから」〜「ここまで ▲▲」を消して保存
+5. 元に戻したいときは、貼った「▼▼ ドット語り ドット調デザイン ここから」〜「ここまで ▲▲」を消して保存
 
 対応テーマ: Notable / Essential / Contempo / Soho / Emporio（2017年以降の標準テーマ）
 
