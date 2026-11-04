@@ -15,19 +15,48 @@ required environment variables (set them as environment secrets, never in the re
                    https://www.googleapis.com/auth/youtube)
   BLOGGER_BLOG_ID   (default: 6071876282678666099)
 """
-import json, os, sys, urllib.parse, urllib.request
+import json, os, sys, urllib.error, urllib.parse, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BLOG_ID = os.environ.get('BLOGGER_BLOG_ID', '6071876282678666099')
 
 
+def env(name):
+    """read a credential, tolerating stray quotes / spaces / line breaks from copy-paste"""
+    v = os.environ.get(name, '')
+    v = v.strip().strip('"').strip("'").strip()
+    return ''.join(v.split())
+
+
+def describe(name, v, prefix=None, suffix=None):
+    raw = os.environ.get(name, '')
+    notes = []
+    if raw != v: notes.append('貼り付け時の空白/引用符/改行を除去')
+    if prefix and not v.startswith(prefix): notes.append(f'「{prefix}」で始まっていない')
+    if suffix and not v.endswith(suffix): notes.append(f'「{suffix}」で終わっていない')
+    shown = (v[:6] + '…' + v[-4:]) if len(v) > 12 else '(短すぎ)'
+    return f'  {name}: 長さ{len(v)} {shown} ' + ('⚠ ' + ' / '.join(notes) if notes else 'OK')
+
+
 def token(service):
-    rt = os.environ.get('GOOGLE_REFRESH_TOKEN_' + service.upper()) or os.environ['GOOGLE_REFRESH_TOKEN']
-    data = urllib.parse.urlencode({
-        'client_id': os.environ['GOOGLE_CLIENT_ID'], 'client_secret': os.environ['GOOGLE_CLIENT_SECRET'],
-        'refresh_token': rt, 'grant_type': 'refresh_token'}).encode()
-    with urllib.request.urlopen('https://oauth2.googleapis.com/token', data) as r:
-        return json.load(r)['access_token']
+    name = 'GOOGLE_REFRESH_TOKEN_' + service.upper()
+    if not env(name): name = 'GOOGLE_REFRESH_TOKEN'
+    cid, sec, rt = env('GOOGLE_CLIENT_ID'), env('GOOGLE_CLIENT_SECRET'), env(name)
+    data = urllib.parse.urlencode({'client_id': cid, 'client_secret': sec, 'refresh_token': rt, 'grant_type': 'refresh_token'}).encode()
+    try:
+        with urllib.request.urlopen('https://oauth2.googleapis.com/token', data) as r:
+            return json.load(r)['access_token']
+    except urllib.error.HTTPError as e:
+        body = e.read().decode(errors='replace')
+        print(f'[{service}] トークン取得に失敗: HTTP {e.code} {body}', file=sys.stderr)
+        print(describe('GOOGLE_CLIENT_ID', cid, suffix='.apps.googleusercontent.com'), file=sys.stderr)
+        print(describe('GOOGLE_CLIENT_SECRET', sec, prefix='GOCSPX-'), file=sys.stderr)
+        print(describe(name, rt, prefix='1//'), file=sys.stderr)
+        if 'invalid_client' in body:
+            print('  → IDとシークレットの組み合わせが合っていません（別クライアントの値、または無効化されたシークレット）。', file=sys.stderr)
+        elif 'invalid_grant' in body:
+            print('  → トークンが無効です（期限切れ・取り消し・別クライアントで発行）。Playgroundで取り直してください。', file=sys.stderr)
+        sys.exit(1)
 
 
 def call(method, url, tok, body=None, headers=None, raw=None):
