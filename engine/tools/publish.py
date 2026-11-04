@@ -4,6 +4,7 @@ usage:
   python3 engine/tools/publish.py works/001-kumo-no-ito blog       # Blogger に記事を投稿
   python3 engine/tools/publish.py works/001-kumo-no-ito youtube    # YouTube に本編/ショートをアップロード
   python3 engine/tools/publish.py - whoami                         # 認証確認（チャンネル名とブログ名を表示）
+  python3 engine/tools/publish.py - pages                          # blog/pages/*.html で固定ページを上書き更新
 
 required environment variables (set them as environment secrets, never in the repo):
   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
@@ -93,6 +94,18 @@ def blog(work, tok):
     print('blog:', res['url'])
 
 
+def pages(tok):
+    """overwrite Blogger static pages from blog/pages/*.html (header comments: page_id, title)"""
+    import glob, re
+    for path in sorted(glob.glob(os.path.join(ROOT, 'blog', 'pages', '*.html'))):
+        src = open(path, encoding='utf-8').read()
+        meta = dict(re.findall(r'<!--\s*(page_id|title):\s*(.*?)\s*-->', src))
+        content = re.sub(r'<!--\s*(page_id|title):.*?-->\n?', '', src).strip()
+        res, _ = call('PATCH', f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/pages/{meta['page_id']}", tok,
+                      {'title': meta['title'], 'content': content})
+        print('page:', res['title'], res['url'])
+
+
 def youtube(work, tok):
     pub = json.load(open(os.path.join(work, 'publish.json'), encoding='utf-8'))['youtube']
     state_p = os.path.join(work, 'published.json')
@@ -116,4 +129,4 @@ def youtube(work, tok):
 if __name__ == '__main__':
     work, what = sys.argv[1], sys.argv[2]
     {'whoami': lambda: whoami(None), 'blog': lambda: blog(os.path.abspath(work), token('blogger')),
-     'youtube': lambda: youtube(os.path.abspath(work), token('youtube'))}[what]()
+     'youtube': lambda: youtube(os.path.abspath(work), token('youtube')), 'pages': lambda: pages(token('blogger'))}[what]()

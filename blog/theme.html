@@ -1,0 +1,123 @@
+<!-- ▼▼ DOT TELLER ドット調デザイン ここから（Blogger テーマ → HTMLを編集 → </head> の直前に貼り付け）▼▼ -->
+<link href='https://fonts.googleapis.com/css2?family=DotGothic16&amp;display=swap' rel='stylesheet'/>
+<style>/*<![CDATA[*/
+/* =====================================================
+   DOT TELLER - Blogger 用ドット調デザイン
+   Notable / Essential / Contempo / Soho / Emporio（2017年以降の標準テーマ）向け
+   色: 背景 #0c2418 / 濃 #06140c / クリーム #f4ecd8 / オレンジ #f49a1c
+   ===================================================== */
+
+/* ---------- 全体 ---------- */
+html,body{
+  background-color:#0c2418!important;
+  background-image:linear-gradient(45deg,#123222 25%,transparent 25%,transparent 75%,#123222 75%),
+                   linear-gradient(45deg,#123222 25%,transparent 25%,transparent 75%,#123222 75%)!important;
+  background-size:8px 8px!important;background-position:0 0,4px 4px!important;}
+body,body *{font-family:"DotGothic16","Hiragino Kaku Gothic ProN","Noto Sans JP",monospace!important;}
+body{color:#f4ecd8!important;}
+body *{border-radius:0!important;}
+.page_body,.centered,.centered-top-container,.centered-top,.centered-top-firstline,.centered-top-secondline,.centered-bottom,
+.main_header_elements,.page,.page_body .centered,.bg-photo-container,.bg-photo-overlay,.bg-photo,.body-fauxcolumns,.main-outer,
+.content-outer,.content-inner,.main-inner,.column-center-inner,.header-outer,.header-inner,.region-inner,.tabs-outer,.tabs-inner,
+.footer-outer,.footer-inner,.blog-posts,.Blog,.main.section,#page_body,.post-filter-message{
+  background:transparent!important;box-shadow:none!important;border-color:transparent!important;}
+a,a:visited{color:#f49a1c!important;text-decoration:none!important;}
+a:hover{color:#f4ecd8!important;text-decoration:underline!important;}
+::selection{background:#f49a1c;color:#06140c;}
+.svg-icon-24,.svg-icon-24-button svg,.flat-icon-button svg,.touch-icon,.hamburger-menu svg,.search svg,svg.svg-icon-24{fill:#f4ecd8!important;color:#f4ecd8!important;}
+
+/* ---------- ヘッダー（ブログ名・説明） ---------- */
+.Header h1,.Header h1 a,.header-widget h1,.header-widget h1 a,.blog-name h1,.blog-name h1 a,.Header .title a{
+  color:#f4ecd8!important;font-weight:normal!important;letter-spacing:4px!important;line-height:1.25!important;
+  font-size:clamp(30px,9vw,60px)!important;text-shadow:3px 3px 0 #06140c,6px 6px 0 #f49a1c!important;text-decoration:none!important;}
+.Header .description,.header-widget p,.Header p,.blog-description{color:#f49a1c!important;letter-spacing:1px;}
+.Header .description:before,.header-widget p:before{content:"■ ";}
+
+/* ---------- 上部メニュー（固定ページ） ---------- */
+.PageList ul,.tabs{text-align:center!important;}
+.PageList li,.tabs li{background:transparent!important;border:0!important;}
+.PageList li a,.tabs li a,.overflowable-item a,.PageList .widget-content li a{
+  display:inline-block!important;color:#f4ecd8!important;background:#06140c!important;border:2px solid #f4ecd8!important;
+  box-shadow:3px 3px 0 #f49a1c!important;padding:0 10px!important;margin:4px 6px 8px 0!important;line-height:1.9!important;
+  text-decoration:none!important;letter-spacing:1px;}
+.PageList li a:hover,.tabs li a:hover{background:#1c4430!important;}
+.PageList li.selected a,.tabs li.selected a{background:#f49a1c!important;color:#06140c!important;}
+.overflow-button a,.overflow-button{color:#f4ecd8!important;}
+.overflow-popup,.overflowable-container .overflow-popup{background:#06140c!important;border:2px solid #f4ecd8!important;}
+.centered-top-container:after,.header-outer:after{
+  content:"";display:block;height:4px;max-width:640px;margin:8px auto 4px;
+  background:repeating-linear-gradient(90deg,#f4ecd8 0 8px,transparent 8px 16px);}
+
+/* ---------- 記事カード ---------- */
+.post-outer-container,.date-outer{
+  background:#06140c!important;border:4px solid #f4ecd8!important;box-shadow:8px 8px 0 #f49a1c!important;
+  padding:16px!important;margin:0 12px 36px 0!important;box-sizing:border-box!important;}
+.post-outer,.post,.post-body,.post-header,.post-footer,.post-sidebar,.snippet-container,.post-snippet{
+  background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
+.snippet-fade{display:none!important;}
+.post-title,.post-title a,.entry-title,.entry-title a,h3.post-title,h3.post-title a{
+  color:#f4ecd8!important;font-weight:normal!important;line-height:1.5!important;text-shadow:2px 2px 0 #000!important;}
+.post-title:before,h3.post-title:before{content:"▶ ";color:#f49a1c;}
+.post-body,.post-body p,.post-body li,.post-snippet,.snippet-item,.entry-content{color:#f4ecd8!important;line-height:1.9!important;}
+.post-body b,.post-body strong{color:#ffe08a!important;font-weight:normal!important;}
+.post-body h2,.post-body h3{color:#f49a1c!important;font-weight:normal!important;border-left:8px solid #f49a1c;padding-left:10px;margin:28px 0 12px!important;}
+.post-body h4{color:#f49a1c!important;font-weight:normal!important;}
+.post-body img,.snippet-thumbnail img,.Image img{image-rendering:pixelated;}
+.post-body ul{padding-left:1.4em;}
+.post-body li{margin:6px 0;}
+.post-body li::marker{color:#f49a1c;content:"▶ ";}
+.byline,.byline a,.post-header,.post-footer,.post-timestamp,.post-timestamp a,.published,.post-author,.post-share-buttons,.post-header-line-1{color:#c8bc9c!important;}
+
+/* 共有ボタンのポップアップ */
+.share-buttons,.share-buttons-container ul.share-buttons{background:#06140c!important;border:2px solid #f4ecd8!important;box-shadow:4px 4px 0 #f49a1c!important;}
+.share-buttons li,.share-buttons .platform-sharing-text{color:#f4ecd8!important;}
+
+/* ラベル（シリーズ） */
+.post-labels a,.Label a,.label-size a,.widget.Label li a,.label-info a,.post-footer .byline.post-labels a{
+  display:inline-block!important;background:#0c2418!important;border:2px solid #f49a1c!important;color:#f4ecd8!important;
+  padding:0 10px!important;margin:3px!important;text-decoration:none!important;}
+.post-labels a:before,.widget.Label li a:before{content:"◆ ";color:#f49a1c;}
+
+/* ボタン類（続きを読む・前後の記事・送信） */
+.jump-link a,.jump-link.flat-button a,.blog-pager a,.blog-pager-older-link,.blog-pager-newer-link,.home-link,.more-link,
+.flat-button,.contact-form-button-submit,.dt-btn,.post-body .dt-btn{
+  display:inline-block!important;background:#0c2418!important;color:#f4ecd8!important;border:3px solid #f4ecd8!important;
+  box-shadow:4px 4px 0 #f49a1c!important;padding:4px 16px!important;text-decoration:none!important;cursor:pointer;
+  font-size:16px!important;height:auto!important;line-height:1.6!important;}
+.jump-link a:active,.blog-pager a:active,.contact-form-button-submit:active,.dt-btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #f49a1c!important;}
+
+/* ---------- 左のメニュー（≡）・サイドバー ---------- */
+.sidebar-container,.sidebar-container .sidebar_top_wrapper,.sidebar_top,.sidebar_bottom,.sidebar-container .navigation{
+  background:#06140c!important;color:#f4ecd8!important;}
+.sidebar-container{border-right:4px solid #f4ecd8!important;}
+.sidebar-container .widget h2,.sidebar-container .widget h3.title,.footer .widget h2,.sidebar .widget h2,.widget.Profile h2,.widget.ContactForm h2{
+  color:#f49a1c!important;border-left:8px solid #f49a1c;padding-left:10px;letter-spacing:2px;font-weight:normal!important;}
+.Profile img,.profile-img,.profile-img img,.widget.Profile .profile-img{image-rendering:pixelated;border:3px solid #f4ecd8!important;}
+.Profile .profile-name-link,.Profile .profile-link,.Profile dd,.Profile .profile-textblock,.widget.Profile .individual .profile-info{color:#f4ecd8!important;}
+
+/* お問い合わせフォーム */
+.ContactForm input[type=text],.ContactForm textarea,.contact-form-name,.contact-form-email,.contact-form-email-message{
+  background:#0c2418!important;color:#f4ecd8!important;border:2px solid #f4ecd8!important;box-shadow:none!important;}
+.contact-form-error-message,.contact-form-success-message,.contact-form-error-message-with-border,.contact-form-success-message-with-border{
+  background:#06140c!important;color:#f4ecd8!important;border:2px solid #f49a1c!important;}
+
+/* 検索 */
+.search input,.search-input input,.BlogSearch input,input.gsc-input{background:#06140c!important;color:#f4ecd8!important;border:0!important;border-bottom:2px solid #f4ecd8!important;}
+
+/* ---------- コメント・フッター ---------- */
+.comments,.comments h3.title,.comments .comment-content,.comments .user,.comments .user a,.comments .datetime a,.comment-thread,.comments .continue a{color:#f4ecd8!important;}
+.comments{border-top:4px dashed #f4ecd8!important;margin-top:16px;padding-top:12px;}
+.footer,.footer *,.footer-outer,.blogger,.copydate,.footer .blogger a{color:#c8bc9c!important;}
+.footer .blogger svg,.blogger-logo{fill:#c8bc9c!important;}
+
+/* ---------- 記事内パーツ（blog/posts/*.html が使う） ---------- */
+.dt-box{background:#0f2c1e;border:4px solid #f4ecd8;box-shadow:6px 6px 0 #f49a1c;padding:12px 16px;margin:20px 8px 24px 0;}
+.dt-box h4{margin:0 0 8px!important;color:#f49a1c!important;}
+.dt-box p{margin:6px 0!important;}
+.dt-bar{height:8px;margin:16px 0;background:repeating-linear-gradient(90deg,#f4ecd8 0 8px,transparent 8px 16px);}
+
+/* スクロールバー */
+::-webkit-scrollbar{width:12px;background:#06140c;}
+::-webkit-scrollbar-thumb{background:#f49a1c;border:2px solid #06140c;}
+/*]]>*/</style>
+<!-- ▲▲ DOT TELLER ドット調デザイン ここまで ▲▲ -->

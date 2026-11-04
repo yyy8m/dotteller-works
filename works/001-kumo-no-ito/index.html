@@ -1884,7 +1884,9 @@ function render(T) {
 
 /* ---- boot ---- */
 let mode = 'title', T0 = 0, tStartTitle = performance.now(), fadeT = 0;
-function fit() { const s = Math.max(1, Math.floor(Math.min(innerWidth / W, innerHeight / H))); const ss = innerWidth < W ? innerWidth / W : s; cv.style.width = W * ss + 'px'; cv.style.height = H * ss + 'px'; }
+function fit() { // contain: fit both width and height; snap to whole *device* pixels per dot so the pixels stay crisp
+  const dpr = window.devicePixelRatio || 1, k = Math.min(innerWidth / W, innerHeight / H) * dpr, ss = (k >= 1 ? Math.floor(k) : k) / dpr;
+  cv.style.width = W * ss + 'px'; cv.style.height = H * ss + 'px'; }
 addEventListener('resize', fit); fit();
 function loop() {
   const now = performance.now() / 1000;
