@@ -6,7 +6,10 @@ usage:
   python3 engine/tools/publish.py - whoami                         # 認証確認（チャンネル名とブログ名を表示）
 
 required environment variables (set them as environment secrets, never in the repo):
-  GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN
+  GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+  GOOGLE_REFRESH_TOKEN_BLOGGER  (token of the Google account that owns the blog)
+  GOOGLE_REFRESH_TOKEN_YOUTUBE  (token of the Google account that owns the channel)
+  (GOOGLE_REFRESH_TOKEN is used for both when the two above are not set)
     (OAuth scopes: https://www.googleapis.com/auth/blogger
                    https://www.googleapis.com/auth/youtube.upload
                    https://www.googleapis.com/auth/youtube)
@@ -18,10 +21,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 BLOG_ID = os.environ.get('BLOGGER_BLOG_ID', '6071876282678666099')
 
 
-def token():
+def token(service):
+    rt = os.environ.get('GOOGLE_REFRESH_TOKEN_' + service.upper()) or os.environ['GOOGLE_REFRESH_TOKEN']
     data = urllib.parse.urlencode({
         'client_id': os.environ['GOOGLE_CLIENT_ID'], 'client_secret': os.environ['GOOGLE_CLIENT_SECRET'],
-        'refresh_token': os.environ['GOOGLE_REFRESH_TOKEN'], 'grant_type': 'refresh_token'}).encode()
+        'refresh_token': rt, 'grant_type': 'refresh_token'}).encode()
     with urllib.request.urlopen('https://oauth2.googleapis.com/token', data) as r:
         return json.load(r)['access_token']
 
@@ -38,10 +42,10 @@ def call(method, url, tok, body=None, headers=None, raw=None):
         return (json.loads(txt) if txt else {}), r.headers
 
 
-def whoami(tok):
-    ch, _ = call('GET', 'https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true', tok)
+def whoami(_):
+    ch, _ = call('GET', 'https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true', token('youtube'))
     print('YouTube:', [i['snippet']['title'] for i in ch.get('items', [])])
-    bl, _ = call('GET', f'https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}', tok)
+    bl, _ = call('GET', f'https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}', token('blogger'))
     print('Blogger:', bl.get('name'), bl.get('url'))
 
 
@@ -82,5 +86,5 @@ def youtube(work, tok):
 
 if __name__ == '__main__':
     work, what = sys.argv[1], sys.argv[2]
-    tok = token()
-    {'whoami': lambda: whoami(tok), 'blog': lambda: blog(os.path.abspath(work), tok), 'youtube': lambda: youtube(os.path.abspath(work), tok)}[what]()
+    {'whoami': lambda: whoami(None), 'blog': lambda: blog(os.path.abspath(work), token('blogger')),
+     'youtube': lambda: youtube(os.path.abspath(work), token('youtube'))}[what]()
