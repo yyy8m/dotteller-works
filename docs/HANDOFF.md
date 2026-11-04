@@ -12,18 +12,18 @@
 | 語り部 | 文庫＝記録の神、記録＝灯の神（変更なし） |
 | 記録の神の声 | 「やさしいおじいさん」に変更：`SPEAKERS['narrator'] = ('nitech_jp_atr503_m001.htsvoice', 0.55, 2.0, 0.88)`（約142Hz）。灯の神は低く暗いままでよい |
 | TikTok | https://www.tiktok.com/@dotgatari （投稿はオーナーが手動） |
-| YouTube | https://www.youtube.com/@dotteller （チャンネル名・ハンドルはオーナーが「ドット語り」「@dotgatari」に変更予定。変更後のURLに差し替える） |
+| YouTube | **https://www.youtube.com/@dotgatari** （ハンドル変更済み。旧 @dotteller の表記・リンクはすべてこれに差し替える） |
 | リポジトリ名 | dotteller-works のまま（変えると GitHub Pages のURLが変わるため） |
 | 対象 | 文庫＝全年齢。記録（Wikipedia）＝大人向け寄り。血はドットで表現してよいが、実在の被害者の損壊描写を長く見せない（年齢制限回避） |
 
 ## 作業内容
 ### 1. ブランド名を1か所で管理する
-- `engine/src/brand.js` に `BRAND = { name: 'ドット語り', roman: 'DOTGATARI', tiktok: '@dotgatari', youtube: '@dotteller' }` のような設定を作る。全テキストをここから参照する
+- `engine/src/brand.js` に `BRAND = { name: 'ドット語り', roman: 'DOTGATARI', tiktok: '@dotgatari', youtube: '@dotgatari' }` のような設定を作る。全テキストをここから参照する
 - ロゴ（`logoLine` / `logoStack`）：DotGothic16 の 32px（縦積みは 16px×2行など）で「ドット語り」をクリーム色＋濃い影、末尾の「.」をオレンジで点滅
 - 動画枠（`composeFrame`）とタイトル画面の「@dotteller」表記も BRAND から出す（TikTok と YouTube の両方）
 
 ### 2. 「DOT TELLER」の文字をすべて差し替える
-`grep -rn "DOT TELLER\|DOTTELLER\|dotteller\|ドットテラー" --exclude-dir=.git .` で洗い出す。リポジトリ名・Pages URL（yyy8m.github.io/dotteller-works）・YouTubeの現ハンドルは残す。
+`grep -rn "DOT TELLER\|DOTTELLER\|dotteller\|ドットテラー" --exclude-dir=.git .` で洗い出す。リポジトリ名・Pages URL（yyy8m.github.io/dotteller-works）だけは残す。YouTube の `@dotteller` は `@dotgatari` に変える。
 - `works/001-kumo-no-ito/lines.json` の L0：表示 `ドット語り文庫。今日の物語は、芥川龍之介の、『蜘蛛の糸』です。` / 読み（say）`ドットがたり文庫。今日の物語は、芥川龍之介の、蜘蛛の糸です。`（g2p で「ドットガタリ」と読むか確認）
 - `engine/tools/build.py`（title・meta・コメント）、`index.html`、`privacy.html`、`README.md`、`blog/SETTINGS.md`、`blog/theme.css` のコメント、`blog/posts/001-kumo-no-ito.html`、`works/001-kumo-no-ito/publish.json`
 
@@ -52,6 +52,6 @@ node engine/tools/export_video.js works/001-kumo-no-ito/index.html tall works/00
 - 最後に、ブログ記事・YouTube本編・ショートのURLと、`tiktok.txt` の中身をオーナーに伝える
 
 ### 7. オーナーの手作業として伝えること（APIで変更できない）
-- YouTube Studio → カスタマイズ → 基本情報：名前「ドット語り」、ハンドル「@dotgatari」、アイコン画像
+- YouTube Studio → カスタマイズ → 基本情報：名前「ドット語り」（ハンドル @dotgatari は変更済み）、アイコン画像
 - Blogger：`blog/SETTINGS.md` の新しい文面（ブログ名・説明・プロフィール）
 - TikTok：`tiktok.txt` を使って手動投稿。プロフィールのリンク欄にブログURL
