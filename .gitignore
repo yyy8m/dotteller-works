@@ -1,0 +1,4 @@
+# generated (re-creatable) files
+works/*/build/
+node_modules/
+__pycache__/

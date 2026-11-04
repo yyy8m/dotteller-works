@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DOT TELLER｜ドットで描く、物語と記録。</title>
+<meta name="description" content="DOT TELLER 作品置き場。ボタンを押すと始まる、ドット絵の物語。">
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c2418;--bg2:#123222;--cream:#f4ecd8;--orange:#f49a1c;--dark:#06140c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);background-image:linear-gradient(45deg,var(--bg2) 25%,transparent 25%,transparent 75%,var(--bg2) 75%),linear-gradient(45deg,var(--bg2) 25%,transparent 25%,transparent 75%,var(--bg2) 75%);background-size:8px 8px;background-position:0 0,4px 4px;color:var(--cream);font-family:"DotGothic16",monospace;line-height:1.8}
+.wrap{max-width:880px;margin:0 auto;padding:32px 16px}
+h1{font-size:clamp(32px,8vw,64px);margin:0;letter-spacing:4px;text-shadow:4px 4px 0 var(--dark)}
+h1 b{color:var(--orange)}
+.tag{color:var(--orange);margin:0 0 32px}
+h2{font-size:20px;border-left:8px solid var(--orange);padding-left:12px;margin:40px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.card{display:block;background:var(--dark);border:4px solid var(--cream);box-shadow:6px 6px 0 var(--orange);padding:16px;color:var(--cream);text-decoration:none}
+.card:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--orange)}
+.card .no{color:var(--orange)}
+.card .t{font-size:24px}
+.empty{opacity:.6}
+footer{margin-top:48px;font-size:13px;opacity:.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>DOT TELLER<b>.</b></h1>
+<p class="tag">■ ドットで描く、物語と記録。</p>
+
+<h2>▶ 青空文庫シリーズ（DOT TELLER 文庫）</h2>
+<div class="grid">
+  <a class="card" href="works/001-kumo-no-ito/"><div class="no">文庫 #001</div><div class="t">蜘蛛の糸</div><div>原作　芥川龍之介</div></a>
+</div>
+
+<h2>▶ Wikipediaシリーズ（DOT TELLER 記録）</h2>
+<div class="grid"><div class="card empty">準備中…</div></div>
+
+<footer>
+■ 映像・音楽・効果音はすべてプログラムで描画／合成しています。<br>
+■ 音声：Open JTalk / HTS voice "mei"（名古屋工業大学・CC BY 3.0）、"nitech_jp_atr503_m001"（名古屋工業大学・修正BSD）<br>
+■ YouTube：<a href="https://www.youtube.com/@dotteller" style="color:var(--orange)">@dotteller</a>
+</footer>
+</div>
+</body>
+</html>
