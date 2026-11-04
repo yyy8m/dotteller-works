@@ -26,7 +26,7 @@ const fs = require('fs'), path = require('path');
   const scale = mode === 'wide' ? 4 : 3;
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-c:v', 'png', '-i', '-', '-i', wavPath,
     '-vf', `scale=iw*${scale}:ih*${scale}:flags=neighbor`, '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-pix_fmt', 'yuv420p', '-r', String(fps),
-    '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
+    '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-ar', '48000', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
   const total = Math.ceil((len + lead) * fps), B = 30;
   const t0 = Date.now();
   for (let i = 0; i < total; i += B) {
