@@ -115,10 +115,18 @@ def whoami(_):
     print('Blogger:', bl.get('name'), bl.get('url'))
 
 
+def theme_inline():
+    """dot-style design (blog/theme.html) appended to every post/page body.
+    The Blogger API cannot change the blog theme, so each post and page carries the design itself.
+    It goes at the end so that list snippets / search descriptions start with the real text, not CSS."""
+    p = os.path.join(ROOT, 'blog', 'theme.html')
+    return '\n' + open(p, encoding='utf-8').read().strip() + '\n' if os.path.exists(p) else ''
+
+
 def blog(work, tok):
     pub = json.load(open(os.path.join(work, 'publish.json'), encoding='utf-8'))['blog']
     state = load_state(work)
-    content = fill(re.sub(r'<!--\s*(labels|title):.*?-->\n?', '', open(os.path.join(ROOT, pub['content_file']), encoding='utf-8').read()), links(state))
+    content = fill(re.sub(r'<!--\s*(labels|title):.*?-->\n?', '', open(os.path.join(ROOT, pub['content_file']), encoding='utf-8').read()), links(state)) + theme_inline()
     body = {'kind': 'blogger#post', 'title': pub['title'], 'content': content, 'labels': pub['labels']}
     if state.get('blog_post_id'):
         res, _ = call('PUT', f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/{state['blog_post_id']}", tok, body)
@@ -135,7 +143,7 @@ def pages(tok):
     for path in sorted(glob.glob(os.path.join(ROOT, 'blog', 'pages', '*.html'))):
         src = open(path, encoding='utf-8').read()
         meta = dict(re.findall(r'<!--\s*(page_id|title):\s*(.*?)\s*-->', src))
-        content = re.sub(r'<!--\s*(page_id|title):.*?-->\n?', '', src).strip()
+        content = re.sub(r'<!--\s*(page_id|title):.*?-->\n?', '', src).strip() + theme_inline()
         res, _ = call('PATCH', f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/pages/{meta['page_id']}", tok,
                       {'title': meta['title'], 'content': content})
         print('page:', res['title'], res['url'])

@@ -33,6 +33,17 @@ a:hover{color:#f4ecd8!important;text-decoration:underline!important;}
 .Header .description,.header-widget p,.Header p,.blog-description{color:#f49a1c!important;letter-spacing:1px;}
 .Header .description:before,.header-widget p:before{content:"■ ";}
 
+/* ブログ名・説明の表示を「ドット語り.」に差し替え（管理画面で名前を変えたらこのブロックは消してOK） */
+.Header h1,.Header h2.title,.header-widget h1{font-size:0!important;text-shadow:none!important;}
+.Header h1 a,.Header h2.title a,.header-widget h1 a{font-size:0!important;text-shadow:none!important;}
+.Header h1 a:before,.Header h1:not(:has(a)):before,.header-widget h1 a:before{
+  content:"ドット語り";display:inline-block;color:#f4ecd8;letter-spacing:4px;line-height:1.25;
+  font-size:clamp(30px,9vw,60px);text-shadow:3px 3px 0 #06140c,6px 6px 0 #f49a1c;}
+.Header h1 a:after,.Header h1:not(:has(a)):after,.header-widget h1 a:after{
+  content:".";display:inline-block;color:#f49a1c;line-height:1.25;font-size:clamp(30px,9vw,60px);text-shadow:3px 3px 0 #06140c;}
+.Header .description,.header-widget p{font-size:0!important;}
+.Header .description:before,.header-widget p:before{content:"■ ドットで描く、物語と記録。"!important;font-size:16px;color:#f49a1c;}
+
 /* ---------- 上部メニュー（固定ページ） ---------- */
 .PageList ul,.tabs{text-align:center!important;}
 .PageList li,.tabs li{background:transparent!important;border:0!important;}
