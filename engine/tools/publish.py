@@ -10,6 +10,10 @@ usage:
     （未確定のものは、その行、または <!-- links --> 〜 <!-- /links --> の範囲ごと省いて投稿する）
   python3 engine/tools/publish.py - whoami                         # 認証確認（チャンネル名とブログ名を表示）
   python3 engine/tools/publish.py - pages                          # blog/pages/*.html で固定ページを上書き更新
+  python3 engine/tools/publish.py works/NNN-xxx thumb              # build/thumb.png をYouTube本編・ショートのサムネに設定
+  python3 engine/tools/publish.py works/NNN-xxx all                # youtube → thumb → blog → link をまとめて実行
+    publish.json に "publish_at": "2026-11-09T19:00:00+09:00" があれば予約投稿（YouTubeは非公開アップ＋公開予約、
+    Bloggerは予約記事）。"blog": {"slug": "dotgatari-kiroku-001-ed-gein"} で記事URLを英字にできる。
 
 required environment variables (set them as environment secrets, never in the repo):
   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
@@ -134,15 +138,31 @@ def theme_inline(content):
             '<style>' + css + '</style>\n')
 
 
+def publish_at(work):
+    """publish.json "publish_at" (e.g. "2026-11-09T19:00:00+09:00") if it is still in the future, else None"""
+    import datetime
+    v = json.load(open(os.path.join(work, 'publish.json'), encoding='utf-8')).get('publish_at')
+    if not v: return None
+    d = datetime.datetime.fromisoformat(v)
+    return d if d > datetime.datetime.now(datetime.timezone.utc) else None
+
+
 def blog(work, tok):
     pub = json.load(open(os.path.join(work, 'publish.json'), encoding='utf-8'))['blog']
     state = load_state(work)
     content = theme_inline(fill(re.sub(r'<!--\s*(labels|title):.*?-->\n?', '', open(os.path.join(ROOT, pub['content_file']), encoding='utf-8').read()), links(state)))
     body = {'kind': 'blogger#post', 'title': pub['title'], 'content': content, 'labels': pub['labels']}
-    if state.get('blog_post_id'):
-        res, _ = call('PUT', f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/{state['blog_post_id']}", tok, body)
-    else:
-        res, _ = call('POST', f'https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/', tok, body)
+    base = f'https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts'
+    if not state.get('blog_post_id'):
+        # Blogger makes the URL from the title at first publish, so publish under an ASCII "slug" title first
+        when = publish_at(work)
+        first = dict(body, title=pub.get('slug') or pub['title'])
+        res, _ = call('POST', base + '/?isDraft=true', tok, first)
+        q = '?publishDate=' + urllib.parse.quote(when.isoformat()) if when else ''
+        res, _ = call('POST', f"{base}/{res['id']}/publish{q}", tok)
+        state['blog_post_id'] = res['id']
+        if when: print('blog scheduled:', when.isoformat())
+    res, _ = call('PUT', f"{base}/{state['blog_post_id']}", tok, body)
     state['blog_post_id'], state['blog_url'] = res['id'], res['url']
     save_state(work, state)
     print('blog:', res['url'])
@@ -170,13 +190,17 @@ def youtube(work, tok):
         path = os.path.join(work, v['video'])
         meta = {'snippet': {'title': v['title'], 'description': fill(v['description'], links(state)), 'tags': v['tags'], 'categoryId': '1', 'defaultLanguage': 'ja', 'defaultAudioLanguage': 'ja'},
                 'status': {'privacyStatus': 'public', 'selfDeclaredMadeForKids': False, 'embeddable': True}}
+        when = publish_at(work)
+        if when:  # scheduled: upload as private, YouTube makes it public at publishAt
+            import datetime
+            meta['status'].update(privacyStatus='private', publishAt=when.astimezone(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))
         size = os.path.getsize(path)
         _, hd = call('POST', 'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', tok, meta,
                      {'X-Upload-Content-Type': 'video/mp4', 'X-Upload-Content-Length': str(size)})
         res, _ = call('PUT', hd['Location'], tok, raw=open(path, 'rb').read(), headers={'Content-Type': 'video/mp4'})
         state[key] = 'https://youtu.be/' + res['id']
         save_state(work, state)
-        print('youtube', v['kind'], state[key], 'privacy:', res.get('status', {}).get('privacyStatus'))
+        print('youtube', v['kind'], state[key], 'privacy:', res.get('status', {}).get('privacyStatus'), res.get('status', {}).get('publishAt') or '')
 
 
 def tiktok_txt(work, pub, L):
@@ -223,8 +247,27 @@ def retire(work):
     save_state(work, state)
 
 
+def thumb(work, tok):
+    """set <work>/build/thumb.png (engine/tools/thumb.js) as the thumbnail of the uploaded videos"""
+    state, path = load_state(work), os.path.join(work, 'build', 'thumb.png')
+    if not os.path.exists(path): sys.exit('サムネ画像がありません: node engine/tools/thumb.js ' + os.path.relpath(work, ROOT))
+    img = open(path, 'rb').read()
+    for k in ('youtube_main', 'youtube_short'):
+        if not state.get(k): continue
+        try:
+            call('POST', 'https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=' + yt_id(state[k]), tok, raw=img, headers={'Content-Type': 'image/png'})
+            print('thumbnail set:', k, state[k])
+        except urllib.error.HTTPError as e:
+            body = e.read().decode(errors='replace')
+            print(f'thumbnail failed: {k} HTTP {e.code} {body[:300]}', file=sys.stderr)
+            if e.code == 403: print('  → チャンネルでカスタムサムネイルが有効になっていない可能性があります（電話番号による確認が必要）。', file=sys.stderr)
+
+
 if __name__ == '__main__':
     work, what = sys.argv[1], sys.argv[2]
     {'whoami': lambda: whoami(None), 'blog': lambda: blog(os.path.abspath(work), token('blogger')),
      'youtube': lambda: youtube(os.path.abspath(work), token('youtube')), 'pages': lambda: pages(token('blogger')),
-     'link': lambda: link(os.path.abspath(work)), 'retire': lambda: retire(os.path.abspath(work))}[what]()
+     'link': lambda: link(os.path.abspath(work)), 'retire': lambda: retire(os.path.abspath(work)),
+     'thumb': lambda: thumb(os.path.abspath(work), token('youtube')),
+     'all': lambda: (youtube(os.path.abspath(work), token('youtube')), thumb(os.path.abspath(work), token('youtube')),
+                     blog(os.path.abspath(work), token('blogger')), link(os.path.abspath(work)))}[what]()
