@@ -16,6 +16,7 @@ const PLAN_FULL = [
   { sc: SI, pre: 0.6, items: ['L18'], tr: 'blinds', td: 0.8 },
   { sc: SJ, pre: 0.8, items: ['L19', 0.6, 'L20'], tr: 'dither', td: 1.0 },
   { sc: SK, pre: 0.8, items: ['L21', 0.8, 'L22'], tr: 'white', td: 1.0 },
+  { sc: SX, pre: 0, items: [], tr: 'dither', td: 0.3 },
   { sc: SL, pre: 1.0, items: ['L23', 0.8, 'L24', 0.8, 'L25'], tr: 'dither', td: 1.0 },
   { sc: SM, pre: 1.0, items: ['L26', 0.6, 'L27'], tr: 'dither', td: 1.2 },
   { sc: SN, pre: 0.8, items: ['L28', 0.6, 'L29'], tr: 'dither', td: 1.0 },
@@ -48,6 +49,7 @@ SO.sfx = (S, ev) => { ev(S.tBook, 'whoosh'); ev(S.tFilm, 'whoosh'); S.f.forEach(
 SP.sfx = (S, ev) => { ev(0.5, 'toll'); ev(S.tEnd, 'toll'); };
 SS1.sfx = (S, ev) => { ev(S.tFace, 'sting'); };
 SS2.sfx = (S, ev) => { ev(lastSe(S) - 1.4, 'stamp'); };
+SX.sfx = (S, ev) => { ev(0.25, 'sting'); for (let k = 0; k < 4; k++) ev(0.9 + k * 0.75, 'heart'); };
 SP.bgmTrack = (S, tr) => { tr.fin = 3; };
 SP.ending = true;
 /* title screen decoration: the farmhouse in the snow */

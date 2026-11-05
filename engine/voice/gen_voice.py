@@ -12,6 +12,8 @@ length equals the boundary time in the full utterance.
 import json, os, subprocess, sys, base64
 import numpy as np
 import pyopenjtalk
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import reading  # yomi fixes (reading_fix.json) + Open JTalk vs Sudachi check
 from pyopenjtalk.htsengine import HTSEngine
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -29,9 +31,11 @@ def voice_copy(src, alpha, name, out):
     return p
 
 # ドット語り voice cast: name -> (voice file, alpha (formant warp), half_tone, speed)
+FIX = reading.load_fix()
+
 SPEAKERS = {
-    'narrator': ('nitech_jp_atr503_m001.htsvoice', 0.55, 2.0, 0.88),    # 記録の神 (青空文庫シリーズの語り部): やさしいおじいさん, 約142Hz
-    'lamp':     ('nitech_jp_atr503_m001.htsvoice', 0.50, -2.0, 0.86),   # 灯の神 (Wikipediaシリーズの語り部)
+    'narrator': ('nitech_jp_atr503_m001.htsvoice', 0.55, 2.0, 0.95),    # 記録の神 (青空文庫シリーズの語り部): やさしいおじいさん, 約142Hz
+    'lamp':     ('nitech_jp_atr503_m001.htsvoice', 0.50, -2.0, 0.93),   # 灯の神 (Wikipediaシリーズの語り部)
     'spider':   ('mei_happy.htsvoice', 0.53, 3.0, 1.02),
     'buddha':   ('nitech_jp_atr503_m001.htsvoice', 0.58, -4.5, 0.80),
     'buddha_sad': ('nitech_jp_atr503_m001.htsvoice', 0.58, -5.0, 0.76),
@@ -166,7 +170,9 @@ def main():
         engines[spk] = HTSEngine(p.encode())
     for ln in cfg['lines']:
         lid, spk, text = ln['id'], ln['speaker'], ln['text']
-        say = ln.get('say', text)
+        say = reading.apply_fix(ln.get('say', text), FIX)
+        for surf, pron, read in reading.check_text(ln.get('say', text), FIX):
+            print(f'WARN reading {lid}: 「{surf}」 Open JTalk={pron} / 辞書={read}  (engine/voice/reading_fix.json)', file=sys.stderr)
         src, alpha, half, speed = SPEAKERS[spk]
         eng = engines[spk]
         sr = eng.get_sampling_frequency()

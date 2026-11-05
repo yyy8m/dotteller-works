@@ -147,3 +147,6 @@ const SS2 = {
     return { z: 1, fx: 160, fy: 100 };
   }
 };
+
+/* ---- GX: horror close-up (no narration) ---- */
+const GX = { name: 'ピエロの素顔', bgm: null, init(S) { S.dur = 4.2; }, draw(c, t, S) { horrorCloseup(c, t, pogoFace({ expr: 'creepy', blink: 0 }), [[19, 21], [31, 21]], S.dur); return { z: 1, fx: 160, fy: 120, sx: t < 0.5 ? Math.round(Math.sin(t * 90) * 2) : 0 }; } };

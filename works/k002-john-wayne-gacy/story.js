@@ -15,6 +15,7 @@ const PLAN_FULL = [
   { sc: GH, pre: 0.6, items: ['L15'], tr: 'dither', td: 1.0 },
   { sc: GI, pre: 1.0, items: ['L16', 0.5, 'L17'], tr: 'dither', td: 1.2 },
   { sc: GJ, pre: 0.6, items: ['L18'], tr: 'blinds', td: 0.8 },
+  { sc: GX, pre: 0, items: [], tr: 'dither', td: 0.3 },
   { sc: GK, pre: 0.8, items: ['L19', 0.6, 'L20', 0.6, 'L21'], tr: 'white', td: 1.0 },
   { sc: GL, pre: 0.8, items: ['L22', 0.5, 'L23'], tr: 'dither', td: 1.2 },
   { sc: GM, pre: 1.0, items: ['L24'], tr: 'dither', td: 1.0 },
@@ -43,6 +44,7 @@ GM.sfx = (S, ev) => { ev(0.3, 'stamp'); ev(2.0, 'toll'); };
 GN.sfx = (S, ev) => { ev(S.tSplit, 'sting'); ev(S.tCand, 'toll'); ev(S.tEnd, 'toll'); };
 SS1.sfx = (S, ev) => { ev(S.tDown, 'sting'); };
 SS2.sfx = (S, ev) => { ev(lastSe(S) - 1.4, 'stamp'); };
+GX.sfx = (S, ev) => { ev(0.25, 'sting'); for (let k = 0; k < 4; k++) ev(0.9 + k * 0.75, 'heart'); };
 GN.bgmTrack = (S, tr) => { tr.fin = 3; };
 GN.ending = true;
 /* title screen: balloons and a little clown hat */

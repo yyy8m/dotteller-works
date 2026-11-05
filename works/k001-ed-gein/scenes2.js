@@ -259,3 +259,6 @@ const SS2 = {
     return { z: 1, fx: 160, fy: 100 };
   }
 };
+
+/* ---- SX: horror close-up (no narration) ---- */
+const SX = { name: '素顔', bgm: null, init(S) { S.dur = 4.2; }, draw(c, t, S) { horrorCloseup(c, t, geinFace({ expr: 'smile', blink: 0 }), [[20, 19], [28, 19]], S.dur); return { z: 1, fx: 160, fy: 120, sx: t < 0.5 ? Math.round(Math.sin(t * 90) * 2) : 0 }; } };

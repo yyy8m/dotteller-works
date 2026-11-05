@@ -38,6 +38,7 @@ const VOICE_DATA={"L0": {"speaker": "narrator", "text": "ドット語り文庫�
 </script>
 <script>
 const WORK = {"no": "001", "series": "bunko", "title": "蜘蛛の糸", "author": "芥川龍之介", "source": "青空文庫", "source_url": "https://www.aozora.gr.jp/cards/000879/card92.html"};
+const SHORT = false;
 'use strict';
 /* ================= core: math, palette, pixel primitives ================= */
 const W = 320, H = 240, TAU = Math.PI * 2;
@@ -1454,14 +1455,21 @@ const S0 = {
     logoLine(c, 160, 2, 32, t);
     TX(c, SERIES[WORK.series].name + '　#' + WORK.no, 160 - 40, 38, BR.orange);
     // scroll unrolling
-    const k = eOut(sg(t, 0.6, 1.5)), sw = Math.round(170 * k), sx = 210 - sw / 2;
+    // scroll: wide enough for the title and the subtitle (split at the full-width space if it is long)
+    const fit = cached('scrollFit', () => {
+      const ts = [32, 24, 16].find(z => textSpr(WORK.title, z, BR.ink).width - 2 <= 196) || 16;
+      let sub = [WORK.author]; if (textSpr(WORK.author, 16, BR.ink).width - 2 > 196 && WORK.author.includes('　')) sub = WORK.author.split('　');
+      const need = Math.max(textSpr(WORK.title, ts, BR.ink).width, ...sub.map(x => textSpr(x, 16, BR.ink).width)) + 20;
+      return { ts, sub, w: clamp(need, 170, 210) };
+    });
+    const cx = Math.min(210, 308 - fit.w / 2), k = eOut(sg(t, 0.6, 1.5)), sw = Math.round(fit.w * k), sx = cx - sw / 2;
     if (k > 0) {
       R(c, sx, 64, sw, 92, BR.paper); c.fillStyle = DP(BR.paper, BR.paper2, 3); c.fillRect(sx, 64, sw, 92);
       R(c, sx, 66, sw, 1, BR.paper2); R(c, sx, 153, sw, 1, BR.paper2);
       if (k > 0.85) {
-        const ts = textSpr(WORK.title, 32, BR.ink).width > 160 ? 24 : 32, a = sg(t, 1.3, 1.9), tw = textSpr(WORK.title, ts, BR.ink).width;
-        if (a > 0) { const s = ditherFade(textSpr(WORK.title, ts, BR.ink), a, 'ttl'); c.drawImage(s, Math.round(210 - tw / 2), 82 + (32 - ts) / 2); }
-        if (t > 1.8) TX(c, WORK.author, 210 - textSpr(WORK.author, 16, BR.ink).width / 2, 126, BR.ink, 16, null);
+        const ts = fit.ts, a = sg(t, 1.3, 1.9), tw = textSpr(WORK.title, ts, BR.ink).width, ty = fit.sub.length > 1 ? 74 : 82;
+        if (a > 0) { const s = ditherFade(textSpr(WORK.title, ts, BR.ink), a, 'ttl'); c.drawImage(s, Math.round(cx - tw / 2), ty + (32 - ts) / 2); }
+        if (t > 1.8) fit.sub.forEach((x, i) => TX(c, x, cx - textSpr(x, 16, BR.ink).width / 2, (fit.sub.length > 1 ? 112 : 126) + i * 18, BR.ink, 16, null));
       }
       for (const ex of [sx - 5, sx + sw]) { R(c, ex, 58, 5, 104, '#5c3c24'); R(c, ex + 1, 58, 1, 104, '#8c6440'); R(c, ex - 1, 56, 7, 3, BR.orange); R(c, ex - 1, 161, 7, 3, BR.orange); }
     }
@@ -1637,6 +1645,17 @@ const STYLES = {
     if (s === 0 || s === 8) bell(d, w, NOTE(ch[3] + 12), 0.03);
     if (s === 12 && hash(i) < 0.6) pluck(d, w, NOTE(ch[2] + 12), 0.035);
   } },
+  carnival: { bpm: 132, step(i, w, d) { // detuned waltz (3/4 on 8ths)
+    if (i % 2) return; const e = i / 2, bar = Math.floor(e / 6), s = e % 6, ch = [[48, 64, 67], [43, 62, 65], [48, 64, 67], [43, 59, 65]][bar % 4];
+    if (s === 0) tone(d, w, NOTE(ch[0] - 12), 0.3, { type: 'square', lp: 700, v: 0.05 }); if (s === 2 || s === 4) for (const n of ch.slice(1)) tone(d, w, NOTE(n) * 0.992, 0.18, { type: 'square', lp: 1600, v: 0.02 });
+    const mel = [76, 0, 74, 72, 0, 71, 72, 0, 74, 76, 0, 79]; const n = mel[(bar % 2) * 6 + s]; if (n) tone(d, w, NOTE(n) * 1.006, 0.25, { type: 'triangle', v: 0.04, trem: 6 });
+  } },
+  dread: { bpm: 84, step(i, w, d) { // low ostinato + ticking, for the crimes
+    const s = i % 16, bar = Math.floor(i / 16), bs = [40, 0, 40, 41, 0, 40, 0, 0, 40, 0, 40, 43, 0, 41, 0, 0];
+    if (bs[s]) tone(d, w, NOTE(bs[s] - 12 + (bar % 4 === 3 ? 1 : 0)), 0.22, { type: 'sawtooth', lp: 500, v: 0.07 });
+    if (s % 4 === 0) noise(d, w, 0.02, { type: 'highpass', f: 6000, v: 0.06 });
+    if (s === 0 && bar % 2 === 0) for (const n of [64, 65]) tone(d, w, NOTE(n), 2.6, { type: 'sawtooth', lp: 1400, a: 0.8, sus: 1, d: 0.3, r: 0.6, v: 0.016, trem: 7 });
+  } },
 };
 
 /* ---- sound effects ---- */
@@ -1664,6 +1683,14 @@ const SFX = {
   type(w, n = 6) { for (let k = 0; k < n; k++) noise(AU.sfx, w + k * 0.09 + Math.random() * 0.03, 0.02, { f: 2500, q: 2, v: 0.18 }); },
   sting(w) { for (const n of [44, 45, 51]) tone(AU.sfx, w, NOTE(n), 1.6, { type: 'sawtooth', lp: 1800, lp2: 300, v: 0.05, rev: 1 }); noise(AU.sfx, w, 0.5, { type: 'lowpass', f: 300, v: 0.3 }); tone(AU.sfx, w, 55, 1, { f2: 30, v: 0.3 }); },
   toll(w) { bell(AU.sfx, w, NOTE(45), 0.09); bell(AU.sfx, w, NOTE(57), 0.04); },
+  gun(w) { noise(AU.sfx, w, 0.06, { type: 'highpass', f: 1500, v: 0.7 }); noise(AU.sfx, w, 0.35, { type: 'lowpass', f: 800, f2: 120, v: 0.5 }); tone(AU.sfx, w, 120, 0.3, { f2: 40, v: 0.45 }); noise(AU.sfx, w + 0.18, 0.6, { type: 'lowpass', f: 500, f2: 100, v: 0.12, rev: 1 }); },
+  stab(w) { noise(AU.sfx, w, 0.08, { f: 2200, q: 2, v: 0.35 }); tone(AU.sfx, w, 90, 0.15, { f2: 50, v: 0.3 }); },
+  dig(w) { noise(AU.sfx, w, 0.12, { type: 'lowpass', f: 700, v: 0.35 }); noise(AU.sfx, w + 0.12, 0.2, { type: 'lowpass', f: 400, v: 0.2 }); },
+  burn(w, dur = 3) { noise(AU.sfx, w, dur, { type: 'lowpass', f: 600, a: 0.5, sus: 1, d: 0.2, r: 0.6, v: 0.18 }); for (let k = 0; k < dur * 6; k++) noise(AU.sfx, w + Math.random() * dur, 0.02, { type: 'highpass', f: 3000, v: 0.12 }); },
+  slam(w) { tone(AU.sfx, w, 90, 0.3, { f2: 45, v: 0.5 }); noise(AU.sfx, w, 0.1, { type: 'lowpass', f: 900, v: 0.4 }); },
+  thump(w) { tone(AU.sfx, w, 70, 0.25, { f2: 35, v: 0.45 }); noise(AU.sfx, w, 0.06, { type: 'lowpass', f: 500, v: 0.2 }); },
+  drop(w) { tone(AU.sfx, w, 1400, 0.12, { f2: 600, v: 0.06 }); },
+  hit(w) { noise(AU.sfx, w, 0.05, { f: 1200, q: 1, v: 0.5 }); tone(AU.sfx, w, 140, 0.2, { f2: 60, v: 0.4 }); },
   end(w) { for (const [k, n] of [[0, 74], [0.18, 78], [0.36, 81], [0.54, 86]]) bell(AU.sfx, w + k, NOTE(n), 0.05); },
 };
 
@@ -1812,7 +1839,7 @@ function scheduleAll(T0) {
   const ev = (t, f, ...a) => sfx.push([t, f, a]);
   TL.scenes.forEach((S, i) => {
     const s0 = S.start, L0 = S.lines[0], Ll = S.lines[S.lines.length - 1];
-    ev(s0 + L0.t0 - 0.25, 'open'); ev(s0 + Ll.se + 0.7, 'close');
+    if (L0) { ev(s0 + L0.t0 - 0.25, 'open'); ev(s0 + Ll.se + 0.7, 'close'); }
     for (const Ln of S.lines) {
       const src = ac.createBufferSource(); src.buffer = Ln.buf; src.connect(AU.voice); src.start(T0 + s0 + Ln.t0);
       AU.duck.gain.setTargetAtTime(0.32, T0 + s0 + Ln.t0 - 0.15, 0.08); AU.duck.gain.setTargetAtTime(1, T0 + s0 + Ln.se + 0.25, 0.35);
@@ -1877,13 +1904,14 @@ const [WB, WX] = mk(W, H);
 const OUT = [mk(W, H), mk(W, H)];
 function renderScene(i, tl, k) {
   const S = TL.scenes[i]; WX.setTransform(1, 0, 0, 1, 0, 0); WX.fillStyle = '#000'; WX.fillRect(0, 0, W, H);
-  const cam = S.sc.draw(WX, tl, S) || {}; WX.setTransform(1, 0, 0, 1, 0, 0);
+  window.__uiq = []; const cam = S.sc.draw(WX, tl, S) || {}; WX.setTransform(1, 0, 0, 1, 0, 0); const uiq = window.__uiq; window.__uiq = null;
   let z = cam.z || 1; const sx = cam.sx || 0, sy = cam.sy || 0; if ((sx || sy) && z < 1.04) z = 1.04;
   const [oc, ox] = OUT[k]; ox.fillStyle = '#000'; ox.fillRect(0, 0, W, H);
   const fx = cam.fx == null ? 160 : cam.fx, fy = cam.fy == null ? 120 : cam.fy, w = W / z, h = H / z;
   const x0 = clamp(fx - fx / z + sx / z, 0, W - w), y0 = clamp(fy - fy / z + sy / z, 0, H - h);
   if (z === 1) ox.drawImage(WB, 0, 0); else ox.drawImage(WB, x0, y0, w, h, 0, 0, W, H);
   if (S.sc.post) { const im = ox.getImageData(0, 0, W, H); S.sc.post(im, tl, S); ox.putImageData(im, 0, 0); }
+  for (const f of uiq) f(ox); // captions / year cards: drawn after the camera so they never get cropped
   return oc;
 }
 function transition(type, p, A, B, out) { // A,B,out ImageData; p 0..1
@@ -1965,7 +1993,7 @@ document.getElementById('go').addEventListener('click', start);
 
 if (document.fonts) { let tries = 0; const fl = () => document.fonts.load('16px "DotGothic16"').then(r => { if (r && r.length) _tc.clear(); else if (++tries < 40) setTimeout(fl, 250); }).catch(() => {}); fl(); }
 /* test hooks (headless rendering of arbitrary times) */
-window.__prep = async () => { window.__test = true; const ac = audioInit(); TL = buildTimeline(await decodeVoices(ac)); return TL.scenes.map(s => [s.sc.name, +s.start.toFixed(2), +s.dur.toFixed(2)]); };
+window.__prep = async () => { window.__test = true; const ac = audioInit(); TL = buildTimeline(await decodeVoices(ac)); return TL.scenes.map(s => [s.sc.name, +s.start.toFixed(2), +s.dur.toFixed(2), s.sc.ch || null]); };
 window.__draw = T => render(T);
 window.__title = t => drawTitle(t, 0);
 window.__frame = (mode, Ts) => Ts.map(T => composeFrame(mode, T).toDataURL('image/png'));

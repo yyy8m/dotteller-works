@@ -209,3 +209,22 @@ function fireHouse(c, x, y, w, h, t, k = 1) { // a burning wooden house
   E(c, x + w / 2, y - h, w, h, DA('#f86830', 0.12 * k));
   for (let i = 0; i < 10; i++) { const u = fr(t * 0.3 + i / 10); E(c, x + w / 2 + Math.sin(i * 2 + t) * 20 + u * 30, y - h - 30 - u * 90, 6 + u * 14, 4 + u * 9, DA('#2c2420', 0.6 * (1 - u))); }
 }
+
+/* ---- horror close-up: the killer's face out of the dark, lit from below, flickering ---- */
+/* spr: 48x48 portrait (SPR, 50x50 with the outline); eyes: [[x, y], ...] in sprite pixels */
+function horrorCloseup(c, t, spr, eyes = [], dur = 4) {
+  R(c, 0, 0, W, H, '#000000');
+  const on = !(fr(t * 1.7) > 0.86 && t > 0.8) && t > 0.25, z = 4.2 + t * 0.35, cx = 160 + Math.sin(t * 9) * (t < 0.6 ? 2 : 0), cy = 112;
+  if (on) {
+    const [hc, hx] = slot('hcz', Math.ceil(spr.width * z), Math.ceil(spr.height * z)); hx.imageSmoothingEnabled = false; hx.clearRect(0, 0, hc.width, hc.height); hx.drawImage(spr, 0, 0, hc.width, hc.height);
+    const x0 = Math.round(cx - hc.width / 2), y0 = Math.round(cy - hc.height / 2);
+    c.drawImage(ditherFade(hc, clamp(t / 0.5, 0, 1), 'hczd'), x0, y0);
+    for (let r = 0; r < 12; r++) { c.fillStyle = DA('#000000', 0.85 - r * 0.07); c.fillRect(0, r * 10, W, 10); } // lit from below: the top falls into darkness
+    c.fillStyle = DA('#c81818', 0.18); c.fillRect(0, 0, W, H);
+    E(c, 160, 236, 140, 60, DA('#f86830', 0.12));
+    for (const [ex, ey] of eyes) { const gx = x0 + ex * z, gy = y0 + ey * z, g = 0.6 + 0.4 * Math.sin(t * 13); R(c, gx, gy, Math.max(2, z * 0.8), Math.max(2, z * 0.8), DA('#ffffff', g)); E(c, gx + 2, gy + 2, 10, 8, DA('#f84040', 0.25 * g)); }
+  }
+  for (let i = 0; i < 6; i++) { const y = Math.floor(hash(i * 13 + Math.floor(t * 24)) * H), w = 20 + hash(i * 7 + Math.floor(t * 24)) * 120; if (hash(i + Math.floor(t * 24) * 3) < 0.4) R(c, hash(i * 3 + Math.floor(t * 24)) * W, y, w, 1, DA('#ffffff', 0.25)); } // static
+  redVignette(c, 0.8);
+  if (t > dur - 0.35) { c.fillStyle = DA('#000000', clamp((t - dur + 0.35) / 0.3, 0, 1)); c.fillRect(0, 0, W, H); }
+}

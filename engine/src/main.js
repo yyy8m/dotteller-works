@@ -81,7 +81,7 @@ function scheduleAll(T0) {
   const ev = (t, f, ...a) => sfx.push([t, f, a]);
   TL.scenes.forEach((S, i) => {
     const s0 = S.start, L0 = S.lines[0], Ll = S.lines[S.lines.length - 1];
-    ev(s0 + L0.t0 - 0.25, 'open'); ev(s0 + Ll.se + 0.7, 'close');
+    if (L0) { ev(s0 + L0.t0 - 0.25, 'open'); ev(s0 + Ll.se + 0.7, 'close'); }
     for (const Ln of S.lines) {
       const src = ac.createBufferSource(); src.buffer = Ln.buf; src.connect(AU.voice); src.start(T0 + s0 + Ln.t0);
       AU.duck.gain.setTargetAtTime(0.32, T0 + s0 + Ln.t0 - 0.15, 0.08); AU.duck.gain.setTargetAtTime(1, T0 + s0 + Ln.se + 0.25, 0.35);

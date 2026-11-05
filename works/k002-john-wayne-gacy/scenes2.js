@@ -65,7 +65,7 @@ const GD = {
     R(c, 0, 104, W, 40, '#6c9c48'); for (let i = 0; i < 40; i++) P(c, i * 31 % W, 106 + (i * 7 % 30), '#88b858');
     ranchHouse(c, 110, 142, t, { wall: '#b8a488' }); R(c, 0, 142, W, 6, '#c8c0b0'); VG(c, 0, 148, W, H - 148, ['#5c5c60', '#4c4c50']);
     // contractor's van
-    const vx = 20; R(c, vx, 118, 70, 26, '#e8e4d8'); R(c, vx + 50, 112, 20, 10, '#e8e4d8'); R(c, vx + 54, 114, 14, 6, '#7c8ca8'); E(c, vx + 14, 144, 6, 6, '#141414'); E(c, vx + 56, 144, 6, 6, '#141414'); TX(c, 'CONTRACTOR', vx + 2, 122, '#2c4c7c', 16, null);
+    const vx = 20; R(c, vx, 118, 70, 26, '#e8e4d8'); R(c, vx + 50, 112, 20, 10, '#e8e4d8'); R(c, vx + 54, 114, 14, 6, '#7c8ca8'); E(c, vx + 14, 144, 6, 6, '#141414'); E(c, vx + 56, 144, 6, 6, '#141414'); R(c, vx + 6, 124, 38, 14, '#2c4c7c'); TX(c, 'PDM', vx + 12, 123, '#f4f0e8', 16, null);
     if (t > S.tParty) { // a backyard party
       for (let i = 0; i < 16; i++) PF(c, [i * 20, 20, i * 20 + 20, 20, i * 20 + 10, 32], ['#d83838', '#f8d040', '#3c8cd8', '#48b048'][i % 4]); L(c, 0, 20, W, 20, C.white);
       [[230, '#e8c0a0', '#7c3c4c'], [258, '#e0b090', '#4c5c8c'], [286, '#f0c8a8', '#5c7c4c']].forEach(([x, sk, col], i) => blit(c, personSpr({ id: 'nb' + i, coat: col, coat2: col, pants: '#3c3c44', skin: sk, hair: '#5c3c2c' }, { f: -1, arm: (Math.floor(t * 2) + i) & 1 ? 'up' : null, id: ((Math.floor(t * 2) + i) & 1) ? 'u' : '' }), x, 150, PER_AX, PER_AY, { flip: true }));

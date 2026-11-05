@@ -47,14 +47,21 @@ const S0 = {
     logoLine(c, 160, 2, 32, t);
     TX(c, SERIES[WORK.series].name + '　#' + WORK.no, 160 - 40, 38, BR.orange);
     // scroll unrolling
-    const k = eOut(sg(t, 0.6, 1.5)), sw = Math.round(170 * k), sx = 210 - sw / 2;
+    // scroll: wide enough for the title and the subtitle (split at the full-width space if it is long)
+    const fit = cached('scrollFit', () => {
+      const ts = [32, 24, 16].find(z => textSpr(WORK.title, z, BR.ink).width - 2 <= 196) || 16;
+      let sub = [WORK.author]; if (textSpr(WORK.author, 16, BR.ink).width - 2 > 196 && WORK.author.includes('　')) sub = WORK.author.split('　');
+      const need = Math.max(textSpr(WORK.title, ts, BR.ink).width, ...sub.map(x => textSpr(x, 16, BR.ink).width)) + 20;
+      return { ts, sub, w: clamp(need, 170, 210) };
+    });
+    const cx = Math.min(210, 308 - fit.w / 2), k = eOut(sg(t, 0.6, 1.5)), sw = Math.round(fit.w * k), sx = cx - sw / 2;
     if (k > 0) {
       R(c, sx, 64, sw, 92, BR.paper); c.fillStyle = DP(BR.paper, BR.paper2, 3); c.fillRect(sx, 64, sw, 92);
       R(c, sx, 66, sw, 1, BR.paper2); R(c, sx, 153, sw, 1, BR.paper2);
       if (k > 0.85) {
-        const ts = textSpr(WORK.title, 32, BR.ink).width > 160 ? 24 : 32, a = sg(t, 1.3, 1.9), tw = textSpr(WORK.title, ts, BR.ink).width;
-        if (a > 0) { const s = ditherFade(textSpr(WORK.title, ts, BR.ink), a, 'ttl'); c.drawImage(s, Math.round(210 - tw / 2), 82 + (32 - ts) / 2); }
-        if (t > 1.8) TX(c, WORK.author, 210 - textSpr(WORK.author, 16, BR.ink).width / 2, 126, BR.ink, 16, null);
+        const ts = fit.ts, a = sg(t, 1.3, 1.9), tw = textSpr(WORK.title, ts, BR.ink).width, ty = fit.sub.length > 1 ? 74 : 82;
+        if (a > 0) { const s = ditherFade(textSpr(WORK.title, ts, BR.ink), a, 'ttl'); c.drawImage(s, Math.round(cx - tw / 2), ty + (32 - ts) / 2); }
+        if (t > 1.8) fit.sub.forEach((x, i) => TX(c, x, cx - textSpr(x, 16, BR.ink).width / 2, (fit.sub.length > 1 ? 112 : 126) + i * 18, BR.ink, 16, null));
       }
       for (const ex of [sx - 5, sx + sw]) { R(c, ex, 58, 5, 104, '#5c3c24'); R(c, ex + 1, 58, 1, 104, '#8c6440'); R(c, ex - 1, 56, 7, 3, BR.orange); R(c, ex - 1, 161, 7, 3, BR.orange); }
     }
