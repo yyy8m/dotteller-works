@@ -15,7 +15,7 @@ rd = lambda p: open(p, encoding='utf-8').read()
 # brand settings live in one place: engine/src/brand.js (const BRAND = {...})
 BRAND = dict(re.findall(r"(\w+): '([^']*)'", re.search(r'const BRAND = \{(.*?)\};', rd(os.path.join(ENGINE, 'brand.js'))).group(1)))
 
-parts = [rd(os.path.join(ENGINE, f)) for f in ['core.js', 'chars.js', 'env.js']]
+parts = [rd(os.path.join(ENGINE, f)) for f in ['core.js', 'chars.js', 'env.js'] + (['kiroku.js'] if W['series'] == 'kiroku' else [])]
 parts += [rd(p) for p in sorted(glob.glob(os.path.join(work, 'scenes*.js')))]
 parts += [rd(os.path.join(ENGINE, 'brand.js')), rd(os.path.join(ENGINE, 'audio.js')), rd(os.path.join(work, 'story.js')), rd(os.path.join(ENGINE, 'main.js'))]
 js = 'const WORK = ' + json.dumps(W, ensure_ascii=False) + ';\n' + '\n'.join(parts)
@@ -29,7 +29,7 @@ html = f'''<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title>
-<meta name="description" content="{BRAND['name']} {series} #{W['no']}「{W['title']}」（原作：{W['author']}）。ボタンを押すと始まる、ドット絵の物語。">
+<meta name="description" content="{BRAND['name']} {series} #{W['no']}「{W['title']}」（{'原作：' + W['author'] if W['series'] == 'bunko' else '参考：' + W['source']}）。ボタンを押すと始まる、ドット絵の物語。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">

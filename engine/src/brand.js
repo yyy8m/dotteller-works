@@ -1,6 +1,9 @@
 /* ================= ドット語り. branding: logo, intro scene, title, video frames ================= */
 const BR = { bg: '#0c2418', bg2: '#123222', bg3: '#1c4430', cream: '#f4ecd8', orange: '#f49a1c', dark: '#06140c', paper: '#ecdcb4', paper2: '#d4bc8c', ink: '#2c2018' };
 const SERIES = { bunko: { name: '文庫', narrator: 'narrator' }, kiroku: { name: '記録', narrator: 'lamp' } };
+/* subtitle under the title: 文庫 = 原作 author, 記録 = author field holds the year / place */
+const workSub = () => WORK.series === 'bunko' ? '原作　' + WORK.author : WORK.author;
+const workCredit = () => WORK.series === 'bunko' ? '原作　' + WORK.author + '「' + WORK.title + '」' : '参考　' + WORK.source;
 const BRAND = { name: 'ドット語り', roman: 'DOTGATARI', reading: 'どっとがたり', copy: 'ドットで描く、物語と記録。', tiktok: '@dotgatari', youtube: '@dotgatari' };
 const brandHandles = () => BRAND.tiktok === BRAND.youtube ? ['YouTube・TikTok ' + BRAND.youtube] : ['YouTube ' + BRAND.youtube, 'TikTok ' + BRAND.tiktok];
 /* logo: "ドット語り" in DotGothic16 (cream + dark drop shadow) + a blinking orange "." */
@@ -49,8 +52,8 @@ const S0 = {
       R(c, sx, 64, sw, 92, BR.paper); c.fillStyle = DP(BR.paper, BR.paper2, 3); c.fillRect(sx, 64, sw, 92);
       R(c, sx, 66, sw, 1, BR.paper2); R(c, sx, 153, sw, 1, BR.paper2);
       if (k > 0.85) {
-        const a = sg(t, 1.3, 1.9), tw = textSpr(WORK.title, 32, BR.ink).width;
-        if (a > 0) { const s = ditherFade(textSpr(WORK.title, 32, BR.ink), a, 'ttl'); c.drawImage(s, Math.round(210 - tw / 2), 82); }
+        const ts = textSpr(WORK.title, 32, BR.ink).width > 160 ? 24 : 32, a = sg(t, 1.3, 1.9), tw = textSpr(WORK.title, ts, BR.ink).width;
+        if (a > 0) { const s = ditherFade(textSpr(WORK.title, ts, BR.ink), a, 'ttl'); c.drawImage(s, Math.round(210 - tw / 2), 82 + (32 - ts) / 2); }
         if (t > 1.8) TX(c, WORK.author, 210 - textSpr(WORK.author, 16, BR.ink).width / 2, 126, BR.ink, 16, null);
       }
       for (const ex of [sx - 5, sx + sw]) { R(c, ex, 58, 5, 104, '#5c3c24'); R(c, ex + 1, 58, 1, 104, '#8c6440'); R(c, ex - 1, 56, 7, 3, BR.orange); R(c, ex - 1, 161, 7, 3, BR.orange); }
@@ -73,7 +76,7 @@ function drawTitle(t, fade) {
   if (typeof TITLE_DECO === 'function') TITLE_DECO(c, t);
   const tt = textSpr(WORK.title, 32, C.uiY), w = tt.width;
   c.drawImage(textSpr(WORK.title, 32, BR.dark), Math.round(160 - w / 2) + 2, 70 + 2); c.drawImage(tt, Math.round(160 - w / 2), 70);
-  TX(c, '原作　' + WORK.author, 160 - textSpr('原作　' + WORK.author, 16, BR.cream).width / 2, 108, BR.cream);
+  TX(c, workSub(), 160 - textSpr(workSub(), 16, BR.cream).width / 2, 108, BR.cream);
   TX(c, BRAND.youtube, W - 6 - textSpr(BRAND.youtube, 16, BR.orange).width, H - 22, BR.orange);
   blit(c, narratorSpr(t, 'smile', 0), 56, 186 + Math.round(Math.sin(t * 2.2)), 25, 25, { s: 2 });
   if (fade) { c.fillStyle = DA('#000000', fade); c.fillRect(0, 0, W, H); }
@@ -91,12 +94,12 @@ function composeFrame(mode, T) {
     logoStack(f, 39, 16, 16, t);
     TX(f, SERIES[WORK.series].name, 24, 60, BR.orange); TX(f, '#' + WORK.no, 24, 78, BR.cream);
     blit(f, narratorSpr(t, 'normal', 0), 40, 232 + Math.round(Math.sin(t * 2.2)), 25, 25, { s: 1 });
-    const y2 = vText(f, WORK.title, 433, 26, BR.cream); vText(f, WORK.author, 433, y2 + 10, BR.orange);
+    const y2 = vText(f, WORK.title, 433, 26, BR.cream), sub = WORK.series === 'bunko' ? WORK.author : (WORK.place || ''); if (sub && y2 + 10 + [...sub].length * 17 < 262) vText(f, sub, 433, y2 + 10, BR.orange);
   } else {
     logoLine(f, 180, 14, 32, t);
     TX(f, SERIES[WORK.series].name + '　#' + WORK.no, 180 - 40, 52, BR.orange);
     const tt = textSpr(WORK.title, 32, C.uiY); f.drawImage(textSpr(WORK.title, 32, BR.dark), Math.round(180 - tt.width / 2) + 2, 80); f.drawImage(tt, Math.round(180 - tt.width / 2), 78);
-    TX(f, '原作　' + WORK.author, 180 - textSpr('原作　' + WORK.author, 16, BR.cream).width / 2, 116, BR.cream);
+    TX(f, workSub(), 180 - textSpr(workSub(), 16, BR.cream).width / 2, 116, BR.cream);
     pxFrame(f, 20, 150, W, H); f.drawImage(cv, 20, 150);
     blit(f, narratorSpr(t, 'smile', 0), 180, 450 + Math.round(Math.sin(t * 2.2)), 25, 25, { s: 2 });
     const cp = '▶ ' + BRAND.copy; TX(f, cp, 180 - textSpr(cp, 16, BR.cream).width / 2, 516, BR.cream);

@@ -100,6 +100,26 @@ const STYLES = {
     if ((s === 4 || s === 12) && hash(i * 5) < 0.6) bell(d, w, NOTE(pent[Math.floor(hash(i * 11) * 6)]), 0.03);
     if (s === 8 && hash(i * 3) < 0.5) pluck(d, w, NOTE(pent[Math.floor(hash(i * 17) * 6)] - 12), 0.04);
   } },
+  /* ---- 記録 (true stories) ---- */
+  eerie: { bpm: 60, step(i, w, d) { // low drone, wind, a detuned music box now and then
+    const s = i % 16, bar = Math.floor(i / 16), sd = 60 / 60 / 4;
+    if (s === 0) { tone(d, w, NOTE(33), sd * 16 + 0.4, { type: 'sawtooth', lp: 200, a: 1.2, sus: 1, d: 0.3, r: 1, v: 0.06 }); tone(d, w, NOTE(40), sd * 16 + 0.4, { type: 'triangle', a: 1.2, sus: 1, d: 0.3, r: 1, v: 0.025, detune: 9 });
+      noise(d, w, sd * 16, { type: 'bandpass', f: 500 + (bar % 3) * 180, f2: 300, q: 2.5, a: 1.5, sus: 1, d: 0.5, r: 1, v: 0.05 }); }
+    const mel = [69, 72, 71, 64, 0, 68, 69, 0];
+    if ((s === 4 || s === 12) && hash(i * 3 + 1) < 0.55) { const n = mel[(bar * 2 + (s >> 3)) % 8]; if (n) mbox(d, w, NOTE(n) * 0.994, 0.035); }
+  } },
+  pulse: { bpm: 72, step(i, w, d) { // heartbeat + tremolo strings
+    const s = i % 16, bar = Math.floor(i / 16), sd = 60 / 72 / 4;
+    if (s === 0 || s === 8) { tone(d, w, 62, 0.18, { f2: 40, v: 0.35 }); tone(d, w + 0.16, 58, 0.16, { f2: 38, v: 0.25 }); }
+    if (s === 0) for (const n of [45, 48, 52 + (bar % 2)]) tone(d, w, NOTE(n), sd * 16, { type: 'sawtooth', lp: 1200, a: 0.4, sus: 1, d: 0.2, r: 0.3, v: 0.022, trem: 11 });
+    if (s === 14 && bar % 2) tone(d, w, NOTE(81), 0.4, { f2: NOTE(80), v: 0.02, rev: 1 });
+  } },
+  requiem: { bpm: 56, step(i, w, d) { // slow minor chords, bells
+    const bar = Math.floor(i / 16), s = i % 16, ch = [[45, 52, 57, 60], [41, 48, 57, 60], [43, 50, 55, 59], [40, 47, 56, 59]][bar % 4];
+    if (s === 0) pad(d, w, ch.map(NOTE), 16 * 60 / 56 / 4, 0.024);
+    if (s === 0 || s === 8) bell(d, w, NOTE(ch[3] + 12), 0.03);
+    if (s === 12 && hash(i) < 0.6) pluck(d, w, NOTE(ch[2] + 12), 0.035);
+  } },
 };
 
 /* ---- sound effects ---- */
@@ -118,6 +138,15 @@ const SFX = {
   fall(w, dur) { tone(AU.sfx, w, 1100, dur, { f2: 160, glide: dur, v: 0.07, type: 'triangle' }); noise(AU.sfx, w, dur, { f: 600, f2: 2500, q: 0.8, a: dur * 0.6, v: 0.22 }); },
   splash(w, big = 1) { noise(AU.sfx, w, 1.2 * big + 0.3, { type: 'lowpass', f: 2200, f2: 200, q: 0.5, v: 0.5 * big }); noise(AU.sfx, w, 0.25, { type: 'highpass', f: 2000, v: 0.25 * big }); tone(AU.sfx, w, 80, 0.5, { f2: 35, v: 0.35 * big }); for (let k = 0; k < 8 * big; k++) tone(AU.sfx, w + 0.2 + Math.random() * 0.9, 300 + Math.random() * 500, 0.06, { f2: 900, v: 0.04 }); },
   sparkle(w) { tone(AU.sfx, w, 2637, 0.25, { v: 0.04, rev: 1 }); tone(AU.sfx, w + 0.08, 3520, 0.3, { v: 0.03, rev: 1 }); },
+  wind(w, dur = 3) { noise(AU.sfx, w, dur, { type: 'bandpass', f: 400, f2: 900, q: 3, a: dur * 0.4, sus: 1, d: 0.2, r: dur * 0.4, v: 0.16 }); },
+  heart(w) { tone(AU.sfx, w, 60, 0.2, { f2: 38, v: 0.45 }); tone(AU.sfx, w + 0.2, 56, 0.18, { f2: 36, v: 0.32 }); },
+  creak(w) { tone(AU.sfx, w, 180, 0.7, { f2: 260, glide: 0.6, type: 'sawtooth', lp: 900, v: 0.05, trem: 23 }); },
+  stamp(w) { tone(AU.sfx, w, 110, 0.2, { f2: 50, v: 0.35 }); noise(AU.sfx, w, 0.08, { f: 900, v: 0.25 }); },
+  gavel(w) { for (const k of [0, 0.32]) { tone(AU.sfx, w + k, 300, 0.25, { f2: 120, v: 0.3 }); noise(AU.sfx, w + k, 0.04, { f: 2500, v: 0.3 }); } },
+  flash(w) { noise(AU.sfx, w, 0.05, { type: 'highpass', f: 4000, v: 0.2 }); tone(AU.sfx, w, 3000, 0.3, { f2: 8000, glide: 0.3, v: 0.02 }); },
+  type(w, n = 6) { for (let k = 0; k < n; k++) noise(AU.sfx, w + k * 0.09 + Math.random() * 0.03, 0.02, { f: 2500, q: 2, v: 0.18 }); },
+  sting(w) { for (const n of [44, 45, 51]) tone(AU.sfx, w, NOTE(n), 1.6, { type: 'sawtooth', lp: 1800, lp2: 300, v: 0.05, rev: 1 }); noise(AU.sfx, w, 0.5, { type: 'lowpass', f: 300, v: 0.3 }); tone(AU.sfx, w, 55, 1, { f2: 30, v: 0.3 }); },
+  toll(w) { bell(AU.sfx, w, NOTE(45), 0.09); bell(AU.sfx, w, NOTE(57), 0.04); },
   end(w) { for (const [k, n] of [[0, 74], [0.18, 78], [0.36, 81], [0.54, 86]]) bell(AU.sfx, w + k, NOTE(n), 0.05); },
 };
 

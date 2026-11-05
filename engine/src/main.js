@@ -123,7 +123,7 @@ function drawDialog(c, T) {
   const fb = cached('fbg' + Ln.spk, () => { const [cv, x] = mk(48, 48); VG(x, 0, 0, 48, 48, [sp.bg[1], sp.bg[0]]); return cv; });
   frameBox(c, 9, 175, 58, 58, null); c.drawImage(fb, 14, 180, 48, 48);
   c.save(); c.beginPath(); c.rect(14, 180, 48, 48); c.clip();
-  if (Ln.spk === 'buddha') halo(c, 38, 200, 17, T); else if (Ln.spk === 'narrator') { for (let i = 0; i < 7; i++) { const yy = 228 - fr(T * 0.3 + i / 7) * 50; P(c, 16 + i * 7 + Math.sin(T * 2 + i) * 2, yy, i & 1 ? C.gold0 : '#fcf4dc'); } } else if (Ln.spk === 'kandata') { for (let i = 0; i < 6; i++) { const yy = 228 - fr(T * 0.5 + i / 6) * 50; P(c, 18 + i * 8, yy, C.hell5); } } else { for (let i = 0; i < 5; i++) { if ((Math.floor(T * 3) + i) % 4) P(c, 18 + i * 9, 184 + (i * 13 % 36), C.white); } }
+  if (Ln.spk === 'buddha') halo(c, 38, 200, 17, T); else if (Ln.spk === 'narrator') { for (let i = 0; i < 7; i++) { const yy = 228 - fr(T * 0.3 + i / 7) * 50; P(c, 16 + i * 7 + Math.sin(T * 2 + i) * 2, yy, i & 1 ? C.gold0 : '#fcf4dc'); } } else if (Ln.spk === 'lamp') { for (let i = 0; i < 6; i++) { const u = fr(T * 0.35 + i / 6), yy = 228 - u * 48; if (u < 0.9) P(c, 20 + i * 7 + Math.sin(T * 2.5 + i) * 2, yy, i & 1 ? '#f8c860' : '#f49a1c'); } } else if (Ln.spk === 'kandata') { for (let i = 0; i < 6; i++) { const yy = 228 - fr(T * 0.5 + i / 6) * 50; P(c, 18 + i * 8, yy, C.hell5); } } else { for (let i = 0; i < 5; i++) { if ((Math.floor(T * 3) + i) % 4) P(c, 18 + i * 9, 184 + (i * 13 % 36), C.white); } }
   let mouth = 0;
   if (lt > Ln.ss - 0.02 && lt < Ln.se - Ln.t0 + 0.08 && lt >= 0) { const v = Ln.env[Math.floor(lt * 60)] || 0; mouth = v > 0.5 ? 2 : v > 0.16 ? 1 : 0; }
   let ex = 'normal'; const si = segIndex(Ln, lt); for (const [sx, e] of EXPR[Ln.id]) if (si >= sx && lt >= 0) ex = e;
@@ -201,7 +201,7 @@ function render(T) {
     const tx = textSpr('おわり', 32, C.uiB), w = tx.width + 30, h = 50;
     const [bc, bx] = slot('owari', w, h); frameBox(bx, 0, 0, w, h, winBg); bx.drawImage(textSpr('おわり', 32, C.uiD), 16, 10); bx.drawImage(tx, 15, 9);
     blit(ctx, bc, 160, 112 + bob, w / 2 + 1, h / 2 + 1, { s: Math.max(0.05, s) });
-    if (u > 1.5) { const k2 = eOut((u - 1.5) / 0.3), hh = Math.max(2, Math.round(26 * k2)); frameBox(ctx, 36, 158 - hh / 2, 248, hh, winBg); if (k2 >= 1) { const cr = '原作　' + WORK.author + '「' + WORK.title + '」'; TX(ctx, cr, 160 - textSpr(cr, 16, C.uiB).width / 2, 150, C.uiB); } }
+    if (u > 1.5) { const k2 = eOut((u - 1.5) / 0.3), hh = Math.max(2, Math.round(26 * k2)), cr = workCredit(), bw = Math.max(248, textSpr(cr, 16, C.uiB).width + 24); frameBox(ctx, 160 - bw / 2, 158 - hh / 2, bw, hh, winBg); if (k2 >= 1) TX(ctx, cr, 160 - textSpr(cr, 16, C.uiB).width / 2, 150, C.uiB); }
     if (u > 3 && !window.__ended) { window.__ended = true; const r = document.getElementById('again'); if (r) r.style.display = 'block'; }
   }
 }

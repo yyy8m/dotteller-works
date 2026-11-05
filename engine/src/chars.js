@@ -409,6 +409,36 @@ function facePortrait(who, p) {
       // brush in hand
       L(c, 40, 47, 44, 30, '#8c5c30', 2); PF(c, [43, 30, 46, 30, 45, 25, 44, 24], '#202028'); P(c, 44, 31, C.gold1);
       E(c, 41, 42, 3.5, 3, skin); R(c, 38, 44, 6, 4, robe);
+    } else if (who === 'lamp') { // 灯の神: hooded elder lit from below by a small lantern
+      const tt = stepT(t, 10), fl = 0.5 + 0.5 * Math.sin(tt * 9) * Math.sin(tt * 5.3 + 1);
+      const hood = '#241a1e', hood2 = '#3c2c2c', hoodHi = '#5c4438', skin = '#e4b48c', skin2 = '#b07c58', skin3 = '#7c5038';
+      // cloak & hood
+      PF(c, [0, 48, 4, 34, 12, 26, 24, 24, 36, 26, 44, 34, 48, 48], hood);
+      PF(c, [8, 30, 10, 12, 16, 4, 24, 1, 32, 4, 38, 12, 40, 30, 34, 36, 14, 36], hood);
+      L(c, 16, 5, 11, 14, hoodHi); L(c, 32, 5, 37, 14, hood2); L(c, 4, 36, 10, 44, hood2); L(c, 44, 36, 38, 44, hood2);
+      // face in the hood opening (lit from below: darker at the top)
+      E(c, 24, 22, 10, 12, skin3); E(c, 24, 23, 9.5, 11, skin2); E(c, 24, 25, 8.5, 9, skin);
+      c.fillStyle = DA(hood, 0.55); c.fillRect(13, 10, 22, 6); R(c, 14, 10, 20, 2, hood);
+      // brows (long, white) and eyes
+      const sad = ex === 'sad', sur = ex === 'surp', smile = ex === 'smile';
+      L(c, 17, 17 + (sad ? 1 : 0), 22, 17 - (sad ? 1 : 0), '#e8e0d4'); L(c, 26, 17 - (sad ? 1 : 0), 31, 17 + (sad ? 1 : 0), '#e8e0d4');
+      for (const x0 of [18, 27]) {
+        if (bl === 2) { L(c, x0, 20, x0 + 3, 20, C.ol); continue; }
+        if (smile) { ER(c, x0 + 1.5, 21, 2, 1.4, C.ol, Math.PI * 1.1, Math.PI * 1.9); continue; }
+        if (sur) { R(c, x0, 19, 4, 3, '#fff4dc'); R(c, x0 + 1, 20, 2, 2, C.k); continue; }
+        R(c, x0, 20, 4, 1, C.ol); if (bl !== 1) { R(c, x0 + 1, 21, 2, 1, '#f8d070'); P(c, x0 + 1, 21, C.k); }
+      }
+      E(c, 24, 25, 2, 2.4, skin2); P(c, 24, 27, skin3);
+      // short white beard, mouth
+      PF(c, [17, 29, 31, 29, 30, 35, 26, 39, 22, 39, 18, 35], '#d8d0c4'); PF(c, [18, 29, 30, 29, 29, 33, 24, 37, 19, 33], '#f0ece4');
+      if (m === 0) { if (smile) ER(c, 24, 30, 3, 1.5, C.ol, 0.15 * Math.PI, 0.85 * Math.PI); else R(c, 22, 31, 5, 1, sad ? '#7c5038' : C.ol); }
+      else E(c, 24, 31.5, 1.5 + m, 0.7 + m * 0.6, '#3c1c1c');
+      // lantern held below the chin
+      L(c, 24, 36, 24, 39, '#5c4430'); R(c, 19, 39, 11, 2, '#4c3424'); R(c, 18, 41, 13, 7, '#3c2c1c');
+      R(c, 20, 41, 9, 7, DP('#f8b040', '#fff0b0', Math.round(6 + fl * 8))); R(c, 24, 42, 1, 5, '#3c2c1c');
+      E(c, 24, 45, 1.5, 2.5 + fl, '#fffce8');
+      // warm glow on the chin / beard
+      c.fillStyle = DA('#f8c060', 0.25 + 0.15 * fl); c.fillRect(17, 30, 15, 6);
     } else { // kandata
       const tt = stepT(t, 10);
       E(c, 24, 15, 18, 12, C.hairK0);
