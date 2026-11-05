@@ -120,6 +120,17 @@ const STYLES = {
     if (s === 0 || s === 8) bell(d, w, NOTE(ch[3] + 12), 0.03);
     if (s === 12 && hash(i) < 0.6) pluck(d, w, NOTE(ch[2] + 12), 0.035);
   } },
+  carnival: { bpm: 132, step(i, w, d) { // detuned waltz (3/4 on 8ths)
+    if (i % 2) return; const e = i / 2, bar = Math.floor(e / 6), s = e % 6, ch = [[48, 64, 67], [43, 62, 65], [48, 64, 67], [43, 59, 65]][bar % 4];
+    if (s === 0) tone(d, w, NOTE(ch[0] - 12), 0.3, { type: 'square', lp: 700, v: 0.05 }); if (s === 2 || s === 4) for (const n of ch.slice(1)) tone(d, w, NOTE(n) * 0.992, 0.18, { type: 'square', lp: 1600, v: 0.02 });
+    const mel = [76, 0, 74, 72, 0, 71, 72, 0, 74, 76, 0, 79]; const n = mel[(bar % 2) * 6 + s]; if (n) tone(d, w, NOTE(n) * 1.006, 0.25, { type: 'triangle', v: 0.04, trem: 6 });
+  } },
+  dread: { bpm: 84, step(i, w, d) { // low ostinato + ticking, for the crimes
+    const s = i % 16, bar = Math.floor(i / 16), bs = [40, 0, 40, 41, 0, 40, 0, 0, 40, 0, 40, 43, 0, 41, 0, 0];
+    if (bs[s]) tone(d, w, NOTE(bs[s] - 12 + (bar % 4 === 3 ? 1 : 0)), 0.22, { type: 'sawtooth', lp: 500, v: 0.07 });
+    if (s % 4 === 0) noise(d, w, 0.02, { type: 'highpass', f: 6000, v: 0.06 });
+    if (s === 0 && bar % 2 === 0) for (const n of [64, 65]) tone(d, w, NOTE(n), 2.6, { type: 'sawtooth', lp: 1400, a: 0.8, sus: 1, d: 0.3, r: 0.6, v: 0.016, trem: 7 });
+  } },
 };
 
 /* ---- sound effects ---- */
@@ -147,6 +158,14 @@ const SFX = {
   type(w, n = 6) { for (let k = 0; k < n; k++) noise(AU.sfx, w + k * 0.09 + Math.random() * 0.03, 0.02, { f: 2500, q: 2, v: 0.18 }); },
   sting(w) { for (const n of [44, 45, 51]) tone(AU.sfx, w, NOTE(n), 1.6, { type: 'sawtooth', lp: 1800, lp2: 300, v: 0.05, rev: 1 }); noise(AU.sfx, w, 0.5, { type: 'lowpass', f: 300, v: 0.3 }); tone(AU.sfx, w, 55, 1, { f2: 30, v: 0.3 }); },
   toll(w) { bell(AU.sfx, w, NOTE(45), 0.09); bell(AU.sfx, w, NOTE(57), 0.04); },
+  gun(w) { noise(AU.sfx, w, 0.06, { type: 'highpass', f: 1500, v: 0.7 }); noise(AU.sfx, w, 0.35, { type: 'lowpass', f: 800, f2: 120, v: 0.5 }); tone(AU.sfx, w, 120, 0.3, { f2: 40, v: 0.45 }); noise(AU.sfx, w + 0.18, 0.6, { type: 'lowpass', f: 500, f2: 100, v: 0.12, rev: 1 }); },
+  stab(w) { noise(AU.sfx, w, 0.08, { f: 2200, q: 2, v: 0.35 }); tone(AU.sfx, w, 90, 0.15, { f2: 50, v: 0.3 }); },
+  dig(w) { noise(AU.sfx, w, 0.12, { type: 'lowpass', f: 700, v: 0.35 }); noise(AU.sfx, w + 0.12, 0.2, { type: 'lowpass', f: 400, v: 0.2 }); },
+  burn(w, dur = 3) { noise(AU.sfx, w, dur, { type: 'lowpass', f: 600, a: 0.5, sus: 1, d: 0.2, r: 0.6, v: 0.18 }); for (let k = 0; k < dur * 6; k++) noise(AU.sfx, w + Math.random() * dur, 0.02, { type: 'highpass', f: 3000, v: 0.12 }); },
+  slam(w) { tone(AU.sfx, w, 90, 0.3, { f2: 45, v: 0.5 }); noise(AU.sfx, w, 0.1, { type: 'lowpass', f: 900, v: 0.4 }); },
+  thump(w) { tone(AU.sfx, w, 70, 0.25, { f2: 35, v: 0.45 }); noise(AU.sfx, w, 0.06, { type: 'lowpass', f: 500, v: 0.2 }); },
+  drop(w) { tone(AU.sfx, w, 1400, 0.12, { f2: 600, v: 0.06 }); },
+  hit(w) { noise(AU.sfx, w, 0.05, { f: 1200, q: 1, v: 0.5 }); tone(AU.sfx, w, 140, 0.2, { f2: 60, v: 0.4 }); },
   end(w) { for (const [k, n] of [[0, 74], [0.18, 78], [0.36, 81], [0.54, 86]]) bell(AU.sfx, w + k, NOTE(n), 0.05); },
 };
 

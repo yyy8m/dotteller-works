@@ -31,7 +31,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 BLOG_ID = os.environ.get('BLOGGER_BLOG_ID', '6071876282678666099')
 # brand settings live in one place: engine/src/brand.js (const BRAND = {...})
 BRAND = dict(re.findall(r"(\w+): '([^']*)'", re.search(r'const BRAND = \{(.*?)\};', open(os.path.join(ROOT, 'engine', 'src', 'brand.js'), encoding='utf-8').read()).group(1)))
-PH = re.compile(r'\{(BLOG_URL|MAIN_URL|SHORT_URL|TIKTOK_URL|MAIN_EMBED_URL)\}')
+PH = re.compile(r'\{(BLOG_URL|MAIN_URL|SHORT_URL|TIKTOK_URL|MAIN_EMBED_URL|CHAPTERS)\}')
+WORK_DIR = None  # set in __main__; build/chapters.txt (engine/tools/chapters.js) fills {CHAPTERS}
 
 
 def load_state(work):
@@ -51,6 +52,8 @@ def links(state):
     L = {'BLOG_URL': state.get('blog_url'), 'MAIN_URL': state.get('youtube_main'), 'SHORT_URL': state.get('youtube_short'),
          'TIKTOK_URL': state.get('tiktok_url') or 'https://www.tiktok.com/' + BRAND['tiktok']}
     if L['MAIN_URL']: L['MAIN_EMBED_URL'] = 'https://www.youtube.com/embed/' + yt_id(L['MAIN_URL'])
+    cp = os.path.join(WORK_DIR or '', 'build', 'chapters.txt')
+    if WORK_DIR and os.path.exists(cp): L['CHAPTERS'] = open(cp, encoding='utf-8').read().strip()
     return {k: v for k, v in L.items() if v}
 
 
@@ -265,6 +268,7 @@ def thumb(work, tok):
 
 if __name__ == '__main__':
     work, what = sys.argv[1], sys.argv[2]
+    if work != '-': WORK_DIR = os.path.abspath(work)
     {'whoami': lambda: whoami(None), 'blog': lambda: blog(os.path.abspath(work), token('blogger')),
      'youtube': lambda: youtube(os.path.abspath(work), token('youtube')), 'pages': lambda: pages(token('blogger')),
      'link': lambda: link(os.path.abspath(work)), 'retire': lambda: retire(os.path.abspath(work)),

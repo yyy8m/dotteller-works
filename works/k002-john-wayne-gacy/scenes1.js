@@ -1,4 +1,4 @@
-/* ================= 記録 #002 ジョン・ゲイシー: scenes 1-3 ================= */
+/* ================= 記録 #002 ジョン・ゲイシー: cast & props ================= */
 const GACY = { id: 'gacy', coat: '#2c4c7c', coat2: '#1c3458', pants: '#3c3c40', skin: '#e8c0a0', hair: '#2c1c14' };
 const BOY = { id: 'boy', coat: '#8c3c2c', coat2: '#5c2418', pants: '#2c3c5c', skin: '#f0c8a8', hair: '#6c4c2c' };
 /* Pogo the clown (portrait 48x48): white face, red nose, blue pointed eye marks, red mouth with pointed corners */
@@ -61,80 +61,22 @@ function ranchHouse(c, x, y, t, o = {}) { // single-storey 1970s house
   for (const wx of [10, 62, 78]) { R(c, x + wx, y - 22, 12, 10, o.lit ? K.win0 : '#3c4c64'); R(c, x + wx + 5, y - 22, 1, 10, '#ffffff'); }
 }
 
-/* ---- S1: the suburbs of Chicago, 1970s ---- */
-const S1 = {
-  name: 'シカゴ郊外', bgm: 'memory',
-  init(S) { const L = S.lines[0]; S.tWave = L.t0 + L.segs[2].a; S.dur = L.se + 1.4; },
-  draw(c, t, S) {
-    const camX = 60 * ss(t / S.dur);
-    VG(c, 0, 0, W, 130, ['#4c78c0', '#7ca4d8', '#c8d8e8', '#f0d8b0']);
-    for (let i = 0; i < 3; i++) { const x = mod(i * 140 - t * 4, 440) - 60; c.drawImage(cloudSpr(70 + i, 60, 16, [C.white, C.cloud1, C.cloud2, C.white]), Math.round(x), 12 + i * 14); }
-    // Chicago skyline, far
-    const r = rngf(9); for (let i = 0; i < 24; i++) { const bx = 150 + i * 9 - camX * 0.15, bh = 14 + r() * 30 + (i === 11 ? 26 : 0); R(c, bx, 104 - bh, 8, bh, '#8c98b4'); if (i === 11) { R(c, bx + 2, 104 - bh - 8, 1, 8, '#8c98b4'); R(c, bx + 5, 104 - bh - 8, 1, 8, '#8c98b4'); } }
-    R(c, 0, 104, W, 40, '#6c9c48'); for (let i = 0; i < 40; i++) P(c, mod(i * 31 - camX, W), 106 + (i * 7 % 30), '#88b858');
-    for (let i = 0; i < 4; i++) { const x = i * 120 - camX - 20; ranchHouse(c, x, 142, t, { wall: ['#b8a488', '#c8b8a0', '#a8b4c0', '#c8a888'][i] }); E(c, x + 108, 128, 10, 14, '#3c6c2c'); R(c, x + 107, 134, 2, 10, '#5c3c2c'); }
-    R(c, 0, 142, W, 6, '#c8c0b0'); VG(c, 0, 148, W, H - 148, ['#5c5c60', '#4c4c50']); for (let x = 0; x < W; x += 24) R(c, x - mod(camX, 24), 176, 12, 2, '#e8d070');
-    // a 70s car
-    const cx = 230 - camX * 1.1; PF(c, [cx, 168, cx + 6, 158, cx + 18, 152, cx + 44, 152, cx + 54, 158, cx + 66, 160, cx + 68, 168], '#a85c2c'); R(c, cx + 20, 154, 22, 5, '#6c84a8'); E(c, cx + 14, 168, 5, 5, '#141414'); E(c, cx + 54, 168, 5, 5, '#141414');
-    // Gacy waving to neighbours
-    const wave = t > S.tWave && Math.floor(t * 4) & 1;
-    blit(c, personSpr(GACY, { f: -1, arm: wave ? 'up' : null, id: wave ? 'w' : '' }), 150, 146, PER_AX, PER_AY, { s: 1.3 });
-    blit(c, personSpr(BOY, { f: -1, id: 'n1' }), 196, 146, PER_AX, PER_AY, { flip: true, s: 1.1 });
-    capPlate(c, t, 0.9, ['1970年代　アメリカ', 'イリノイ州 シカゴ郊外']);
-    return { z: 1 + 0.08 * ss(t / S.dur), fx: 160, fy: 120 };
-  }
-};
-
-/* ---- S2: Pogo the clown at a party ---- */
-const S2 = {
-  name: 'ピエロのポゴ', bgm: 'memory',
-  init(S) { const L = S.lines[0]; S.tClown = L.t0 + L.segs[1].a - 0.2; S.tZoom = L.se - 1.0; S.dur = L.se + 1.8; },
-  draw(c, t, S) {
-    VG(c, 0, 0, W, 140, ['#5c88d0', '#8cb4e0', '#d8e4f0']);
-    R(c, 0, 120, W, 120, '#6c9c48'); for (let i = 0; i < 50; i++) P(c, i * 37 % W, 124 + (i * 11 % 110), '#88b858');
-    for (let x = 0; x < W; x += 10) R(c, x, 100, 3, 22, '#e8e0d0'); R(c, 0, 104, W, 2, '#e8e0d0'); R(c, 0, 114, W, 2, '#e8e0d0'); // picket fence
-    // bunting
-    for (let i = 0; i < 16; i++) PF(c, [i * 20, 20, i * 20 + 20, 20, i * 20 + 10, 32], ['#d83838', '#f8d040', '#3c8cd8', '#48b048'][i % 4]); L(c, 0, 20, W, 20, C.white);
-    // balloons
-    [[40, 50, '#e83c3c', '#a01c1c'], [64, 60, '#f8d040', '#b89020'], [262, 48, '#3c8cd8', '#1c5c9c'], [284, 62, '#e83c3c', '#a01c1c'], [244, 70, '#48b048', '#2c7c2c']].forEach(([x, y, a, b], i) => balloon(c, x, y + Math.sin(t * 1.4 + i) * 2, a, b, t, i));
-    // table & cake
-    R(c, 210, 150, 70, 4, '#f4f4f4'); R(c, 214, 154, 4, 18, '#8c6c4c'); R(c, 272, 154, 4, 18, '#8c6c4c'); R(c, 234, 138, 22, 12, '#f8d8e8'); R(c, 234, 138, 22, 3, '#f4f4f4'); for (const x of [238, 245, 252]) { R(c, x, 132, 1, 6, '#f8f8f8'); P(c, x, 131, '#f8c040'); }
-    // kids
-    [[60, 'k1', '#d84c4c'], [90, 'k2', '#4c8cd8'], [180, 'k3', '#e8b83c'], [300, 'k4', '#5cb05c']].forEach(([x, id, col], i) => {
-      blit(c, personSpr({ id, coat: col, coat2: col, pants: '#3c3c5c', skin: '#f0c8a8', hair: ['#6c4c2c', '#e8c070', '#2c1c14', '#8c4c2c'][i] }, { f: -1, arm: (Math.floor(t * 3 + i) & 1) ? 'up' : null, id: (Math.floor(t * 3 + i) & 1) ? 'u' : '' }), x, 172 + (i & 1) * 4 - Math.round(Math.abs(Math.sin(t * 5 + i)) * 2), PER_AX, PER_AY, { s: 0.9, flip: x > 140 });
-    });
-    // Pogo
-    if (t > S.tClown) { const k = eOut(sg(t, S.tClown, S.tClown + 0.6)); blit(c, clownSpr(t), lerp(-20, 140, k), 168 - Math.round(Math.abs(Math.sin(t * 4)) * 3), 12, 43, { s: 1.4 });
-      for (let i = 0; i < 3; i++) { const a = t * 4 + i * 2.1; E(c, lerp(-20, 140, k) + Math.cos(a) * 14, 100 + Math.sin(a) * 10 - 20, 3, 3, ['#d83838', '#f8d040', '#3c8cd8'][i]); } } // juggling
-    capPlate(c, t, 0.6, ['ピエロの「ポゴ」']);
-    const zk = ss(sg(t, S.tZoom, S.dur));
-    if (zk > 0) { c.fillStyle = DA('#000000', 0.7 * zk); c.fillRect(0, 0, W, H); const f = pogoFace({ blink: blinkOf(t, 12) }); const [pc, px] = slot('pgz', f.width * 2, f.height * 2); px.imageSmoothingEnabled = false; px.drawImage(f, 0, 0, f.width * 2, f.height * 2); c.drawImage(ditherFade(pc, zk, 'pgzd'), 160 - f.width, 86 - f.height); }
-    return { z: 1 + 0.05 * ss(t / S.dur), fx: 160, fy: 110 };
-  }
-};
-
-/* ---- S3: December 1978, the pharmacy ---- */
-const S3 = {
-  name: '薬局', bgm: 'eerie',
-  init(S) { const L = S.lines[0]; S.tOut = L.t0 + L.segs[2].a - 0.4; S.tGone = L.t0 + L.segs[3].a; S.dur = L.se + 1.6; },
-  draw(c, t, S) {
-    nightSky(c, t, 130, [K.night0, K.night1, K.night2]);
-    R(c, 0, 40, 60, 100, '#2c2c34'); R(c, 260, 50, 60, 90, '#2c2c34');
-    R(c, 60, 50, 200, 90, '#5c5458'); R(c, 60, 50, 200, 4, '#3c3438');
-    R(c, 76, 56, 168, 20, '#1c1c24'); const on = Math.sin(t * 20) > -0.9; TX(c, 'PHARMACY', 160 - textSpr('PHARMACY', 16, '#58e8a8').width / 2, 58, on ? '#58e8a8' : '#2c7c5c', 16, null);
-    if (on) { c.fillStyle = DA('#58e8a8', 0.08); c.fillRect(60, 50, 200, 40); }
-    for (const wx of [72, 186]) { R(c, wx, 84, 62, 44, K.win0); R(c, wx, 84, 62, 2, K.win2); for (let s = 0; s < 3; s++) R(c, wx + 4, 92 + s * 12, 54, 2, '#c8a860'); for (let i = 0; i < 10; i++) R(c, wx + 6 + i * 5, 86 + (i % 3) * 12, 3, 6, ['#d84c4c', '#4c8cd8', '#f4f4f4'][i % 3]); }
-    R(c, 146, 86, 28, 54, '#3c2c24'); R(c, 149, 89, 22, 30, K.win1);
-    c.fillStyle = DA(K.win1, 0.12); c.fillRect(60, 128, 200, 20);
-    snowGround(c, 140, 0, 100);
-    // the boy steps out and walks into the dark
-    if (t > S.tOut) {
-      const u = t - S.tOut, x = 160 + u * 22, a = 1 - sg(t, S.tGone, S.tGone + 1.4);
-      for (let i = 0; i < u * 3 && i < 30; i++) R(c, 162 + i * 7, 150 + (i & 1) * 2, 3, 1, K.snow3);
-      if (a > 0) c.drawImage(ditherFade(personSpr(BOY, { f: Math.floor(t * 7) & 3 }), a, 'boyf'), Math.round(x - PER_AX - 1), Math.round(152 - PER_AY - 1));
-    }
-    snowfall(c, t, 60, 31, 10, 14);
-    capPlate(c, t, 0.7, ['1978年12月11日', 'イリノイ州 デスプレーンズ']);
-    return { z: 1 + 0.08 * ss(t / S.dur), fx: 190, fy: 120 };
-  }
-};
+const ln = (S, id) => S.lines.find(l => l.id === id);
+const at = (S, id, k = 0, def = 0) => { const l = ln(S, id); return l ? l.t0 + l.segs[Math.min(k, l.segs.length - 1)].a : def; };
+const lastSe = S => S.lines[S.lines.length - 1].se;
+const DAD = { id: 'dad', coat: '#5c4c3c', coat2: '#3c3028', pants: '#3c3430', skin: '#e0b090', hair: '#2c1c14' };
+const KID = { id: 'kidg', coat: '#5c7cac', coat2: '#3c5c8c', pants: '#3c3c44', skin: '#f0c8a8', hair: '#2c1c14' };
+const YOUTH = [{ id: 'y1', coat: '#8c5c3c', coat2: '#6c4428', pants: '#3c4c6c', skin: '#f0c8a8', hair: '#c89c5c' }, { id: 'y2', coat: '#4c6c4c', coat2: '#344c34', pants: '#2c2c3c', skin: '#e0b090', hair: '#3c2418' }, { id: 'y3', coat: '#7c2c2c', coat2: '#5c1c1c', pants: '#3c3c44', skin: '#e8c0a0', hair: '#5c3c24' }];
+function bigFace(c, spr, cx, cy, s, a, id) { const [pc, px] = slot(id, spr.width * s, spr.height * s); px.imageSmoothingEnabled = false; px.clearRect(0, 0, pc.width, pc.height); px.drawImage(spr, 0, 0, spr.width * s, spr.height * s); c.drawImage(a < 1 ? ditherFade(pc, a, id + 'd') : pc, Math.round(cx - spr.width * s / 2), Math.round(cy - spr.height * s / 2)); }
+function copFace2() { return SPR('copF2', 32, 32, c => { R(c, 6, 26, 20, 6, K.cop1); E(c, 16, 15, 9, 10, '#e0b08c'); R(c, 6, 4, 20, 6, K.cop1); R(c, 4, 9, 24, 2, K.cop2); P(c, 16, 6, K.badge); for (const x0 of [11, 18]) { R(c, x0, 13, 4, 4, C.white); R(c, x0 + 1, 14, 2, 2, C.k); } L(c, 10, 11, 14, 10, '#7c5038'); L(c, 18, 10, 22, 11, '#7c5038'); E(c, 16, 22, 2.5, 3, '#401010'); }); }
+function yearFlash(c, t, t0, year, x = 216, y = 10, sub) { if (t > t0) { const k = eOut(sg(t, t0, t0 + 0.35)); if (k > 0) yearCard(c, x, lerp(-70, y, k), year, sub || ''); } }
+function speech(c, s, cx, y, tailX) { const w = textSpr(s, 16, '#000').width + 12; R(c, cx - w / 2, y, w, 24, '#000000'); R(c, cx - w / 2 + 2, y + 2, w - 4, 20, C.white); if (tailX != null) PF(c, [tailX - 5, y + 23, tailX + 5, y + 23, tailX, y + 32], C.white); TX(c, s, cx - w / 2 + 6, y + 4, '#000000', 16, null); }
+/* cross-section of the house: living room above, crawl space below (n bodies lying in the dirt) */
+function crossSection(c, t, n, o = {}) {
+  roomBg(c, { wall: '#8c7c64', wall2: '#847458', floor: '#6c5440', fy: 92, window: [250, 18] });
+  R(c, 0, 92, W, 10, '#4c3424'); for (let x = 0; x < W; x += 16) R(c, x, 92, 1, 10, '#3c2818');
+  R(c, 0, 102, W, 60, '#2c2016'); for (let i = 0; i < 40; i++) P(c, hash(i * 3) * W, 104 + hash(i * 7) * 56, '#3c2c1c');
+  for (let x = 30; x < W; x += 60) R(c, x, 102, 6, 60, '#5c5c64'); // piers
+  for (let i = 0; i < n; i++) { const x = 18 + (i % 9) * 34 + (Math.floor(i / 9) % 2) * 14, y = 116 + Math.floor(i / 9) * 13; E(c, x, y, 13, 3.5, o.lit ? '#8c7c68' : '#4c3c2c'); E(c, x - 9, y - 1, 3.5, 3, o.lit ? '#a8987c' : '#5c4834'); if (o.blood) R(c, x - 2, y + 2, 5, 1, BLOOD[0]); }
+  R(c, 0, 158, W, 4, '#1c140c');
+}

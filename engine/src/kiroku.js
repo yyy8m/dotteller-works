@@ -53,6 +53,7 @@ function smoke(c, x, y, t, seed = 1) { for (let i = 0; i < 8; i++) { const u = f
 /* ---- captions ---- */
 /* plate sliding in from the left at t0: lines = ['1957年11月', 'アメリカ・ウィスコンシン州'] */
 function capPlate(c, t, t0, lines, y = 8) {
+  if (window.__uiq) { window.__uiq.push(cc => { const q = window.__uiq; window.__uiq = null; capPlate(cc, t, t0, lines, y); window.__uiq = q; }); return; }
   const k = eOut(sg(t, t0, t0 + 0.45)); if (k <= 0) return;
   const w = Math.max(...lines.map(s => textSpr(s, 16, BR.cream).width)) + 18, h = lines.length * 18 + 8, x = Math.round(-w + (w + 6) * k);
   R(c, x, y, w, h, '#000000'); R(c, x + 1, y + 1, w - 2, h - 2, DA(BR.dark, 0.9)); R(c, x, y, 4, h, BR.orange);
@@ -70,12 +71,20 @@ function personSpr(st, p) {
     // legs
     L(c, 8, 27 - bob, 8 + sw, 38, st.pants, 2); L(c, 10, 27 - bob, 10 - sw, 38, st.pants2 || st.pants, 2);
     R(c, 7 + sw, 38, 4, 1, K.wood3); R(c, 9 - sw, 38, 4, 1, K.wood3);
-    // body (coat)
+    // body (coat) / dress
+    if (st.dress) { PF(c, [5, 22 - bob, 14, 22 - bob, 16, 36, 3, 36], st.dress); R(c, 4, 35, 13, 1, st.coat2); }
     R(c, 5, 12 - bob, 9, 16, st.coat); R(c, 5, 12 - bob, 2, 16, st.coat2); if (st.plaid) for (let yy = 13; yy < 27; yy += 3) R(c, 5, yy - bob, 9, 1, st.coat2);
     if (st.badge) P(c, 12, 15 - bob, K.badge);
     // arm
-    const ar = p.arm === 'up' ? [15, 9] : p.arm === 'fwd' ? [17, 18] : [9 - sw * 0.8, 26];
+    const ar = p.arm === 'up' ? [15, 9] : p.arm === 'fwd' || p.arm === 'aim' ? [17, 17] : p.arm === 'stab' ? [16, 4] : p.arm === 'dig' ? [16, 24] : [9 - sw * 0.8, 26];
     L(c, 9, 14 - bob, ar[0], ar[1] - bob, st.coat2, 2); P(c, ar[0], ar[1] + 1 - bob, st.skin);
+    if (p.weapon === 'rifle') { L(c, 6, 18 - bob, 17, 16 - bob, '#5c3c24', 2); L(c, 13, 16 - bob, 17, 15 - bob, '#3c3c44', 1); }
+    if (p.weapon === 'pistol') { R(c, ar[0], ar[1] - 2 - bob, 4, 2, '#2c2c34'); P(c, ar[0], ar[1] - bob, '#2c2c34'); }
+    if (p.weapon === 'bottle') { R(c, ar[0] - 1, ar[1] - 4 - bob, 2, 5, '#3c6c3c'); }
+    if (p.weapon === 'book') { R(c, ar[0] - 2, ar[1] - 3 - bob, 5, 4, '#1c1c1c'); }
+    if (p.weapon === 'register') { R(c, ar[0] - 6, ar[1] - 6 - bob, 10, 7, '#8c8c94'); R(c, ar[0] - 5, ar[1] - 5 - bob, 8, 2, '#5c5c64'); }
+    if (p.weapon === 'knife') { L(c, ar[0], ar[1] - bob, ar[0] + 1, ar[1] - 5 - bob, '#d8dce4'); }
+    if (p.weapon === 'shovel') { L(c, ar[0] - 6, ar[1] - 10 - bob, ar[0] + 1, ar[1] + 8 - bob, '#7c5c3c'); R(c, ar[0], ar[1] + 7 - bob, 3, 4, '#8c8c94'); }
     // head
     E(c, 9.5, 7 - bob, 4, 4.5, st.skin); P(c, 12, 6 - bob, C.k); if (p.shock) { R(c, 11, 5 - bob, 2, 3, C.white); P(c, 12, 6 - bob, C.k); R(c, 12, 9 - bob, 1, 2, '#401010'); }
     // hats
@@ -125,6 +134,7 @@ function spinPaper(c, spr, cx, cy, u) { // u 0..1 spin-in
 
 /* ---- calendar / year card ---- */
 function yearCard(c, x, y, year, sub) {
+  if (window.__uiq) { window.__uiq.push(cc => { const q = window.__uiq; window.__uiq = null; yearCard(cc, x, y, year, sub); window.__uiq = q; }); return; }
   const w = 96, h = sub ? 66 : 50;
   R(c, x, y, w, h, '#000000'); R(c, x + 1, y + 1, w - 2, h - 2, K.paper0); R(c, x + 1, y + 1, w - 2, 12, K.red1);
   for (const rx of [18, 74]) { R(c, x + rx, y - 3, 4, 7, K.wood3); }
@@ -153,4 +163,49 @@ function candleRows(c, t, n, shown, x0, y0, cols = 11, dx = 22, dy = 18) {
 function balloon(c, x, y, col, col2, t, i = 0) {
   const sw = Math.sin(t * 1.6 + i) * 2;
   L(c, x, y + 9, x + sw, y + 30, '#d8d8d8'); E(c, x, y, 7, 9, col2); E(c, x - 0.5, y - 0.5, 6.5, 8.5, col); R(c, x - 3, y - 5, 2, 3, C.white); PF(c, [x - 2, y + 10, x + 2, y + 10, x, y + 8], col2);
+}
+
+
+/* ---- blood, bodies, guns (dot style) ---- */
+const BLOOD = ['#5c080c', '#8c1014', '#c01c1c', '#e84040'];
+function bloodPool(c, x, y, r, seed = 1) {
+  if (r <= 0.5) return;
+  E(c, x, y, r, r * 0.36, BLOOD[0]); E(c, x - 1, y - 0.5, r * 0.82, r * 0.28, BLOOD[1]); E(c, x - r * 0.35, y - r * 0.1, r * 0.22, r * 0.07, BLOOD[3]);
+  for (let i = 0; i < 6; i++) { const a = hash(seed + i) * TAU, d = r * (0.9 + hash(seed * 3 + i) * 0.4); E(c, x + Math.cos(a) * d, y + Math.sin(a) * d * 0.36, 1 + hash(seed + i * 7) * r * 0.18, 1 + hash(seed + i * 7) * r * 0.07, BLOOD[0]); }
+}
+function bloodSplat(c, x, y, s, seed = 1, k = 1) { // burst of drops, k = 0..1 progress
+  for (let i = 0; i < 16; i++) { const a = -Math.PI * (0.1 + hash(seed + i) * 0.8) + (hash(seed * 5 + i) > 0.7 ? Math.PI : 0), d = s * (0.3 + hash(seed * 2 + i) * 0.9) * k;
+    const px = x + Math.cos(a) * d, py = y + Math.sin(a) * d * 0.7 + d * d * 0.004; R(c, px, py, i % 4 ? 1 : 2, i % 4 ? 1 : 2, BLOOD[i % 3 + 1]); }
+}
+function bloodDrip(c, x, y0, len, t, seed = 1) { // a streak with a drop falling
+  R(c, x, y0, 1, len, BLOOD[1]); P(c, x, y0 + len, BLOOD[2]);
+  const u = fr(t * 0.7 + hash(seed)); E(c, x, y0 + len + u * 30, 1, 1.4, BLOOD[2]);
+}
+function bloodTrail(c, pts, seed = 1) { for (let i = 0; i + 3 < pts.length; i += 2) { const n = Math.ceil(Math.hypot(pts[i + 2] - pts[i], pts[i + 3] - pts[i + 1]) / 5); for (let k = 0; k < n; k++) { const u = k / n; R(c, lerp(pts[i], pts[i + 2], u) + (hash(seed + i * 9 + k) - 0.5) * 3, lerp(pts[i + 1], pts[i + 3], u) + (hash(seed + k) - 0.5) * 2, 2, 1, BLOOD[k % 2]); } } }
+/* a person lying on the floor (side view sprite rotated), dir 1 = head to the right */
+function lyingBody(c, st, x, y, dir = 1, o = {}) {
+  const spr = personSpr(st, { f: -1, id: 'lie' + (o.id || ''), shock: o.shock });
+  blit(c, o.dark ? tintSpr(spr, o.dark, 'lyd' + (o.id || '')) : spr, x, y, 9, 20, { rot: dir * Math.PI / 2 });
+}
+function sheetBody(c, x, y, w = 40) { E(c, x, y, w / 2, 6, '#c8c8c0'); E(c, x - 1, y - 1, w / 2 - 2, 5, '#e8e8e0'); E(c, x - w / 2 + 6, y - 3, 6, 5, '#e8e8e0'); }
+function muzzleFlash(c, x, y, dir = 1, k = 1) { if (k <= 0) return; PF(c, [x, y - 4, x + dir * 14, y, x, y + 4], '#fff4b0'); PF(c, [x, y - 2, x + dir * 8, y, x, y + 2], C.white); E(c, x, y, 18, 12, DA('#fff4b0', 0.3 * k)); }
+function flashScreen(c, a, col = '#ffffff') { if (a > 0) { c.fillStyle = DA(col, a); c.fillRect(0, 0, W, H); } }
+function redVignette(c, a = 0.5) { for (let r = 0; r < 6; r++) { c.fillStyle = DA(BLOOD[0], a * (r + 1) / 8); c.fillRect(0, 0, W, 4 + r * 3); c.fillRect(0, H - 4 - r * 3, W, 4 + r * 3); c.fillRect(0, 0, 4 + r * 4, H); c.fillRect(W - 4 - r * 4, 0, 4 + r * 4, H); } }
+/* black shadow of a sprite cast on a wall (big, slightly distorted) */
+function wallShadow(c, spr, x, y, s, id) { blit(c, tintSpr(spr, '#0a0608', id || 'wsh'), x, y, spr.width / 2, spr.height, { sx: s * 1.1, sy: s * 1.4 }); }
+
+/* ---- rooms ---- */
+function roomBg(c, o = {}) {
+  const wall = o.wall || '#5c4c3c', wall2 = o.wall2 || '#4c3c30', floor = o.floor || '#3c2c22', fy = o.fy || 150;
+  R(c, 0, 0, W, fy, wall); for (let x = 0; x < W; x += 12) R(c, x, 0, 4, fy, wall2);
+  R(c, 0, fy - 28, W, 28, o.wains || '#3c2c22'); R(c, 0, fy - 30, W, 2, '#6c5444');
+  R(c, 0, fy, W, H - fy, floor); for (let y = fy + 6; y < H; y += 8) R(c, 0, y, W, 1, '#2c2018');
+  if (o.window) { const [wx, wy] = o.window; R(c, wx, wy, 40, 44, '#2c2018'); VG(c, wx + 3, wy + 3, 34, 38, [K.night0, K.night1, K.night2]); R(c, wx + 19, wy, 2, 44, '#2c2018'); R(c, wx, wy + 20, 40, 2, '#2c2018'); }
+  if (o.lamp) { const [lx, ly] = o.lamp; L(c, lx, 0, lx, ly, '#1c1410'); PF(c, [lx - 8, ly + 8, lx - 4, ly, lx + 4, ly, lx + 8, ly + 8], '#c8a048'); E(c, lx, ly + 30, 60, 40, DA(K.win0, 0.08)); }
+}
+function fireHouse(c, x, y, w, h, t, k = 1) { // a burning wooden house
+  house(c, x, y, w, h, { wall: '#3c2418', wall2: '#2c1810', roof: '#1c100c', rh: 24, windows: [[8, 10, true], [w - 16, 10, true], [8, h - 24, true]] , t});
+  for (let i = 0; i < 14 * k; i++) flame(c, x + (i * 37 % w), y - h * (0.4 + hash(i) * 0.9), 1 + hash(i * 3) * 1.4, t, i);
+  E(c, x + w / 2, y - h, w, h, DA('#f86830', 0.12 * k));
+  for (let i = 0; i < 10; i++) { const u = fr(t * 0.3 + i / 10); E(c, x + w / 2 + Math.sin(i * 2 + t) * 20 + u * 30, y - h - 30 - u * 90, 6 + u * 14, 4 + u * 9, DA('#2c2420', 0.6 * (1 - u))); }
 }

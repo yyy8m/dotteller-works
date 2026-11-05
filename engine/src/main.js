@@ -146,13 +146,14 @@ const [WB, WX] = mk(W, H);
 const OUT = [mk(W, H), mk(W, H)];
 function renderScene(i, tl, k) {
   const S = TL.scenes[i]; WX.setTransform(1, 0, 0, 1, 0, 0); WX.fillStyle = '#000'; WX.fillRect(0, 0, W, H);
-  const cam = S.sc.draw(WX, tl, S) || {}; WX.setTransform(1, 0, 0, 1, 0, 0);
+  window.__uiq = []; const cam = S.sc.draw(WX, tl, S) || {}; WX.setTransform(1, 0, 0, 1, 0, 0); const uiq = window.__uiq; window.__uiq = null;
   let z = cam.z || 1; const sx = cam.sx || 0, sy = cam.sy || 0; if ((sx || sy) && z < 1.04) z = 1.04;
   const [oc, ox] = OUT[k]; ox.fillStyle = '#000'; ox.fillRect(0, 0, W, H);
   const fx = cam.fx == null ? 160 : cam.fx, fy = cam.fy == null ? 120 : cam.fy, w = W / z, h = H / z;
   const x0 = clamp(fx - fx / z + sx / z, 0, W - w), y0 = clamp(fy - fy / z + sy / z, 0, H - h);
   if (z === 1) ox.drawImage(WB, 0, 0); else ox.drawImage(WB, x0, y0, w, h, 0, 0, W, H);
   if (S.sc.post) { const im = ox.getImageData(0, 0, W, H); S.sc.post(im, tl, S); ox.putImageData(im, 0, 0); }
+  for (const f of uiq) f(ox); // captions / year cards: drawn after the camera so they never get cropped
   return oc;
 }
 function transition(type, p, A, B, out) { // A,B,out ImageData; p 0..1
@@ -234,7 +235,7 @@ document.getElementById('go').addEventListener('click', start);
 
 if (document.fonts) { let tries = 0; const fl = () => document.fonts.load('16px "DotGothic16"').then(r => { if (r && r.length) _tc.clear(); else if (++tries < 40) setTimeout(fl, 250); }).catch(() => {}); fl(); }
 /* test hooks (headless rendering of arbitrary times) */
-window.__prep = async () => { window.__test = true; const ac = audioInit(); TL = buildTimeline(await decodeVoices(ac)); return TL.scenes.map(s => [s.sc.name, +s.start.toFixed(2), +s.dur.toFixed(2)]); };
+window.__prep = async () => { window.__test = true; const ac = audioInit(); TL = buildTimeline(await decodeVoices(ac)); return TL.scenes.map(s => [s.sc.name, +s.start.toFixed(2), +s.dur.toFixed(2), s.sc.ch || null]); };
 window.__draw = T => render(T);
 window.__title = t => drawTitle(t, 0);
 window.__frame = (mode, Ts) => Ts.map(T => composeFrame(mode, T).toDataURL('image/png'));

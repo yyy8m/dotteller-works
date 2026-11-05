@@ -1,29 +1,50 @@
-/* ================= 記録 #002 ジョン・ゲイシー: story plan ================= */
-const EXPR = {
-  L0: [[0, 'normal']], L1: [[0, 'normal']], L2: [[0, 'normal']], L3: [[0, 'normal'], [3, 'sad']], L4: [[0, 'surp'], [2, 'normal'], [4, 'sad']],
-  L5: [[0, 'sad']], L6: [[0, 'normal']], L7: [[0, 'normal']], L8: [[0, 'sad'], [2, 'normal']]
-};
-const PLAN = [
+/* ================= 記録 #002 ジョン・ゲイシー: story plan (full ≈ 6.5 min / short ≈ 60 s) ================= */
+const EXPR = {};
+['L0', 'L1', 'L2', 'L4', 'L6', 'L7', 'L8', 'L9', 'L12', 'L16', 'L17', 'L18', 'L19', 'L22', 'L23', 'L24', 'L25', 'L27', 'S1', 'S2'].forEach(id => EXPR[id] = [[0, 'normal']]);
+['L3', 'L5', 'L10', 'L11', 'L13', 'L14', 'L15', 'L20', 'L21', 'L26'].forEach(id => EXPR[id] = [[0, 'sad']]);
+EXPR.L1 = [[0, 'normal'], [4, 'sad']]; EXPR.L10 = [[0, 'normal'], [3, 'sad']]; EXPR.L19 = [[0, 'normal'], [2, 'surp']];
+const PLAN_FULL = [
   { sc: S0, pre: 1.0, items: ['L0'], tr: 'fromBlack', td: 1.0 },
-  { sc: S1, pre: 1.6, items: ['L1'], tr: 'dither', td: 1.4 },
-  { sc: S2, pre: 1.0, items: ['L2'], tr: 'blinds', td: 1.0 },
-  { sc: S3, pre: 1.4, items: ['L3'], tr: 'dither', td: 1.4 },
-  { sc: S4, pre: 0.8, items: ['L4'], tr: 'white', td: 1.0 },
-  { sc: S5, pre: 1.0, items: ['L5'], tr: 'dither', td: 1.2 },
-  { sc: S6, pre: 1.0, items: ['L6'], tr: 'dither', td: 1.0 },
-  { sc: S7, pre: 1.0, items: ['L7'], tr: 'iris', td: 1.2 },
-  { sc: S8, pre: 1.6, items: ['L8'], tr: 'dither', td: 1.8 },
+  { sc: GA, pre: 0.8, items: ['L1'], tr: 'dither', td: 1.0 },
+  { sc: GB, pre: 1.0, items: ['L2', 0.5, 'L3'], tr: 'dither', td: 1.2 },
+  { sc: GC, pre: 0.8, items: ['L4', 0.6, 'L5'], tr: 'dither', td: 1.0 },
+  { sc: GD, pre: 0.8, items: ['L6', 0.5, 'L7'], tr: 'dither', td: 1.2 },
+  { sc: GE, pre: 0.8, items: ['L8', 0.5, 'L9'], tr: 'blinds', td: 1.0 },
+  { sc: GF, pre: 1.2, items: ['L10', 0.6, 'L11'], tr: 'white', td: 1.0 },
+  { sc: GG, pre: 0.8, items: ['L12', 0.5, 'L13', 0.6, 'L14'], tr: 'dither', td: 1.0 },
+  { sc: GH, pre: 0.6, items: ['L15'], tr: 'dither', td: 1.0 },
+  { sc: GI, pre: 1.0, items: ['L16', 0.5, 'L17'], tr: 'dither', td: 1.2 },
+  { sc: GJ, pre: 0.6, items: ['L18'], tr: 'blinds', td: 0.8 },
+  { sc: GK, pre: 0.8, items: ['L19', 0.6, 'L20', 0.6, 'L21'], tr: 'white', td: 1.0 },
+  { sc: GL, pre: 0.8, items: ['L22', 0.5, 'L23'], tr: 'dither', td: 1.2 },
+  { sc: GM, pre: 1.0, items: ['L24'], tr: 'dither', td: 1.0 },
+  { sc: GN, pre: 1.2, items: ['L25', 0.8, 'L26', 1.0, 'L27'], tr: 'iris', td: 1.4 },
 ];
-S1.sfx = (S, ev) => { ev(S.tWave, 'sparkle'); };
-S2.sfx = (S, ev) => { ev(S.tClown, 'excl'); for (let k = 0; k < 4; k++) ev(S.tClown + 0.6 + k * 0.9, 'drip'); ev(S.tZoom, 'sting'); };
-S3.sfx = (S, ev) => { ev(0.3, 'wind', 5); ev(S.tOut - 0.2, 'creak'); ev(S.tGone, 'wind', 4); };
-S4.sfx = (S, ev) => { ev(S.tName, 'sting'); ev(S.tSearch, 'wind', 3); ev(S.tHatch + 0.3, 'creak'); ev(S.tShock, 'heart'); ev(S.tShock + 0.6, 'heart'); };
-S5.sfx = (S, ev) => { for (let k = 0; k < 6; k++) ev(S.tY0 + k * (S.tY1 - S.tY0) / 6, 'type', 2); ev(S.t33, 'toll'); };
-S6.sfx = (S, ev) => { ev(S.tGavel, 'gavel'); ev(S.tPrison + 0.4, 'toll'); };
-S7.sfx = (S, ev) => { ev(S.tSplit, 'sting'); ev(S.tBal, 'whoosh'); };
-S8.sfx = (S, ev) => { ev(0.5, 'toll'); ev(S.tEnd, 'toll'); };
-S8.bgmTrack = (S, tr) => { tr.fin = 3; };
-S8.ending = true;
+const PLAN_SHORT = [
+  { sc: SS1, pre: 0.4, items: ['S1'], tr: 'fromBlack', td: 0.4 },
+  { sc: GG, pre: 0.3, items: ['L13'], tr: 'blinds', td: 0.6 },
+  { sc: GK, pre: 0.3, items: ['L19', 0.3, 'L20'], tr: 'white', td: 0.6 },
+  { sc: SS2, pre: 0.4, items: ['S2'], tr: 'dither', td: 0.6 },
+];
+const PLAN = SHORT ? PLAN_SHORT : PLAN_FULL;
+GA.sfx = (S, ev) => { ev(S.tDown, 'sting'); ev(S.tDown + 1.4, 'heart'); };
+GB.sfx = (S, ev) => { ev(0.2, 'stamp'); ev(S.tDad, 'slam'); ev(S.tDad + 2.2, 'slam'); for (let k = 0; k < 6; k++) ev(S.tHeart + k * 0.9, 'heart'); };
+GC.sfx = (S, ev) => { ev(S.tCourt + 0.2, 'stamp'); ev(S.tCourt + 1.4, 'slam'); };
+GD.sfx = (S, ev) => { ev(0.2, 'stamp'); ev(S.tParty, 'sparkle'); };
+GE.sfx = (S, ev) => { ev(1.0, 'excl'); ev(S.tPhoto, 'flash'); ev(S.tPhoto + 0.4, 'stamp'); };
+GF.sfx = (S, ev) => { ev(0.2, 'stamp'); ev(S.tHouse, 'creak'); ev(S.tStab - 0.4, 'heart'); ev(S.tStab, 'stab'); ev(S.tStab + 0.25, 'stab'); ev(S.tStab + 0.8, 'thud'); for (let k = 0; k < 6; k++) ev(S.tBury + 0.4 + k * 0.4, 'dig'); };
+GG.sfx = (S, ev) => { if (!S.short) ev(0.2, 'stamp'); ev(S.tCuff + 1.0, 'hit'); ev(S.tCuff + 1.3, 'hit'); ev(S.tRope, 'sting'); for (let k = 0; k < 4; k++) ev(S.tRope + 0.4 + k * 0.6, 'heart'); if (S.tRiver < 1e8) ev(S.tRiver + 1.5, 'splash', 0.6); };
+GH.sfx = (S, ev) => { ev(0.5, 'creak'); };
+GI.sfx = (S, ev) => { ev(0.2, 'stamp'); ev(0.3, 'wind', 5); ev(S.tOut - 0.2, 'creak'); ev(S.tGacy, 'sting'); };
+GJ.sfx = (S, ev) => { ev(S.tConf, 'slam'); };
+GK.sfx = (S, ev) => { for (let k = 0; k < 10; k++) ev(0.8 + k * 0.6, 'dig'); ev(S.tCount, 'stamp'); ev(S.tCount + 1.2, 'stamp'); ev(S.tCount + 2.2, 'stamp'); ev(S.t33, 'toll'); };
+GL.sfx = (S, ev) => { ev(0.2, 'stamp'); ev(S.tGavel, 'gavel'); ev(S.tPaint, 'whoosh'); };
+GM.sfx = (S, ev) => { ev(0.3, 'stamp'); ev(2.0, 'toll'); };
+GN.sfx = (S, ev) => { ev(S.tSplit, 'sting'); ev(S.tCand, 'toll'); ev(S.tEnd, 'toll'); };
+SS1.sfx = (S, ev) => { ev(S.tDown, 'sting'); };
+SS2.sfx = (S, ev) => { ev(lastSe(S) - 1.4, 'stamp'); };
+GN.bgmTrack = (S, tr) => { tr.fin = 3; };
+GN.ending = true;
 /* title screen: balloons and a little clown hat */
 function TITLE_DECO(c, t) {
   [[230, '#e83c3c', '#a01c1c'], [258, '#3c8cd8', '#1c5c9c'], [284, '#f8d040', '#b89020']].forEach(([x, a, b], i) => balloon(c, x, 160 + Math.sin(t * 1.4 + i) * 3 - i * 6, a, b, t, i));

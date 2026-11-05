@@ -15,7 +15,7 @@ const fs = require('fs'), path = require('path');
   await p.waitForTimeout(1500);
   await p.evaluate(() => document.fonts.load('16px "DotGothic16"').then(() => _tc.clear()));
   await p.evaluate(() => window.__prep());
-  const end = await p.evaluate(() => { const S = TL.scenes[TL.scenes.length - 1]; return S.start + S.tEnd; });
+  const end = await p.evaluate(() => { const S = TL.scenes[TL.scenes.length - 1]; return S.start + (S.tEnd != null ? S.tEnd : S.dur); });
   const len = end + tail;
   console.log('length', len.toFixed(2), 's');
   const wavPath = out.replace(/\.mp4$/, '.wav');

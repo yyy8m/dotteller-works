@@ -1,6 +1,13 @@
 {
- "youtube_main": "https://youtu.be/MKFN4iRpqUI",
- "youtube_short": "https://youtu.be/Gzhai58buPA",
  "blog_post_id": "1005317536728231024",
- "blog_url": "https://somosomo-cho.blogspot.com/2026/11/dotgatari-kiroku-001-ed-gein.html"
+ "blog_url": "https://somosomo-cho.blogspot.com/2026/11/dotgatari-kiroku-001-ed-gein.html",
+ "replaced": [
+  {
+   "youtube_main": "https://youtu.be/MKFN4iRpqUI",
+   "youtube_short": "https://youtu.be/Gzhai58buPA",
+   "note": "2分版（2026-11-05 作り直しのため予約解除・非公開）"
+  }
+ ],
+ "youtube_main": "https://youtu.be/bmOvlVgClFw",
+ "youtube_short": "https://youtu.be/TmLQn7biTo8"
 }
