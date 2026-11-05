@@ -7,27 +7,27 @@ const GH = {
     crossSection(c, t, 26);
     c.fillStyle = DA('#000000', 0.6); c.fillRect(0, 102, W, 60);
     for (let i = 0; i < 10; i++) { const u = fr(t * 0.4 + i / 10), x = 30 + i * 28 + Math.sin(t + i) * 4; PL(c, [x, 100 - u * 60, x + 3, 94 - u * 60, x - 2, 88 - u * 60], DA('#a8b46c', 0.6 * (1 - u))); }
-    blit(c, personSpr({ id: 'wife', coat: '#c87c8c', coat2: '#a85c6c', pants: '#3c3c44', dress: '#c87c8c', skin: '#ecc8b0', hair: '#c8a05c' }, { f: -1, arm: 'up', id: 'wf' }), 100, 92, PER_AX, PER_AY, { s: 1.2 });
-    blit(c, personSpr(GACY, { f: -1, arm: (Math.floor(t * 2) & 1) ? 'up' : 'fwd', id: (Math.floor(t * 2) & 1) ? 'gs1' : 'gs2' }), 180, 92, PER_AX, PER_AY, { s: 1.3, flip: true });
-    if (t > 1.5) speech(c, 'ただの湿気だよ', 200, 14, 184);
+    for (let k = 0; k < 160; k++) P(c, hash(k * 3) * W, 108 + hash(k * 7) * 50, DA('#f4f4ec', 0.8)); // lime
+    for (let k = 0; k < 6; k++) { const u = fr(t * 0.5 + k / 6); E(c, 60 + k * 40, 104 - u * 20, 6 + u * 8, 2 + u * 3, DA('#e8e8e0', 0.5 * (1 - u))); }
+    capPlate(c, t, 0.4, ['床下に、石灰']);
     return { z: 1.03, fx: 160, fy: 100 };
   }
 };
 /* ---- GI: December 11, 1978 — the pharmacy ---- */
 const GI = {
-  name: '薬局の少年', ch: '1978年12月11日', bgm: 'eerie',
+  name: '消えた少年', ch: '1978年12月', bgm: 'eerie',
   init(S) { S.tOut = at(S, 'L16', 3) - 0.3; S.tGone = at(S, 'L16', 4); S.tGacy = at(S, 'L17', 0) - 0.3; S.dur = lastSe(S) + 1.4; },
   draw(c, t, S) {
     nightSky(c, t, 130, [K.night0, K.night1, K.night2]);
     R(c, 0, 40, 60, 100, '#2c2c34'); R(c, 260, 50, 60, 90, '#2c2c34'); R(c, 60, 50, 200, 90, '#5c5458'); R(c, 60, 50, 200, 4, '#3c3438');
-    R(c, 76, 56, 168, 20, '#1c1c24'); const on = Math.sin(t * 20) > -0.9; TX(c, 'PHARMACY', 160 - textSpr('PHARMACY', 16, '#58e8a8').width / 2, 58, on ? '#58e8a8' : '#2c7c5c', 16, null);
+    R(c, 76, 56, 168, 20, '#1c1c24'); const on = Math.sin(t * 20) > -0.9; TX(c, 'DES PLAINES', 160 - textSpr('DES PLAINES', 16, '#58e8a8').width / 2, 58, on ? '#58e8a8' : '#2c7c5c', 16, null);
     for (const wx of [72, 186]) { R(c, wx, 84, 62, 44, K.win0); for (let s = 0; s < 3; s++) R(c, wx + 4, 92 + s * 12, 54, 2, '#c8a860'); }
     R(c, 146, 86, 28, 54, '#3c2c24'); R(c, 149, 89, 22, 30, K.win1);
     snowGround(c, 140, 0, 100);
-    if (t > S.tGacy) { const k = eOut(sg(t, S.tGacy, S.tGacy + 0.5)); blit(c, personSpr(GACY, { f: -1, arm: 'fwd', id: 'gph' }), lerp(330, 236, k), 152, PER_AX, PER_AY, { s: 1.4, flip: true }); R(c, 270, 120, 46, 30, '#e8e4d8'); TX(c, 'PDM', 278, 126, '#2c4c7c', 16, null); }
+    if (t > S.tGacy) { nightSky(c, t, 130, [K.night0, K.night1, K.night2]); snowGround(c, 136, 0, 104); ranchHouse(c, 110, 140, t, { snow: true, lit: true, wall: '#8c8070', wall2: '#7c7064', roof: '#3c3430' }); blit(c, personSpr(COP, { f: -1, id: 'cv', shock: t > S.tGacy + 1.5 }), 160, 146, PER_AX, PER_AY, { s: 1.3 }); for (let k = 0; k < 8; k++) { const u = fr(t * 0.4 + k / 8), x = 120 + k * 12 + Math.sin(t + k) * 4; PL(c, [x, 120 - u * 50, x + 3, 114 - u * 50, x - 2, 108 - u * 50], DA('#a8b46c', 0.6 * (1 - u))); } capPlate(c, t, S.tGacy + 0.3, ['ゲイシーの家']); snowfall(c, t, 50, 33, 8, 12); return { z: 1.05, fx: 160, fy: 110 }; }
     if (t > S.tOut) { const u = t - S.tOut, x = 160 + u * 18, a = 1 - sg(t, S.tGone + 1.5, S.tGone + 3); for (let i = 0; i < u * 3 && i < 30; i++) R(c, 162 + i * 6, 150 + (i & 1) * 2, 3, 1, K.snow3); if (a > 0) c.drawImage(ditherFade(personSpr(BOY, { f: Math.floor(t * 7) & 3 }), a, 'boyf'), Math.round(x - PER_AX - 1), Math.round(152 - PER_AY - 1)); }
     snowfall(c, t, 60, 31, 10, 14);
-    yearFlash(c, t, 0.2, 1978); capPlate(c, t, 0.5, ['1978年12月11日', 'イリノイ州 デスプレーンズ']);
+    capPlate(c, t, 0.5, ['1978年12月', 'イリノイ州 デス・プレーンズ']);
     return { z: 1 + 0.06 * ss(t / S.dur), fx: 190, fy: 110 };
   }
 };
@@ -54,19 +54,19 @@ const GK = {
   init(S) { S.tCount = at(S, 'L20', 0) - 0.2; S.t33 = at(S, 'L20', 3) - 0.2; S.tYoung = ln(S, 'L21') ? at(S, 'L21', 0) - 0.3 : 1e9; S.dur = lastSe(S) + 1.4; },
   draw(c, t, S) {
     if (t < S.tCount) {
-      const n = Math.round(lerp(0, 26, sg(t, 1, S.tCount)));
+      const n = Math.round(lerp(0, 29, sg(t, 1, S.tCount)));
       crossSection(c, t, n, { lit: true, blood: true });
       for (let i = 0; i < 3; i++) { const x = 60 + i * 90 + Math.sin(t + i) * 8; blit(c, personSpr(COP, { f: -1, weapon: 'shovel', arm: (Math.floor(t * 2 + i) & 1) ? 'dig' : 'fwd', id: 'cd' + i + ((Math.floor(t * 2 + i) & 1)) }), x, 152, PER_AX, PER_AY, { s: 0.9 }); beam(c, x + 6, 132, 0.6 + Math.sin(t + i) * 0.3, 40, 0.2, 0.4); }
       darkness(c, 160, 130, 170, 0.5);
-      yearFlash(c, t, 0.2, 1978, 216, 4, '12月21日');
+      yearFlash(c, t, 0.2, 1978, 216, 4, '12月');
       return { z: 1.08, fx: 160, fy: 120 };
     }
     // the count, then 33 candles
     VG(c, 0, 0, W, H, ['#06040a', '#0c0810', '#140c10']);
-    const rows = [['床下', 26, 0], ['敷地', 3, 1], ['川', 4, 2]];
+    const rows = [['床下', 29, 0], ['川', 4, 1]];
     if (t < S.t33) rows.forEach(([lab, n, i]) => { const tt = at(S, 'L20', i) - 0.2; if (t < tt) return; TX(c, lab, 40, 30 + i * 34, C.white, 24, '#000000'); TX(c, n + '人', 240, 30 + i * 34, K.red0, 24, '#000000'); for (let k = 0; k < n; k++) R(c, 118 + (k % 13) * 8, 34 + i * 34 + Math.floor(k / 13) * 9, 5, 7, K.win1); });
-    else { candleRows(c, t, 33, 33 * sg(t, S.t33, S.t33 + 2.2), 50, 110, 11, 22, 18); bigCap(c, '少なくとも 33人', 50, 24, C.white, sg(t, S.t33 + 0.4, S.t33 + 1)); }
-    if (t > S.tYoung) { c.fillStyle = DA('#000000', 0.3); c.fillRect(0, 0, W, 40); bigCap(c, '10代〜20歳前後', 14, 16, K.snow1); }
+    else { candleRows(c, t, 33, 33 * sg(t, S.t33, S.t33 + 2.2), 50, 110, 11, 22, 18); bigCap(c, '33人', 50, 24, C.white, sg(t, S.t33 + 0.4, S.t33 + 1)); }
+    if (t > S.tYoung) { c.fillStyle = DA('#000000', 0.3); c.fillRect(0, 0, W, 40); bigCap(c, '10代〜20歳ほど', 14, 16, K.snow1); }
     return { z: 1, fx: 160, fy: 110 };
   }
 };

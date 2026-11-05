@@ -100,7 +100,6 @@ const GE = {
     blit(c, personSpr(GACY, { f: -1, id: 'gph' }), 130, py + 96, PER_AX, PER_AY, { s: 1.8 }); blit(c, personSpr({ id: 'fl', coat: '#c8a4b8', coat2: '#a88498', pants: '#3c3c44', dress: '#c8a4b8', skin: '#ecc8b0', hair: '#7c5c3c' }, { f: -1, id: 'fl' }), 190, py + 96, PER_AX, PER_AY, { s: 1.8, flip: true });
     const im = c.getImageData(70, Math.max(0, py), 180, 98), d = im.data; for (let i = 0; i < d.length; i += 4) { const g = d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11; d[i] = d[i + 1] = d[i + 2] = g; } c.putImageData(im, 70, Math.max(0, py));
     if (u < 0.15) flashScreen(c, 0.8);
-    yearFlash(c, t, S.tPhoto + 0.4, 1978);
     return { z: 1.03, fx: 160, fy: 90 };
   }
 };
@@ -108,14 +107,13 @@ const GE = {
 /* ---- GF: January 1972 — the first murder ---- */
 const GF = {
   name: '最初の殺人', ch: '最初の殺人', bgm: 'dread',
-  init(S) { S.tHouse = at(S, 'L10', 3) - 0.3; S.tStab = at(S, 'L10', 3) + 0.6; S.tBury = at(S, 'L11', 0) - 0.3; S.dur = lastSe(S) + 1.4; },
+  init(S) { S.tHouse = at(S, 'L10', 2) - 0.3; S.tStab = at(S, 'L10', 5) + 0.2; S.tBury = at(S, 'L11', 2) - 0.3; S.dur = lastSe(S) + 1.4; },
   draw(c, t, S) {
     if (t < S.tHouse) { // the bus terminal at night
-      VG(c, 0, 0, W, H, ['#1c2030', '#2c3040', '#1c2028']); R(c, 0, 140, W, 100, '#3c3c40');
-      R(c, 20, 30, 280, 110, '#4c4c58'); R(c, 20, 30, 280, 18, '#2c2c34'); TX(c, 'BUS TERMINAL', 110, 31, '#f8e070', 16, null);
-      for (let i = 0; i < 6; i++) R(c, 30 + i * 46, 60, 34, 40, K.win0); R(c, 40, 120, 240, 6, '#6c5c4c');
-      blit(c, personSpr(YOUTH[0], { f: -1, id: 'tm' }), 130, 150, PER_AX, PER_AY, { s: 1.3 }); blit(c, personSpr(GACY, { f: -1, arm: 'fwd', id: 'gb' }), 176, 150, PER_AX, PER_AY, { s: 1.4, flip: true });
-      yearFlash(c, t, 0.2, 1972); capPlate(c, t, 0.5, ['1972年1月', 'シカゴのバスターミナル']);
+      nightSky(c, t, 140, [K.night0, K.night1, K.night2]); R(c, 0, 104, W, 40, '#2c3c24'); ranchHouse(c, 110, 142, t, { lit: true, wall: '#8c8070', wall2: '#7c7064', roof: '#3c3430' }); R(c, 0, 142, W, 98, '#3c3c40');
+      const wx = lerp(40, 150, sg(t, 0.3, S.tHouse - 0.3));
+      blit(c, personSpr(GACY, { f: Math.floor(t * 6) & 3, id: 'gb' }), wx, 150, PER_AX, PER_AY, { s: 1.4 }); blit(c, personSpr(YOUTH[0], { f: Math.floor(t * 6 + 1) & 3, id: 'tm' }), wx - 24, 150, PER_AX, PER_AY, { s: 1.3 });
+      yearFlash(c, t, 0.2, 1972); capPlate(c, t, 0.5, ['1972年1月', 'ゲイシーの家']);
       return { z: 1.04, fx: 160, fy: 100 };
     }
     if (t < S.tBury) { // the kitchen: a knife — shown as shadows on the wall
@@ -123,10 +121,10 @@ const GF = {
       roomBg(c, { wall: '#c8b890', wall2: '#bca880', floor: '#8c7c64', fy: 150, lamp: [100, 20] });
       R(c, 210, 90, 100, 60, '#e8e0d0'); R(c, 214, 84, 92, 8, '#a8a8b0');
       const yx = 170, gx = 120;
-      wallShadow(c, personSpr(GACY, { f: -1, arm: stab ? 'stab' : 'fwd', weapon: 'knife', id: 'gk' }), gx + 40, 150, 2.2, 'shg');
-      wallShadow(c, personSpr(YOUTH[0], { f: -1, id: 'ty', shock: true }), yx + 50, 150, 2.2, 'shy');
-      blit(c, personSpr(GACY, { f: -1, arm: stab ? 'stab' : 'fwd', weapon: 'knife', id: 'gk2' }), gx, 150, PER_AX, PER_AY, { s: 1.4 });
-      if (!stab) blit(c, personSpr(YOUTH[0], { f: -1, id: 'ty2', shock: true }), yx, 150, PER_AX, PER_AY, { s: 1.3, flip: true });
+      wallShadow(c, personSpr(GACY, { f: -1, arm: stab ? 'stab' : 'fwd', weapon: stab ? 'knife' : null, id: stab ? 'gk' : 'gk0' }), gx + 40, 150, 2.2, 'shg');
+      wallShadow(c, personSpr(YOUTH[0], { f: -1, arm: stab ? null : 'fwd', weapon: stab ? null : 'knife', id: stab ? 'ty' : 'tyk', shock: stab }), yx + 50, 150, 2.2, 'shy');
+      blit(c, personSpr(GACY, { f: -1, arm: stab ? 'stab' : 'fwd', weapon: stab ? 'knife' : null, id: stab ? 'gk2' : 'gk3', shock: !stab }), gx, 150, PER_AX, PER_AY, { s: 1.4 });
+      if (!stab) { blit(c, personSpr(YOUTH[0], { f: -1, arm: 'fwd', weapon: 'knife', id: 'ty2' }), yx, 150, PER_AX, PER_AY, { s: 1.3, flip: true }); R(c, 226, 82, 14, 6, '#e8d8a8'); R(c, 226, 80, 14, 2, '#c89c5c'); }
       else { const fall = eOut(sg(v, 0.3, 0.8)); blit(c, personSpr(YOUTH[0], { f: -1, id: 'ty3', shock: true }), yx + fall * 6, 150 - fall * 4, PER_AX, PER_AY, { s: 1.3, flip: true, rot: fall * 1.5 });
         bloodSplat(c, yx - 6, 110, 28, 5, Math.min(1, v * 4)); for (let i = 0; i < 4; i++) bloodDrip(c, 200 + i * 14, 60 + i * 9, 10 + i * 5, t, i); bloodPool(c, yx + 10, 154, Math.min(26, v * 10), 6);
         if (v < 0.15) flashScreen(c, 0.5, '#c81818'); }
@@ -145,8 +143,8 @@ const GF = {
 
 /* ---- GG: 1975 on — the job offers, the handcuff trick, the river ---- */
 const GG = {
-  name: '手錠の手品', ch: '手錠の手品', bgm: 'dread',
-  init(S) { S.tCuff = at(S, 'L13', 0) - 0.3; S.tRope = at(S, 'L13', 3) - 0.1; S.tFill = ln(S, 'L14') ? at(S, 'L14', 0) - 0.3 : 1e9; S.tRiver = ln(S, 'L14') ? at(S, 'L14', 2) - 0.2 : 1e9; S.dur = lastSe(S) + 1.2;
+  name: '手錠', ch: '手錠とロザリオ', bgm: 'dread',
+  init(S) { S.tCuff = at(S, 'L13', 0) - 0.3; S.tRope = at(S, 'L13', 2) - 0.1; S.tFill = ln(S, 'L14') ? at(S, 'L14', 0) - 0.3 : 1e9; S.tRiver = ln(S, 'L14') ? at(S, 'L14', 2) - 0.2 : 1e9; S.dur = lastSe(S) + 1.2;
     S.short = !ln(S, 'L12'); if (S.short) S.tCuff = 0; },
   draw(c, t, S) {
     if (!S.short && t < S.tCuff) { // picking up young men with job offers
@@ -154,7 +152,7 @@ const GG = {
       for (let i = 0; i < 5; i++) { R(c, i * 70, 40, 50, 90, '#2c2c34'); for (let k = 0; k < 6; k++) R(c, i * 70 + 6 + (k % 2) * 22, 50 + Math.floor(k / 2) * 24, 14, 12, (i + k) % 3 ? '#1c1c24' : K.win1); }
       const cx = lerp(-80, 120, eOut(sg(t, 0.4, 2.4))); PF(c, [cx, 160, cx + 8, 148, cx + 24, 140, cx + 64, 140, cx + 78, 148, cx + 92, 150, cx + 94, 160], '#2c2c3c'); R(c, cx + 28, 142, 32, 6, '#5c6c8c'); E(c, cx + 18, 160, 6, 6, '#0c0c10'); E(c, cx + 76, 160, 6, 6, '#0c0c10');
       blit(c, personSpr(YOUTH[1], { f: -1, id: 'yh' }), 236, 156, PER_AX, PER_AY, { s: 1.3, flip: true });
-      if (t > 3) speech(c, 'いい仕事があるんだ', 190, 70, 210);
+      if (t > 3) speech(c, 'アルバイトしないか', 190, 70, 210);
       yearFlash(c, t, 0.2, 1975);
       return { z: 1.03, fx: 160, fy: 110 };
     }
@@ -165,7 +163,6 @@ const GG = {
       if (t < S.tRope) {
         const sh = 1 + 0.15 * Math.sin(u * 3); E(c, 160, 70, 34, 14, DA(K.win0, 0.15));
         R(c, 140, 62, 14, 10, '#c8c8d0'); R(c, 166, 62, 14, 10, '#c8c8d0'); R(c, 143, 65, 8, 4, '#7c5c4c'); R(c, 169, 65, 8, 4, '#7c5c4c'); L(c, 154, 67, 166, 67, '#a8a8b0', 2);
-        speech(c, '手錠の手品を見せてやろう', 160, 20, 160);
         blit(c, personSpr(GACY, { f: -1, arm: 'fwd', id: 'gh' }), 130, 150, PER_AX, PER_AY, { s: 1.4 }); blit(c, personSpr(YOUTH[1], { f: -1, arm: 'fwd', id: 'yh2' }), 180, 150, PER_AX, PER_AY, { s: 1.3, flip: true });
         void sh; return { z: 1.06, fx: 160, fy: 100 };
       }
@@ -178,7 +175,7 @@ const GG = {
       return { z: 1.08, fx: 165, fy: 90, sx: Math.round(Math.sin(t * 40) * 1) };
     }
     if (t < S.tRiver) { // the crawl space filling up
-      const n = Math.round(lerp(4, 26, sg(t, S.tFill, S.tRiver - 0.2)));
+      const n = Math.round(lerp(4, 29, sg(t, S.tFill, S.tRiver - 0.2)));
       crossSection(c, t, n, { blood: true }); darkness(c, 160, 128, 170, 0.6);
       bigCap(c, '床下に ' + n + '人', 8, 16, C.white);
       return { z: 1, fx: 160, fy: 120 };

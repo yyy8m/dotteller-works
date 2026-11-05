@@ -141,7 +141,7 @@ const SC = {
       const k = sg(t, 0.4, S.tSchool - 1); const wx = lerp(-60, 120, k); // wagon arriving
       R(c, wx, 128, 40, 12, '#6c4c2c'); E(c, wx + 6, 142, 5, 5, '#3c2c1c'); E(c, wx + 34, 142, 5, 5, '#3c2c1c'); R(c, wx + 42, 124, 18, 10, '#5c3c2c'); R(c, wx + 56, 118, 6, 8, '#5c3c2c');
       for (const [st, dx] of [[AUGUSTA, 8], [EDBOY, 20], [HENRY, 30]]) blit(c, personSpr(st, { f: -1, id: 'w' + dx }), wx + dx, 128, PER_AX, PER_AY, { s: 0.8 });
-      yearFlash(c, t, S.tY, 1914); capPlate(c, t, S.tY + 0.3, ['1914年ごろ', 'プレインフィールドの農場']);
+      capPlate(c, t, S.tY + 0.3, ['プレインフィールド', '町はずれの農場']);
       return { z: 1.03, fx: 160, fy: 110 };
     }
     // school yard: the others laugh, Ed stands alone
@@ -225,7 +225,7 @@ const SE = {
     // the books & magazines
     const u = t - S.tBooks;
     R(c, 0, 0, W, H, '#2c2018'); for (let y = 0; y < H; y += 8) R(c, 0, y, W, 1, '#241a14');
-    const books = [['人体解剖図', '#7c1c1c', '#e8d8b8'], ['首狩り族の秘密', '#2c4c2c', '#f8e070'], ['戦慄の人体実験', '#1c1c2c', '#c81818'], ['怪奇実話', '#5c3c7c', '#f8f8f8']];
+    const books = [['冒険物語', '#7c1c1c', '#e8d8b8'], ['人食いの島', '#2c4c2c', '#f8e070'], ['ナチスの残虐', '#1c1c2c', '#c81818'], ['怪奇実話', '#5c3c7c', '#f8f8f8']];
     books.forEach(([ttl, bg, fg], i) => { const k = eOut(sg(u, i * 0.9, i * 0.9 + 0.5)); if (k <= 0) return; const x = 18 + i * 76, y = lerp(-90, 30 + (i & 1) * 16, k);
       R(c, x, y, 66, 90, '#000000'); R(c, x + 1, y + 1, 64, 88, bg); R(c, x + 4, y + 30, 58, 40, '#00000040');
       if (i === 0) { E(c, x + 33, y + 50, 12, 14, '#e8d8c0'); R(c, x + 28, y + 46, 3, 3, '#000'); R(c, x + 36, y + 46, 3, 3, '#000'); R(c, x + 30, y + 56, 7, 2, '#000'); }
@@ -300,7 +300,7 @@ const SG = {
       blit(c, personSpr(GEIN, { f: aim ? -1 : Math.floor(t * 6) & 3, arm: aim ? 'aim' : null, weapon: aim ? 'pistol' : null, id: aim ? 'ga' : 'gw' }), ex, 150, PER_AX, PER_AY, { s: 1.4, flip: true });
       if (shot) { const v = t - S.tShot; muzzleFlash(c, ex - 26, 120, -1, 1 - v * 6); flashScreen(c, 0.7 - v * 4); bloodSplat(c, 110, 66, 26, 3, Math.min(1, v * 4)); if (v > 0.3) { R(c, 108, 84, 10, 3, BLOOD[1]); for (let i = 0; i < 3; i++) bloodDrip(c, 104 + i * 6, 88, 8 + i * 4 + Math.min(16, v * 6), t, i + 2); } }
       if (aim && !shot) { c.fillStyle = DA('#000000', 0.3); c.fillRect(0, 0, W, H); }
-      yearFlash(c, t, 0.2, 1954); capPlate(c, t, 0.5, ['1954年12月', 'パイングローブの酒場']);
+      yearFlash(c, t, 0.2, 1954); capPlate(c, t, 0.5, ['1954年12月', '近くの町の酒場']);
       return { z: aim && !shot ? 1.2 : 1.05, fx: shot ? 120 : 200, fy: 96, sx: shot && t < S.tShot + 0.25 ? Math.round(Math.sin(t * 80) * 3) : 0 };
     }
     if (t < S.tJoke) { // empty tavern: blood pool and a spent cartridge
@@ -311,12 +311,10 @@ const SG = {
       const u = t - S.tAfter; if (u > 1.0) { ER(c, 202, 151, 9, 6, K.red0); }
       return { z: 1 + 0.35 * ss(sg(u, 0, 4)), fx: 170, fy: 140 };
     }
-    // the joke at the general store
-    roomBg(c, { wall: '#7c6c54', wall2: '#74644c', floor: '#5c4c3c', window: [24, 30] });
-    R(c, 120, 100, 200, 50, '#6c5034'); R(c, 120, 96, 200, 6, '#8c6c48'); for (let i = 0; i < 6; i++) R(c, 130 + i * 30, 76, 20, 20, ['#c8a048', '#8c3c2c', '#5c7c4c'][i % 3]);
-    TOWN.forEach((st, i) => blit(c, personSpr(st, { f: -1, id: 'tj' + i, arm: (Math.floor(t * 3) + i) & 1 ? 'fwd' : null }), 80 + i * 26, 156, PER_AX, PER_AY, { s: 1.2 }));
-    blit(c, personSpr(GEIN, { f: -1, id: 'gj' }), 200, 156, PER_AX, PER_AY, { s: 1.2, flip: true });
-    const u = t - S.tJoke; if (u > 1.4) { const s = 'メアリーなら うちにいるよ', w = textSpr(s, 16, '#000').width + 12; R(c, 150 - w / 2, 66, w, 24, '#000000'); R(c, 152 - w / 2, 68, w - 4, 20, C.white); PF(c, [190, 89, 200, 89, 200, 98], C.white); TX(c, s, 156 - w / 2, 70, '#000000', 16, null); }
+    // later: he admitted the shooting, but said he did not remember it well
+    R(c, 0, 0, W, H, '#0c0808'); const u = t - S.tJoke;
+    bigPortrait(c, tintSpr(geinFace({ expr: 'blank', blink: blinkOf(t, 66) }), '#8c8478', 'gjt'), 160, 84, 2, Math.min(1, u / 0.6), 'gjf');
+    for (let i = 0; i < 3; i++) if (u > 1 + i * 0.4) TX(c, '？', 70 + i * 80, 30 + (i & 1) * 20 + Math.sin(t * 3 + i) * 3, '#c8c0b0', 32, '#000000');
     return { z: 1.05, fx: 160, fy: 120 };
   }
 };

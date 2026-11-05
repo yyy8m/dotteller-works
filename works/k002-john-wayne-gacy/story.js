@@ -38,7 +38,7 @@ GG.sfx = (S, ev) => { if (!S.short) ev(0.2, 'stamp'); ev(S.tCuff + 1.0, 'hit'); 
 GH.sfx = (S, ev) => { ev(0.5, 'creak'); };
 GI.sfx = (S, ev) => { ev(0.2, 'stamp'); ev(0.3, 'wind', 5); ev(S.tOut - 0.2, 'creak'); ev(S.tGacy, 'sting'); };
 GJ.sfx = (S, ev) => { ev(S.tConf, 'slam'); };
-GK.sfx = (S, ev) => { for (let k = 0; k < 10; k++) ev(0.8 + k * 0.6, 'dig'); ev(S.tCount, 'stamp'); ev(S.tCount + 1.2, 'stamp'); ev(S.tCount + 2.2, 'stamp'); ev(S.t33, 'toll'); };
+GK.sfx = (S, ev) => { for (let k = 0; k < 10; k++) ev(0.8 + k * 0.6, 'dig'); ev(S.tCount, 'stamp'); ev(S.tCount + 1.2, 'stamp'); ev(S.t33, 'toll'); };
 GL.sfx = (S, ev) => { ev(0.2, 'stamp'); ev(S.tGavel, 'gavel'); ev(S.tPaint, 'whoosh'); };
 GM.sfx = (S, ev) => { ev(0.3, 'stamp'); ev(2.0, 'toll'); };
 GN.sfx = (S, ev) => { ev(S.tSplit, 'sting'); ev(S.tCand, 'toll'); ev(S.tEnd, 'toll'); };

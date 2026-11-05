@@ -18,7 +18,12 @@ whoami が失敗したら、その時点で止めてエラーを日本語でま�
 - 記録シリーズ: フォルダは `works/kNNN-<英字名>`、`series: "kiroku"`、語り部は `lamp`（灯の神）。本編は5〜7分、台本30行前後・12章前後。
   ショート用のセリフ `S1`（つかみ）と `S2`（「くわしくは、本編で。」）を入れる。
 - 文庫シリーズ: フォルダは `works/NNN-<英字名>`、`series: "bunko"`、語り部は `narrator`（記録の神）。原作の長さに合わせる。
-- 事実は Wikipedia で確かめられる範囲だけ（記録）。確証のない話は「〜と言われています」。表現の決まりは `docs/SCHEDULE.md` の「作り方の決まり」。
+- 事実は Wikipedia（日本語版）で確かめられる範囲だけ（記録）。記事は次のように取得して全文を読み、台本の一文ずつと照らし合わせる
+  （API は回数制限が厳しいので index.php の raw を使う。User-Agent を必ずつける）:
+  ```bash
+  curl -sS -A "dotgatari-factcheck/1.0 (personal script)" -G https://ja.wikipedia.org/w/index.php --data-urlencode "title=記事名" -d action=raw -o article.wiki
+  ```
+  記事にない話（日付・地名・人数・セリフ）は入れない。英語版にしかない話も入れない。確証のない話は「〜と言われています」。表現の決まりは `docs/SCHEDULE.md` の「作り方の決まり」。
 - 読み上げ用の `say` は、表示用 `text` と句読点の区切りをそろえる（「・」は使わない。年号は漢数字）。
 
 ## 3. 読みのチェック（必須）
