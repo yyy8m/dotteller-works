@@ -1762,8 +1762,7 @@ function drawGameWin(f, st, t) {
   const fb = cached('fbg' + st.spk, () => { const [cv, x] = mk(48, 48); VG(x, 0, 0, 48, 48, [sp.bg[1], sp.bg[0]]); return cv; });
   f.save(); f.scale(2, 2);
   frameBox(f, 4, 129, 312, 48, winBg);           // window
-  frameBox(f, 8, 131, 44, 44, null);             // face frame (inner 36x36)
-  f.drawImage(fb, 12, 135, 36, 36);
+  f.drawImage(fb, 12, 135, 36, 36);              // face background only (no frame)
   if (st.name) { const nw = textSpr(st.name, 16, C.uiY).width; frameBox(f, 4, 115, Math.ceil(nw / 2) + 12, 15, winBg); }
   f.restore();
   f.drawImage(st.face, 0, 0, 48, 48, 24, 270, 72, 72); // the whole 48x48 portrait at 1.5x (never cropped)
