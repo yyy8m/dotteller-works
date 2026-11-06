@@ -203,14 +203,14 @@ const SN = {
 /* ---- SO: Psycho, Leatherface, Buffalo Bill ---- */
 const SO = {
   name: '映画への影響', ch: '映画への影響', bgm: 'eerie',
-  init(S) { S.tBook = 0.3; S.tFilm = at(S, 'L30', 2) - 0.2; S.f = [at(S, 'L31', 0) - 0.3, at(S, 'L31', 0) + 0.4, at(S, 'L31', 1) - 0.2]; S.dur = lastSe(S) + 1.2; },
+  init(S) { S.tBook = 0.3; S.tFilm = at(S, 'L30', 2) - 0.2; S.f = [at(S, 'L31', 0) - 0.3, at(S, 'L31', 0) + 0.5]; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#0c0c14', '#141420', '#08080c']);
     if (t < S.f[0]) { const k = eOut(sg(t, S.tBook, S.tBook + 0.6)), by = lerp(-120, 30, k);
       R(c, 60, by, 80, 110, '#000000'); R(c, 61, by + 1, 78, 108, '#e8d8b0'); TX(c, 'PSYCHO', 72, by + 10, '#c81818', 16, null); TX(c, 'R. Bloch', 74, by + 70, '#3c3c3c', 16, null); TX(c, '1959', 84, by + 88, '#3c3c3c', 16, null); E(c, 100, by + 46, 14, 12, '#3c3c3c'); R(c, 92, by + 42, 4, 3, '#e8d8b0'); R(c, 104, by + 42, 4, 3, '#e8d8b0');
       if (t > S.tFilm) { const k2 = eOut(sg(t, S.tFilm, S.tFilm + 0.6)); filmFrame(c, 170, lerp(-80, 40, k2), 100, 70, (cc, X, Y, w, h) => { VG(cc, X, Y, w, h, ['#2c3448', '#4c5468']); PF(cc, [X + 40, Y + 46, X + 52, Y + 20, X + 66, Y + 24, X + 76, Y + 46], '#0c0c10'); R(cc, X + 8, Y + 50, 60, 12, '#0c0c10'); }); TX(c, '映画 1960年', 182, lerp(-10, 124, k2), C.white, 16, '#000000'); }
       return { z: 1.03, fx: 160, fy: 100 }; }
-    filmFrames(c, t, S.f, ['サイコ', '悪魔のいけにえ', '羊たちの沈黙']);
+    filmFrames(c, t, S.f, ['サイコ', '羊たちの沈黙'], 44, [0, 2]);
     for (let i = 0; i < 10; i++) { const x = i * 34; E(c, x + 14, 200, 12, 13, '#000000'); R(c, x, 206, 30, 40, '#000000'); }
     return { z: 1, fx: 160, fy: 100 };
   }
@@ -242,7 +242,7 @@ const SS1 = {
   init(S) { S.tFace = at(S, 'S1', 2) - 0.3; S.dur = lastSe(S) + 0.6; },
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#0c0206', '#2c060a', '#0c0206']);
-    filmFrames(c, t, [0.1, 0.5, 0.9], ['サイコ', '悪魔のいけにえ', '羊たちの沈黙'], 30);
+    filmFrames(c, t, [0.1, 0.6], ['サイコ', '羊たちの沈黙'], 30, [0, 2]);
     if (t > S.tFace) { const a = sg(t, S.tFace, S.tFace + 0.4); c.fillStyle = DA('#000000', 0.85 * a); c.fillRect(0, 0, W, H); E(c, 160, 84, 80, 70, DA(K.red2, 0.6 * a));
       if (a > 0) bigPortrait(c, geinFace({ blink: blinkOf(t, 66) }), 160, 84, 2, a, 'ssg');
       if (a >= 1) { const s = 'EDWARD GEIN', w = textSpr(s, 16, C.white).width; R(c, 160 - w / 2 - 8, 136, w + 16, 22, '#000000'); R(c, 160 - w / 2 - 8, 136, w + 16, 2, K.red1); TX(c, s, 160 - w / 2, 139, C.white, 16, null); } }

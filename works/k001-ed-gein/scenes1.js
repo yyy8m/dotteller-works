@@ -73,29 +73,31 @@ function geinFarm(c, t, ox, o = {}) {
 }
 
 /* ---- SA: the hook — horror's killers had a real model ---- */
-function filmFrames(c, t, t0s, titles, y0 = 44) {
+function filmFrames(c, t, t0s, titles, y0 = 44, idx = [0, 1, 2]) {
   const fns = [
     (x, X, Y, w, h) => { VG(x, X, Y, w, h, ['#2c3448', '#4c5468']); PF(x, [X + 30, Y + 40, X + 42, Y + 18, X + 56, Y + 22, X + 66, Y + 40], '#0c0c10'); R(x, X + 36, Y + 26, 4, 5, K.win1); R(x, X + 6, Y + 44, 50, 10, '#0c0c10'); R(x, X + 10, Y + 47, 6, 4, K.win1); R(x, X + 22, Y + 47, 6, 4, K.win1); },
     (x, X, Y, w, h) => { VG(x, X, Y, w, h, ['#c86c28', '#f8b048', '#fce090']); R(x, X, Y + 44, w, 16, '#3c2410'); E(x, X + 66, Y + 10, 6, 6, '#fff4c8'); const sx = X + 30, sy = Y + 44; R(x, sx - 4, sy - 22, 9, 14, '#1c1008'); E(x, sx, sy - 26, 4, 4, '#1c1008'); L(x, sx, sy - 8, sx - 4, sy, '#1c1008', 2); L(x, sx + 2, sy - 8, sx + 5, sy, '#1c1008', 2); R(x, sx + 4, sy - 18, 14, 4, '#1c1008'); for (let k = 0; k < 7; k++) P(x, sx + 6 + k * 2, sy - 19 + (k & 1), '#1c1008'); },
     (x, X, Y, w, h) => { R(x, X, Y, w, h, '#e8e0d0'); E(x, X + w / 2, Y + h / 2, 12, 10, '#3c2c20'); PF(x, [X + w / 2, Y + h / 2, X + w / 2 - 22, Y + 12, X + w / 2 - 18, Y + 46], '#6c5038'); PF(x, [X + w / 2, Y + h / 2, X + w / 2 + 22, Y + 12, X + w / 2 + 18, Y + 46], '#6c5038'); E(x, X + w / 2, Y + h / 2 - 2, 3, 2, '#e8e0d0'); }];
-  fns.forEach((fn, i) => {
+  idx.forEach((_, i) => {
     const k = eOut(sg(t, t0s[i], t0s[i] + 0.6)); if (k <= 0) return;
-    const x = 18 + i * 100, y = lerp(-80, y0, k);
-    filmFrame(c, x, y, 84, 60, (cc, X, Y, w, h) => fn(cc, X, Y, w, h));
-    const ttl = titles[i], w = textSpr(ttl, 16, C.white).width; TX(c, ttl, x + 42 - w / 2, i === 1 ? y - 32 : y + 72, C.white, 16, '#000000');
+    const n = idx.length, x = Math.round(160 - (n * 84 + (n - 1) * 30) / 2 + i * 114), y = lerp(-80, y0, k);
+    filmFrame(c, x, y, 84, 60, (cc, X, Y, w, h) => fns[idx[i]](cc, X, Y, w, h));
+    const ttl = titles[i], w = textSpr(ttl, 16, C.white).width; TX(c, ttl, x + 42 - w / 2, y + 72, C.white, 16, '#000000');
   });
 }
 const SA = {
   name: '実在のモデル', ch: 'オープニング', bgm: 'eerie',
-  init(S) { S.f = [at(S, 'L1', 0) - 0.2, at(S, 'L1', 1) - 0.2, at(S, 'L1', 2) - 0.2]; S.tReal = at(S, 'L1', 4, 6); S.dur = lastSe(S) + 1.2; },
+  init(S) { S.f = [at(S, 'L1', 0) - 0.2, at(S, 'L1', 1) - 0.2]; S.tReal = at(S, 'L1', 3, 6); S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#0c0c14', '#141420', '#08080c']);
     E(c, 160, 70, 150, 70, DA('#c8d0e0', 0.08 + 0.02 * Math.sin(t * 13)));
-    filmFrames(c, t, S.f, ['サイコ', '悪魔のいけにえ', '羊たちの沈黙']);
+    filmFrames(c, t, S.f, ['サイコ', '羊たちの沈黙'], 44, [0, 2]);
     for (let i = 0; i < 10; i++) { const x = i * 34; E(c, x + 14, 200, 12, 13, '#000000'); R(c, x, 206, 30, 40, '#000000'); }
-    if (t > S.tReal) { const a = sg(t, S.tReal, S.tReal + 0.8); c.fillStyle = DA('#000000', 0.75 * a); c.fillRect(0, 0, W, H);
-      const g = tintSpr(personSpr(GEIN, { f: -1, id: 'hk' }), '#000000', 'hksil'); blit(c, g, 160, 160, PER_AX, PER_AY, { s: 3.2 * a + 0.01 });
-      E(c, 160, 70, 60, 50, DA(K.red1, 0.25 * a)); if (a > 0.7) bigCap(c, '？', 30, 32, K.red0); }
+    if (t > S.tReal) { const a = sg(t, S.tReal, S.tReal + 0.6);
+      c.fillStyle = a >= 1 ? '#000000' : DA('#000000', a); c.fillRect(0, 0, W, H);
+      if (a >= 1) { E(c, 160, 110, 90, 80, '#140204'); E(c, 160, 110, 66, 60, '#240406'); E(c, 160, 110, 44, 42, '#34080a'); }
+      const g = tintSpr(personSpr(GEIN, { f: -1, id: 'hk' }), '#000000', 'hksil'); blit(c, g, 160, 172, PER_AX, PER_AY, { s: 0.5 + 2.1 * a });
+      if (a >= 1) bigCap(c, '？', 10, 32, K.red0); }
     return { z: 1 + 0.06 * ss(t / S.dur), fx: 160, fy: 100 };
   }
 };

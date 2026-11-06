@@ -266,6 +266,33 @@ def thumb(work, tok):
             if e.code == 403: print('  → チャンネルでカスタムサムネイルが有効になっていない可能性があります（電話番号による確認が必要）。', file=sys.stderr)
 
 
+def audit(tok=None):
+    """list every upload on the channel that is scheduled or public but not recorded as current in works/*/published.json
+    (e.g. an upload that finished on YouTube while this script was killed before saving its id)"""
+    import glob
+    tok = tok or token('youtube')
+    ch, _ = call('GET', 'https://www.googleapis.com/youtube/v3/channels?part=contentDetails&mine=true', tok)
+    up = ch['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+    ids, pt = [], ''
+    while True:
+        r, _ = call('GET', f'https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId={up}' + (f'&pageToken={pt}' if pt else ''), tok)
+        ids += [i['contentDetails']['videoId'] for i in r['items']]; pt = r.get('nextPageToken')
+        if not pt: break
+    current = set()
+    for f in glob.glob(os.path.join(ROOT, 'works', '*', 'published.json')):
+        st = json.load(open(f, encoding='utf-8'))
+        current |= {yt_id(st[k]) for k in ('youtube_main', 'youtube_short') if st.get(k)}
+    bad = []
+    for i in range(0, len(ids), 50):
+        r, _ = call('GET', 'https://www.googleapis.com/youtube/v3/videos?part=status,snippet&id=' + ','.join(ids[i:i + 50]), tok)
+        for v in r['items']:
+            stt = v['status']
+            if v['id'] not in current and (stt['privacyStatus'] == 'public' or stt.get('publishAt')):
+                bad.append(v); print('WARN 記録にない公開/予約動画:', v['id'], stt['privacyStatus'], stt.get('publishAt') or '', v['snippet']['title'], file=sys.stderr)
+    print('audit: 記録にない公開・予約動画', len(bad), '本')
+    return bad
+
+
 if __name__ == '__main__':
     work, what = sys.argv[1], sys.argv[2]
     if work != '-': WORK_DIR = os.path.abspath(work)
@@ -274,4 +301,5 @@ if __name__ == '__main__':
      'link': lambda: link(os.path.abspath(work)), 'retire': lambda: retire(os.path.abspath(work)),
      'thumb': lambda: thumb(os.path.abspath(work), token('youtube')),
      'all': lambda: (youtube(os.path.abspath(work), token('youtube')), thumb(os.path.abspath(work), token('youtube')),
-                     blog(os.path.abspath(work), token('blogger')), link(os.path.abspath(work)))}[what]()
+                     blog(os.path.abspath(work), token('blogger')), link(os.path.abspath(work)), audit()),
+     'audit': lambda: audit()}[what]()
