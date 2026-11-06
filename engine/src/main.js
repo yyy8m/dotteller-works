@@ -1,5 +1,6 @@
 /* ================= timeline, dialog UI, transitions, main loop ================= */
 const SPK = { narrator: { name: '記録の神', bg: ['#6c5430', '#b89c64'] }, lamp: { name: '灯の神', bg: ['#2c1c10', '#5c3c1c'] }, spider: { name: '蜘蛛', bg: ['#584c88', '#6c60a4'] }, buddha: { name: 'お釈迦様', bg: ['#8c6420', '#b88c30'] }, kandata: { name: '犍陀多', bg: ['#5c1c1c', '#7c2c24'] } };
+if (typeof SPEAKERS_EXTRA !== 'undefined') Object.assign(SPK, SPEAKERS_EXTRA); // per-work cast: { gein: { name: 'エド・ゲイン', bg: ['#3c1c1c', '#5c2c2c'] } }
 let TL = null;
 
 /* blink schedule: irregular 2-5 s */

@@ -105,8 +105,36 @@ def reverb(x, sr, t60=1.6, mix=0.18, seed=1):
     return out * (1 - mix) + wet * mix * 1.0
 
 
+FX = {}  # speaker -> preset for voices added by a work's lines.json
+
+
+def fx_preset(kind, x, sr):
+    if kind == 'rough':  # gravelly, close
+        rng = np.random.default_rng(11); n = len(x); xs = np.arange(0, n + 480, 480)
+        x = x * np.interp(np.arange(n), xs, rng.uniform(0.85, 1.0, len(xs)))
+        g = 2.6; x = np.tanh(x * g / max(1e-6, np.abs(x).max())) / np.tanh(g)
+        b, a = peaking(sr, 1400, 3.0, 1.0); x = biquad(x, b, a)
+    elif kind == 'cold':  # quiet, dark, a little room
+        b, a = peaking(sr, 150, 3.0, 0.8); x = biquad(x, b, a)
+        b, a = peaking(sr, 4500, -5.0, 0.7); x = biquad(x, b, a)
+        x = reverb(x, sr, 0.9, 0.16, seed=5)
+    elif kind == 'stern':  # hard, echoing (preacher / judge)
+        b, a = peaking(sr, 2500, 3.0, 1.0); x = biquad(x, b, a)
+        x = reverb(x, sr, 1.6, 0.24, seed=9)
+    elif kind == 'radio':  # old recording / police radio
+        b, a = peaking(sr, 200, -9.0, 0.7); x = biquad(x, b, a)
+        b, a = peaking(sr, 1800, 6.0, 1.2); x = biquad(x, b, a)
+        b, a = peaking(sr, 5000, -9.0, 0.7); x = biquad(x, b, a)
+        x = np.tanh(x * 2.0) / np.tanh(2.0)
+    else:  # plain
+        b, a = peaking(sr, 3000, 1.5, 1.0); x = biquad(x, b, a)
+    return np.concatenate([x, np.zeros(int(0.2 * sr))])
+
+
 def post(spk, x, sr):
     x = x / 32768.0
+    if spk in FX:
+        return fx_preset(FX[spk], x, sr)
     if spk == 'narrator':
         b, a = peaking(sr, 250, 3.0, 0.8)
         x = biquad(x, b, a)
@@ -163,6 +191,10 @@ def main():
     EXTRA_PAUSE = {k: {int(i): v for i, v in d.items()} for k, d in cfg.get('extra_pause', {}).items()}
     meta = {}
     engines = {}
+    # per-work cast: "speakers": {"gein": {"voice": "nitech_jp_atr503_m001.htsvoice", "alpha": 0.52, "half": -3, "speed": 0.92, "fx": "rough"}}
+    for name, v in cfg.get('speakers', {}).items():
+        SPEAKERS[name] = (v.get('voice', 'nitech_jp_atr503_m001.htsvoice'), v.get('alpha', 0.55), v.get('half', 0.0), v.get('speed', 1.0))
+        FX[name] = v.get('fx', 'plain')
     used = sorted(set(l['speaker'] for l in cfg['lines']))
     for spk in used:
         src, alpha, half, speed = SPEAKERS[spk]

@@ -327,6 +327,7 @@ function oniClubTip(f, by) { const ang = [-0.5, -1.25, -1.45, 0.95, 0.75][f]; re
 
 /* ================= portraits (48x48) ================= */
 function facePortrait(who, p) {
+  if (typeof PORTRAITS !== 'undefined' && PORTRAITS[who]) return PORTRAITS[who](p); // per-work cast
   const t = p.t, m = p.mouth || 0, bl = p.blink || 0, ex = p.expr || 'normal';
   return SPR('face_' + who, 48, 48, c => {
     if (who === 'spider') {
