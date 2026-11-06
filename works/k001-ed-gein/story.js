@@ -62,3 +62,6 @@ function TITLE_DECO(c, t) {
   c.drawImage(g, 0, 150); R(c, 0, 216, W, 24, K.snow2); R(c, 0, 214, W, 3, K.snow1);
   snowfall(c, t, 40, 21, 8, 12);
 }
+/* widescreen: how far the picture is shifted up above the dialog window (default 24) */
+SE.wideDY = 0; SJ.wideDY = 6; SL.wideDY = 0;
+SS1.tallFit = true;

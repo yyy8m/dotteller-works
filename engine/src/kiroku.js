@@ -53,7 +53,7 @@ function smoke(c, x, y, t, seed = 1) { for (let i = 0; i < 8; i++) { const u = f
 /* ---- captions ---- */
 /* plate sliding in from the left at t0: lines = ['1957年11月', 'アメリカ・ウィスコンシン州'] */
 function capPlate(c, t, t0, lines, y = 8) {
-  if (window.__uiCollect) { window.__uiCollect.push(['cap', t, t0, lines]); return; }
+  if (window.__uiCollect) { window.__uiCollect.push(['cap', t, t0, lines, y]); return; }
   if (window.__uiq) { window.__uiq.push(cc => { const q = window.__uiq; window.__uiq = null; capPlate(cc, t, t0, lines, y); window.__uiq = q; }); return; }
   const k = eOut(sg(t, t0, t0 + 0.45)); if (k <= 0) return;
   const w = Math.max(...lines.map(s => textSpr(s, 16, BR.cream).width)) + 18, h = lines.length * 18 + 8, x = Math.round(-w + (w + 6) * k);
@@ -61,7 +61,7 @@ function capPlate(c, t, t0, lines, y = 8) {
   lines.forEach((s, i) => TX(c, s, x + 10, y + 4 + i * 18, i ? BR.cream : BR.orange, 16, '#000000'));
 }
 /* big centred caption (title cards) */
-function bigCap(c, str, y, size, col, a = 1) { const s = textSpr(str, size, col); const x = Math.round(160 - (s.width - 2) / 2); if (a < 1) { c.drawImage(ditherFade(textSpr(str, size, '#000000'), a, 'bcs' + size), x + 2, y + 2); c.drawImage(ditherFade(s, a, 'bc' + size), x, y); } else { c.drawImage(textSpr(str, size, '#000000'), x + 2, y + 2); c.drawImage(s, x, y); } }
+function bigCap(c, str, y, size, col, a = 1) { if (window.__wide && window.__uiCollect && y < 64) { window.__uiCollect.push(['big', str, y, size, col, a]); return; } const s = textSpr(str, size, col); const x = Math.round(160 - (s.width - 2) / 2); if (a < 1) { c.drawImage(ditherFade(textSpr(str, size, '#000000'), a, 'bcs' + size), x + 2, y + 2); c.drawImage(ditherFade(s, a, 'bc' + size), x, y); } else { c.drawImage(textSpr(str, size, '#000000'), x + 2, y + 2); c.drawImage(s, x, y); } }
 
 /* ---- people: small side-view figure (faces right; use flip) 18x40, anchor at feet (9, 39) ---- */
 const PER_AX = 9, PER_AY = 39;
@@ -135,7 +135,7 @@ function spinPaper(c, spr, cx, cy, u) { // u 0..1 spin-in
 
 /* ---- calendar / year card ---- */
 function yearCard(c, x, y, year, sub) {
-  if (window.__uiCollect) { window.__uiCollect.push(['year', year, sub]); return; }
+  if (window.__uiCollect) { window.__uiCollect.push(['year', year, sub, x, y]); return; }
   if (window.__uiq) { window.__uiq.push(cc => { const q = window.__uiq; window.__uiq = null; yearCard(cc, x, y, year, sub); window.__uiq = q; }); return; }
   const w = 96, h = sub ? 66 : 50;
   R(c, x, y, w, h, '#000000'); R(c, x + 1, y + 1, w - 2, h - 2, K.paper0); R(c, x + 1, y + 1, w - 2, 12, K.red1);

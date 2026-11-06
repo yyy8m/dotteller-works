@@ -1587,16 +1587,16 @@ const SF = {
     // the line of sinners — more of them keep coming
     const n = Math.min(14, 3 + Math.floor(t * 1.4));
     for (let k = 0; k < n; k++) {
-      const s = Math.max(0.3, 0.55 - k * 0.025), y = 104 + k * 26 * s / 0.55 - fr(t * 0.25) * 12, f = Math.floor(t * 6 + k * 1.7) & 3;
+      const s = Math.max(0.3, 0.55 - k * 0.025), y = 122 + k * 26 * s / 0.55 - fr(t * 0.25) * 12, f = Math.floor(t * 6 + k * 1.7) & 3;
       if (y > H + 20) continue;
       blit(c, sinnerSpr(k % 3, 'climb', f), 160 + (k & 1 ? 2 : -2), y, FIG_AX, FIG_AY, { s });
     }
     // Kandata above, looking down in fear
-    const ky = 56;
+    const ky = 74;
     blit(c, kanFrontSpr({ t, pz: kanPose('look', 0, t), by: Math.round(Math.sin(t * 12) * strain), expr: 'surp', blink: blinkOf(t, 31) }), 160, ky, FIG_AX, FIG_AY);
     for (let i = 0; i < 6; i++) sweat(c, 160 + (i & 1 ? 7 : -7), ky - 34, t, S.tStrain + i * 0.5, i + 40);
     if (strain > 0.5 && (Math.floor(t * 5) & 1)) { for (let i = 0; i < 3; i++) P(c, 160 + (i - 1) * 2, ky - 46 - i, C.white); }
-    return { z: lerp(1.0, 1.5, strain), fx: 160, fy: lerp(110, ky - 10, strain), sx: Math.round(Math.sin(t * 50) * strain) };
+    return { z: lerp(1.0, 1.35, strain), fx: 160, fy: lerp(110, ky + 30, strain), sx: Math.round(Math.sin(t * 50) * strain) };
   }
 };
 
@@ -1682,6 +1682,7 @@ function narratorSpr(t, expr, mouth) { return facePortrait(SERIES[WORK.series].n
 
 /* ---- S0: brand intro (narrator unrolls a scroll) ---- */
 const S0 = {
+  wideDY: 0, noWin: true,
   name: BRAND.name, bgm: null,
   init(S) { const L = S.lines[0]; S.dur = L.se + 1.3; },
   sfx(S, ev) { ev(0.35, 'end'); ev(1.0, 'shine', 0.6); },
@@ -1770,17 +1771,24 @@ function drawGameWin(f, st, t) {
   lines.forEach(([l, v], i) => { if (v) TX(f, v, 120, 282 + i * lh, C.uiB, size, null); });
   if (lines.length && lines[lines.length - 1][1].length === lines[lines.length - 1][0].length && (Math.floor(t * 3) & 1) === 0) { const by = 340 + (Math.floor(t * 6) & 1) * 2; PF(f, [606, by, 618, by, 612, by + 7], C.uiB); }
 }
+const WIDE_DY = 24;
 function composeFrame(mode, T) {
   const wide = mode === 'wide';
   if (!FRAME[mode]) FRAME[mode] = mk(wide ? 640 : 360, wide ? 360 : 640);
   const [fc, f] = FRAME[mode], t = Math.max(0, T); f.imageSmoothingEnabled = false;
-  window.__uiCollect = wide ? null : [];
+  window.__uiCollect = []; window.__wide = wide;
   if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); } else render(T, true);
-  const ui = window.__uiCollect || []; window.__uiCollect = null;
+  const ui = window.__uiCollect || []; window.__uiCollect = null; window.__wide = false;
   const st = T >= 0 ? subtitleState(T) : null;
   if (wide) {
-    f.drawImage(cv, 0, 0, W, 180, 0, 0, 640, 360);
-    if (st) drawGameWin(f, st, t);
+    // the scene is shifted up a little so that what stands on the ground stays above the dialog window;
+    // captions and year cards are drawn again at their usual place (top) so the shift never cuts them
+    const S = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, dy = S && S.sc.wideDY != null ? S.sc.wideDY : WIDE_DY;
+    f.drawImage(cv, 0, dy, W, 180, 0, 0, 640, 360);
+    f.save(); f.scale(2, 2);
+    for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], u[4]); else if (u[0] === 'big') bigCap(f, u[1], u[2], u[3], u[4], u[5]); else yearCard(f, u[3], u[4], u[1], u[2]); }
+    f.restore();
+    if (st && !(S && S.sc.noWin)) drawGameWin(f, st, t);
     return fc;
   }
   R(f, 0, 0, 360, 640, '#05080a'); c0: {
@@ -1791,7 +1799,9 @@ function composeFrame(mode, T) {
   }
   // scene: 180x180 around the camera focus, x2
   const fx = (window.__focus || [160, 120])[0], sx = Math.round(clamp(fx - 90, 0, W - 180));
-  f.drawImage(cv, sx, 0, 180, 180, 0, 132, 360, 360);
+  const Sc = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null;
+  if (Sc && Sc.sc.tallFit) { R(f, 0, 132, 360, 360, '#000000'); f.drawImage(cv, 0, 0, W, 180, 0, 132 + 79, 360, 202); } // whole width (text that must not be cut)
+  else f.drawImage(cv, sx, 0, 180, 180, 0, 132, 360, 360);
   R(f, 0, 130, 360, 2, BR.orange); R(f, 0, 492, 360, 2, BR.orange);
   // captions / year cards of the scene, redrawn inside the frame so the crop never cuts them
   for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], 140); else yearCard(f, 258, 140, u[1], u[2]); }
@@ -2080,6 +2090,8 @@ SE.sfx = (S, ev) => { ev(S.tRest + 0.1, 'breath'); if (S.tBelow < 1e8) ev(S.tBel
 SF.sfx = (S, ev) => { if (S.tStrain < 1e8) { ev(S.tStrain, 'creak'); for (let k = 0; k < 6; k++) ev(S.tStrain + 0.4 + k * 0.7, 'heart'); } };
 SG.sfx = (S, ev) => { ev(S.tF0, 'fall', S.tF1 - S.tF0); if (S.tEmpty < 1e8) ev(S.tEmpty + 0.4, 'shine', 2); };
 SH.sfx = (S, ev) => { ev(0.8, 'drip'); };
+/* widescreen: how far the picture is shifted up above the dialog window (default 24) */
+S1.wideDY = 8; [S4, S5, S6, SE, SF].forEach(s => s.wideDY = 0);
 
 /* ================= timeline, dialog UI, transitions, main loop ================= */
 const SPK = { narrator: { name: '記録の神', bg: ['#6c5430', '#b89c64'] }, lamp: { name: '灯の神', bg: ['#2c1c10', '#5c3c1c'] }, spider: { name: '蜘蛛', bg: ['#584c88', '#6c60a4'] }, buddha: { name: 'お釈迦様', bg: ['#8c6420', '#b88c30'] }, kandata: { name: '犍陀多', bg: ['#5c1c1c', '#7c2c24'] } };

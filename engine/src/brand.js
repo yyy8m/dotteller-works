@@ -39,6 +39,7 @@ function narratorSpr(t, expr, mouth) { return facePortrait(SERIES[WORK.series].n
 
 /* ---- S0: brand intro (narrator unrolls a scroll) ---- */
 const S0 = {
+  wideDY: 0, noWin: true,
   name: BRAND.name, bgm: null,
   init(S) { const L = S.lines[0]; S.dur = L.se + 1.3; },
   sfx(S, ev) { ev(0.35, 'end'); ev(1.0, 'shine', 0.6); },
@@ -127,17 +128,24 @@ function drawGameWin(f, st, t) {
   lines.forEach(([l, v], i) => { if (v) TX(f, v, 120, 282 + i * lh, C.uiB, size, null); });
   if (lines.length && lines[lines.length - 1][1].length === lines[lines.length - 1][0].length && (Math.floor(t * 3) & 1) === 0) { const by = 340 + (Math.floor(t * 6) & 1) * 2; PF(f, [606, by, 618, by, 612, by + 7], C.uiB); }
 }
+const WIDE_DY = 24;
 function composeFrame(mode, T) {
   const wide = mode === 'wide';
   if (!FRAME[mode]) FRAME[mode] = mk(wide ? 640 : 360, wide ? 360 : 640);
   const [fc, f] = FRAME[mode], t = Math.max(0, T); f.imageSmoothingEnabled = false;
-  window.__uiCollect = wide ? null : [];
+  window.__uiCollect = []; window.__wide = wide;
   if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); } else render(T, true);
-  const ui = window.__uiCollect || []; window.__uiCollect = null;
+  const ui = window.__uiCollect || []; window.__uiCollect = null; window.__wide = false;
   const st = T >= 0 ? subtitleState(T) : null;
   if (wide) {
-    f.drawImage(cv, 0, 0, W, 180, 0, 0, 640, 360);
-    if (st) drawGameWin(f, st, t);
+    // the scene is shifted up a little so that what stands on the ground stays above the dialog window;
+    // captions and year cards are drawn again at their usual place (top) so the shift never cuts them
+    const S = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, dy = S && S.sc.wideDY != null ? S.sc.wideDY : WIDE_DY;
+    f.drawImage(cv, 0, dy, W, 180, 0, 0, 640, 360);
+    f.save(); f.scale(2, 2);
+    for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], u[4]); else if (u[0] === 'big') bigCap(f, u[1], u[2], u[3], u[4], u[5]); else yearCard(f, u[3], u[4], u[1], u[2]); }
+    f.restore();
+    if (st && !(S && S.sc.noWin)) drawGameWin(f, st, t);
     return fc;
   }
   R(f, 0, 0, 360, 640, '#05080a'); c0: {
@@ -148,7 +156,9 @@ function composeFrame(mode, T) {
   }
   // scene: 180x180 around the camera focus, x2
   const fx = (window.__focus || [160, 120])[0], sx = Math.round(clamp(fx - 90, 0, W - 180));
-  f.drawImage(cv, sx, 0, 180, 180, 0, 132, 360, 360);
+  const Sc = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null;
+  if (Sc && Sc.sc.tallFit) { R(f, 0, 132, 360, 360, '#000000'); f.drawImage(cv, 0, 0, W, 180, 0, 132 + 79, 360, 202); } // whole width (text that must not be cut)
+  else f.drawImage(cv, sx, 0, 180, 180, 0, 132, 360, 360);
   R(f, 0, 130, 360, 2, BR.orange); R(f, 0, 492, 360, 2, BR.orange);
   // captions / year cards of the scene, redrawn inside the frame so the crop never cuts them
   for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], 140); else yearCard(f, 258, 140, u[1], u[2]); }

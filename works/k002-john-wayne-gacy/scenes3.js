@@ -65,8 +65,8 @@ const GK = {
     VG(c, 0, 0, W, H, ['#06040a', '#0c0810', '#140c10']);
     const rows = [['床下', 29, 0], ['川', 4, 1]];
     if (t < S.t33) rows.forEach(([lab, n, i]) => { const tt = at(S, 'L20', i) - 0.2; if (t < tt) return; TX(c, lab, 40, 30 + i * 34, C.white, 24, '#000000'); TX(c, n + '人', 240, 30 + i * 34, K.red0, 24, '#000000'); for (let k = 0; k < n; k++) R(c, 118 + (k % 13) * 8, 34 + i * 34 + Math.floor(k / 13) * 9, 5, 7, K.win1); });
-    else { candleRows(c, t, 33, 33 * sg(t, S.t33, S.t33 + 2.2), 50, 110, 11, 22, 18); bigCap(c, '33人', 50, 24, C.white, sg(t, S.t33 + 0.4, S.t33 + 1)); }
-    if (t > S.tYoung) { c.fillStyle = DA('#000000', 0.3); c.fillRect(0, 0, W, 40); bigCap(c, '10代〜20歳ほど', 14, 16, K.snow1); }
+    else { candleRows(c, t, 33, 33 * sg(t, S.t33, S.t33 + 2.2), 50, 110, 11, 22, 18); bigCap(c, '33人', 28, 24, C.white, sg(t, S.t33 + 0.4, S.t33 + 1)); }
+    if (t > S.tYoung) { c.fillStyle = DA('#000000', 0.3); c.fillRect(0, 0, W, 40); bigCap(c, '10代〜20歳ほど', 6, 16, K.snow1); }
     return { z: 1, fx: 160, fy: 110 };
   }
 };

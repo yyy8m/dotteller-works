@@ -57,3 +57,6 @@ function TITLE_DECO(c, t) {
   R(c, 0, 214, W, 26, '#1c2418'); PF(c, [250, 214, 258, 200, 266, 214], '#2c4cb8'); E(c, 258, 199, 2, 2, '#f8e070');
 }
 const HOOK = ['子どもの人気者のピエロ', '家の床下には――'];
+/* widescreen: how far the picture is shifted up above the dialog window (default 24) */
+GA.wideDY = 0; GG.wideDY = 0;
+GK.tallFit = true;

@@ -63,3 +63,5 @@ SE.sfx = (S, ev) => { ev(S.tRest + 0.1, 'breath'); if (S.tBelow < 1e8) ev(S.tBel
 SF.sfx = (S, ev) => { if (S.tStrain < 1e8) { ev(S.tStrain, 'creak'); for (let k = 0; k < 6; k++) ev(S.tStrain + 0.4 + k * 0.7, 'heart'); } };
 SG.sfx = (S, ev) => { ev(S.tF0, 'fall', S.tF1 - S.tF0); if (S.tEmpty < 1e8) ev(S.tEmpty + 0.4, 'shine', 2); };
 SH.sfx = (S, ev) => { ev(0.8, 'drip'); };
+/* widescreen: how far the picture is shifted up above the dialog window (default 24) */
+S1.wideDY = 8; [S4, S5, S6, SE, SF].forEach(s => s.wideDY = 0);

@@ -178,16 +178,16 @@ const SF = {
     // the line of sinners — more of them keep coming
     const n = Math.min(14, 3 + Math.floor(t * 1.4));
     for (let k = 0; k < n; k++) {
-      const s = Math.max(0.3, 0.55 - k * 0.025), y = 104 + k * 26 * s / 0.55 - fr(t * 0.25) * 12, f = Math.floor(t * 6 + k * 1.7) & 3;
+      const s = Math.max(0.3, 0.55 - k * 0.025), y = 122 + k * 26 * s / 0.55 - fr(t * 0.25) * 12, f = Math.floor(t * 6 + k * 1.7) & 3;
       if (y > H + 20) continue;
       blit(c, sinnerSpr(k % 3, 'climb', f), 160 + (k & 1 ? 2 : -2), y, FIG_AX, FIG_AY, { s });
     }
     // Kandata above, looking down in fear
-    const ky = 56;
+    const ky = 74;
     blit(c, kanFrontSpr({ t, pz: kanPose('look', 0, t), by: Math.round(Math.sin(t * 12) * strain), expr: 'surp', blink: blinkOf(t, 31) }), 160, ky, FIG_AX, FIG_AY);
     for (let i = 0; i < 6; i++) sweat(c, 160 + (i & 1 ? 7 : -7), ky - 34, t, S.tStrain + i * 0.5, i + 40);
     if (strain > 0.5 && (Math.floor(t * 5) & 1)) { for (let i = 0; i < 3; i++) P(c, 160 + (i - 1) * 2, ky - 46 - i, C.white); }
-    return { z: lerp(1.0, 1.5, strain), fx: 160, fy: lerp(110, ky - 10, strain), sx: Math.round(Math.sin(t * 50) * strain) };
+    return { z: lerp(1.0, 1.35, strain), fx: 160, fy: lerp(110, ky + 30, strain), sx: Math.round(Math.sin(t * 50) * strain) };
   }
 };
 
