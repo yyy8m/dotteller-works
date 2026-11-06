@@ -1472,7 +1472,7 @@ const GL = {
       if (hit) for (let i = 0; i < 6; i++) L(c, 192, 70, 192 + Math.cos(i) * 14, 70 - Math.abs(Math.sin(i)) * 10, C.white);
       if (t > S.tJack) { const k = ss(sg(t, S.tJack, S.tJack + 2.5)), dk = t < S.tTrial ? 1 : 1 - ss(sg(t, S.tTrial, S.tTrial + 0.6)); c.fillStyle = DA('#000000', 0.55 * dk); c.fillRect(0, 0, W, H);
         if (dk > 0) for (let i = 0; i < 4; i++) { const ox = (i - 1.5) * 34 * k, sh = personSpr(GACY, { f: -1, id: 'gj' + i }); c.globalAlpha = 0.35 * dk; blit(c, sh, 120 + ox, 156, PER_AX, PER_AY, { flip: i < 2, s: 1.4 }); c.globalAlpha = 1; }
-        if (dk > 0 && k > 0.6) for (let i = 0; i < 4; i++) TX(c, 'JACK', 120 + (i - 1.5) * 34 - 16, 64, DA(K.red0, dk), 16, '#000000'); }
+        if (dk > 0 && k > 0.6) { c.globalAlpha = dk; for (let i = 0; i < 4; i++) TX(c, 'JACK', 120 + (i - 1.5) * 34 - 16, 64, K.red0, 16, '#000000'); c.globalAlpha = 1; } }
       blit(c, personSpr(GACY, { f: -1, id: 'gt' }), 120, 156, PER_AX, PER_AY, { flip: true, s: 1.4 });
       for (let i = 0; i < 5; i++) { const x = 20 + i * 64; E(c, x, 190, 12, 12, '#0c0806'); R(c, x - 14, 196, 28, 44, '#0c0806'); }
       if (t > S.tTrial) yearFlash(c, t, S.tTrial + 0.2, 1980, 14, 10, t > S.tGavel ? '死刑判決' : ''); return { z: 1.05, fx: 160, fy: 80, sy: hit ? 2 : 0 }; }
