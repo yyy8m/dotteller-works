@@ -1733,7 +1733,7 @@ function narratorSpr(t, expr, mouth) { return facePortrait(SERIES[WORK.series].n
 
 /* ---- S0: brand intro (narrator unrolls a scroll) ---- */
 const S0 = {
-  wideDY: 0, noWin: true,
+  wideDY: 0, noWin: true, grade: false,
   name: BRAND.name, bgm: null,
   init(S) { const L = S.lines[0]; S.dur = L.se + 1.3; },
   sfx(S, ev) { ev(0.35, 'end'); ev(1.0, 'shine', 0.6); },
@@ -1741,15 +1741,17 @@ const S0 = {
     brandBg(c, 0, 0, W, H, t);
     logoLine(c, 160, 2, 32, t);
     TX(c, SERIES[WORK.series].name + '　#' + WORK.no, 160 - 40, 38, BR.orange);
+    // soft glow behind the narrator (small, behind the scroll, real alpha: no dither mesh)
+    { const g = c.createRadialGradient(54, 110, 4, 54, 110, 38); g.addColorStop(0, 'rgba(248,216,120,' + (0.22 + 0.06 * Math.sin(t * 3)) + ')'); g.addColorStop(1, 'rgba(248,216,120,0)'); c.fillStyle = g; c.fillRect(10, 66, 88, 88); }
     // scroll unrolling
     // scroll: wide enough for the title and the subtitle (split at the full-width space if it is long)
     const fit = cached('scrollFit', () => {
-      const ts = [32, 24, 16].find(z => textSpr(WORK.title, z, BR.ink).width - 2 <= 196) || 16;
-      let sub = [WORK.author]; if (textSpr(WORK.author, 16, BR.ink).width - 2 > 196 && WORK.author.includes('　')) sub = WORK.author.split('　');
+      const ts = [32, 24, 16].find(z => textSpr(WORK.title, z, BR.ink).width - 2 <= 184) || 16;
+      let sub = [WORK.author]; if (textSpr(WORK.author, 16, BR.ink).width - 2 > 184 && WORK.author.includes('　')) sub = WORK.author.split('　');
       const need = Math.max(textSpr(WORK.title, ts, BR.ink).width, ...sub.map(x => textSpr(x, 16, BR.ink).width)) + 20;
-      return { ts, sub, w: clamp(need, 170, 210) };
+      return { ts, sub, w: clamp(need, 170, 200) };
     });
-    const cx = Math.min(210, 308 - fit.w / 2), k = eOut(sg(t, 0.6, 1.5)), sw = Math.round(fit.w * k), sx = cx - sw / 2;
+    const cx = 310 - fit.w / 2, k = eOut(sg(t, 0.6, 1.5)), sw = Math.round(fit.w * k), sx = cx - sw / 2;
     if (k > 0) {
       R(c, sx, 64, sw, 92, BR.paper); c.fillStyle = DP(BR.paper, BR.paper2, 3); c.fillRect(sx, 64, sw, 92);
       R(c, sx, 66, sw, 1, BR.paper2); R(c, sx, 153, sw, 1, BR.paper2);
@@ -1762,10 +1764,9 @@ const S0 = {
     }
     // narrator, 2x, breathing, with soft glow
     const br = Math.round(Math.sin(t * 2.2) * 1);
-    E(c, 64, 110, 52, 52, DA(BR.bg3, 0.6)); E(c, 64, 110, 40, 40, DA(C.gold0, 0.08 + 0.04 * Math.sin(t * 3)));
     const L = S.lines[0], lt = t - L.t0; let mo = 0; if (lt > 0 && lt < L.se - L.t0) { const v = L.env[Math.floor(lt * 60)] || 0; mo = v > 0.5 ? 2 : v > 0.16 ? 1 : 0; }
-    blit(c, narratorSpr(t, t > 1.5 ? 'smile' : 'normal', mo), 64, 110 + br, 25, 25, { s: 2 });
-    for (let i = 0; i < 8; i++) { const u = fr(t * 0.4 + i / 8), x = 40 + hash(i) * 50, y = 150 - u * 90; if (u < 0.9) P(c, x + Math.sin(t * 2 + i) * 3, y, i & 1 ? C.gold0 : BR.cream); }
+    blit(c, narratorSpr(t, t > 1.5 ? 'smile' : 'normal', mo), 54, 110 + br, 25, 25, { s: 2 });
+    for (let i = 0; i < 8; i++) { const u = fr(t * 0.4 + i / 8), x = 30 + hash(i) * 50, y = 150 - u * 90; if (u < 0.9) P(c, x + Math.sin(t * 2 + i) * 3, y, i & 1 ? C.gold0 : BR.cream); }
     return { z: 1 + 0.05 * ss(t / S.dur), fx: 160, fy: 100 };
   }
 };
