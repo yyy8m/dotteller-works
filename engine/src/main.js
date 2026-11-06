@@ -139,6 +139,19 @@ function drawDialog(c, T) {
   const pageEnd = pg[pg.length - 1].i0 + pg[pg.length - 1].s.length;
   if (n >= pageEnd && (Math.floor(T * 3) & 1) === 0) { const by = 224 + (Math.floor(T * 6) & 1); PF(c, [300, by, 308, by, 304, by + 5], C.uiB); }
 }
+/* current subtitle for video frames: { spk, name, lines (revealed), face } or null */
+function subtitleState(T) {
+  if (!TL || T < 0) return null;
+  const S = TL.scenes[sceneAt(T)], tl = T - S.start; if (!S.lines.length) return null;
+  const L0 = S.lines[0], Ll = S.lines[S.lines.length - 1]; if (tl < L0.t0 - 0.1 || tl > Ll.se + 0.6) return null;
+  let Ln = L0; for (const l of S.lines) if (tl >= l.t0 - 0.25) Ln = l;
+  const lt = tl - Ln.t0; if (lt > Ln.se - Ln.t0 + 0.6 && Ln === Ll) return null;
+  const n = revealCount(Ln, lt); let pi = 0; for (let p = 0; p < Ln.pages.length; p++) if (n > Ln.pages[p][0].i0) pi = p;
+  const pg = Ln.pages[pi], full = pg.map(x => x.s), vis = pg.map(x => x.s.slice(0, clamp(n - x.i0, 0, x.s.length)));
+  let mouth = 0; if (lt > Ln.ss - 0.02 && lt < Ln.se - Ln.t0 + 0.08 && lt >= 0) { const v = Ln.env[Math.floor(lt * 60)] || 0; mouth = v > 0.5 ? 2 : v > 0.16 ? 1 : 0; }
+  let ex = 'normal'; const si = segIndex(Ln, lt); for (const [sx, e] of (EXPR[Ln.id] || [])) if (si >= sx && lt >= 0) ex = e;
+  return { spk: Ln.spk, name: (SPK[Ln.spk] || {}).name || '', lines: vis, full, face: facePortrait(Ln.spk, { t: T, mouth, blink: blinkOf(T, Ln.spk.length * 7), expr: ex }) };
+}
 function sceneAt(T) { let i = 0; for (let k = 0; k < TL.scenes.length; k++) if (T >= TL.scenes[k].start) i = k; return i; }
 
 /* ---- scene rendering with camera ---- */
@@ -151,6 +164,7 @@ function renderScene(i, tl, k) {
   const [oc, ox] = OUT[k]; ox.fillStyle = '#000'; ox.fillRect(0, 0, W, H);
   const fx = cam.fx == null ? 160 : cam.fx, fy = cam.fy == null ? 120 : cam.fy, w = W / z, h = H / z;
   const x0 = clamp(fx - fx / z + sx / z, 0, W - w), y0 = clamp(fy - fy / z + sy / z, 0, H - h);
+  if (k === 0) window.__focus = [(fx - x0) * z, (fy - y0) * z]; // where the camera's focus lands on screen (video crops follow it)
   if (z === 1) ox.drawImage(WB, 0, 0); else ox.drawImage(WB, x0, y0, w, h, 0, 0, W, H);
   if (S.sc.post) { const im = ox.getImageData(0, 0, W, H); S.sc.post(im, tl, S); ox.putImageData(im, 0, 0); }
   if (WORK.series === 'kiroku' && typeof horrorGrade === 'function') horrorGrade(ox, tl, S);
@@ -186,7 +200,7 @@ function transition(type, p, A, B, out) { // A,B,out ImageData; p 0..1
 }
 const cv = document.getElementById('c'), ctx = cv.getContext('2d', { willReadFrequently: true }); ctx.imageSmoothingEnabled = false;
 let outIm = null;
-function render(T) {
+function render(T, noDialog) {
   if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); return; }
   const i = sceneAt(T), S = TL.scenes[i], tl = T - S.start;
   const B = renderScene(i, tl, 0);
@@ -197,7 +211,7 @@ function render(T) {
     if (!outIm) outIm = ctx.createImageData(W, H);
     transition(S.tr, p, Aim, Bim, outIm); ctx.putImageData(outIm, 0, 0);
   } else ctx.drawImage(B, 0, 0);
-  drawDialog(ctx, T);
+  if (!noDialog) drawDialog(ctx, T);
   if (S.sc.ending && tl > S.tEnd) { // おわり
     const u = tl - S.tEnd, s = u < 0.25 ? u / 0.25 * 1.2 : u < 0.45 ? lerp(1.2, 1, (u - 0.25) / 0.2) : 1, bob = Math.round(Math.sin(u * 2) * 1);
     const tx = textSpr('おわり', 32, C.uiB), w = tx.width + 30, h = 50;

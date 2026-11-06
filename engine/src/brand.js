@@ -89,28 +89,52 @@ function drawTitle(t, fade) {
   if (fade) { c.fillStyle = DA('#000000', fade); c.fillRect(0, 0, W, H); }
 }
 
-/* ---- video frames: wide 480x270 (x4 = 1920x1080) / tall 360x640 (x3 = 1080x1920) ---- */
+/* ---- video frames: wide 640x360 (x3 = 1920x1080) / tall 360x640 (x3 = 1080x1920) ----
+   wide: the scene fills the frame (top 320x180 of the game screen, x2), with large film-style subtitles.
+   tall: a big hook line on top, the scene cropped around the camera focus filling the width, large subtitles below. */
 const FRAME = {};
+function wrapJa(str, n) { // wrap into lines of at most n characters, keeping punctuation off line starts
+  const out = []; let cur = '';
+  for (let i = 0; i < str.length; i++) { cur += str[i]; if (cur.length >= n && !(i + 1 < str.length && KINSOKU.includes(str[i + 1]))) { out.push(cur); cur = ''; } }
+  if (cur) out.push(cur); return out;
+}
+function outlineText(f, s, x, y, col, size = 16, r = 2) { const o = textSpr(s, size, '#000000'); for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (dx || dy) f.drawImage(o, Math.round(x) + dx, Math.round(y) + dy); f.drawImage(textSpr(s, size, col), Math.round(x), Math.round(y)); }
+function drawSubs(f, st, cx, yBottom, perLine, lh, face, size = 16, maxL = 3) {
+  const full = wrapJa(st.full.join(''), perLine), vis = st.lines.join(''); let k = 0;
+  let lines = full.map(l => { const v = vis.slice(k, k + l.length); k += l.length; return [l, v]; });
+  if (lines.length > maxL) { const last = Math.max(maxL, lines.findLastIndex(x => x[1]) + 1); lines = lines.slice(last - maxL, last); }
+  const y0 = yBottom - lines.length * lh;
+  f.fillStyle = DA('#000000', 0.55); f.fillRect(0, y0 - 8, f.canvas.width, lines.length * lh + 12);
+  lines.forEach(([l, v], i) => { const w = textSpr(l, size, '#fff').width - 2; if (v) outlineText(f, v, cx - w / 2, y0 + i * lh, C.white, size, size > 16 ? 3 : 2); });
+  if (face) { const fx = 8, fy = y0 - 8 - 54; R(f, fx - 2, fy - 2, 52, 52, '#000000'); R(f, fx - 1, fy - 1, 50, 50, BR.cream); R(f, fx, fy, 48, 48, (SPK[st.spk] || { bg: ['#222', '#444'] }).bg[0]); f.drawImage(st.face, fx - 1, fy - 1); outlineText(f, st.name, fx + 56, fy + 30, C.uiY, 16, 1); }
+}
 function composeFrame(mode, T) {
-  if (!FRAME[mode]) FRAME[mode] = mk(mode === 'wide' ? 480 : 360, mode === 'wide' ? 270 : 640);
-  const [fc, f] = FRAME[mode], fw = fc.width, fh = fc.height, t = Math.max(0, T);
-  if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); } else render(T);
-  brandBg(f, 0, 0, fw, fh, t);
-  if (mode === 'wide') {
-    pxFrame(f, 80, 15, W, H); f.drawImage(cv, 80, 15);
-    logoStack(f, 39, 16, 16, t);
-    TX(f, SERIES[WORK.series].name, 24, 60, BR.orange); TX(f, '#' + WORK.no, 24, 78, BR.cream);
-    blit(f, narratorSpr(t, 'normal', 0), 40, 232 + Math.round(Math.sin(t * 2.2)), 25, 25, { s: 1 });
-    const y2 = vText(f, WORK.title, 433, 26, BR.cream), sub = WORK.series === 'bunko' ? WORK.author : (WORK.place || ''); if (sub && y2 + 10 + [...sub].length * 17 < 262) vText(f, sub, 433, y2 + 10, BR.orange);
-  } else {
-    logoLine(f, 180, 14, 32, t);
-    TX(f, SERIES[WORK.series].name + '　#' + WORK.no, 180 - 40, 52, BR.orange);
-    const tt = textSpr(WORK.title, 32, C.uiY); f.drawImage(textSpr(WORK.title, 32, BR.dark), Math.round(180 - tt.width / 2) + 2, 80); f.drawImage(tt, Math.round(180 - tt.width / 2), 78);
-    TX(f, workSub(), 180 - textSpr(workSub(), 16, BR.cream).width / 2, 116, BR.cream);
-    pxFrame(f, 20, 150, W, H); f.drawImage(cv, 20, 150);
-    blit(f, narratorSpr(t, 'smile', 0), 180, 450 + Math.round(Math.sin(t * 2.2)), 25, 25, { s: 2 });
-    const cp = '▶ ' + BRAND.copy; TX(f, cp, 180 - textSpr(cp, 16, BR.cream).width / 2, 516, BR.cream);
-    brandHandles().forEach((h, i) => TX(f, h, 180 - textSpr(h, 16, BR.orange).width / 2, 544 + i * 22, BR.orange));
+  const wide = mode === 'wide';
+  if (!FRAME[mode]) FRAME[mode] = mk(wide ? 640 : 360, wide ? 360 : 640);
+  const [fc, f] = FRAME[mode], t = Math.max(0, T); f.imageSmoothingEnabled = false;
+  window.__uiCollect = wide ? null : [];
+  if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); } else render(T, true);
+  const ui = window.__uiCollect || []; window.__uiCollect = null;
+  const st = T >= 0 ? subtitleState(T) : null;
+  if (wide) {
+    f.drawImage(cv, 0, 0, W, 180, 0, 0, 640, 360);
+    if (st) drawSubs(f, st, 360, 346, 30, 20, true);
+    else { const lw = logoMetrics(16).w; logoAt(f, 640 - lw - 10, 336, 16, t); }
+    return fc;
   }
+  R(f, 0, 0, 360, 640, '#05080a'); c0: {
+    // hook (top)
+    logoAt(f, 10, 8, 16, t); const ser = SERIES[WORK.series].name + ' #' + WORK.no; TX(f, ser, 350 - textSpr(ser, 16, BR.orange).width, 8, BR.orange, 16, null);
+    const hook = (typeof HOOK !== 'undefined' && HOOK) || [WORK.title];
+    hook.forEach((h, i) => { const size = textSpr(h, 32, '#fff').width - 2 <= 344 ? 32 : 24, w = textSpr(h, size, '#fff').width - 2; outlineText(f, h, 180 - w / 2, 34 + i * 44, i === hook.length - 1 && hook.length > 1 ? '#ff3c3c' : C.white, size, 3); });
+  }
+  // scene: 180x180 around the camera focus, x2
+  const fx = (window.__focus || [160, 120])[0], sx = Math.round(clamp(fx - 90, 0, W - 180));
+  f.drawImage(cv, sx, 0, 180, 180, 0, 132, 360, 360);
+  R(f, 0, 130, 360, 2, BR.orange); R(f, 0, 492, 360, 2, BR.orange);
+  // captions / year cards of the scene, redrawn inside the frame so the crop never cuts them
+  for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], 140); else yearCard(f, 258, 140, u[1], u[2]); }
+  if (st) { drawSubs(f, st, 180, 604, 14, 28, false, 24, 3); outlineText(f, st.name, 12, 498, C.uiY, 16, 1); }
+  const cta = '▶ 本編はチャンネルで ' + BRAND.youtube; TX(f, cta, 180 - textSpr(cta, 16, BR.cream).width / 2, 612, BR.cream, 16, null);
   return fc;
 }

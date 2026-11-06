@@ -53,6 +53,7 @@ function smoke(c, x, y, t, seed = 1) { for (let i = 0; i < 8; i++) { const u = f
 /* ---- captions ---- */
 /* plate sliding in from the left at t0: lines = ['1957年11月', 'アメリカ・ウィスコンシン州'] */
 function capPlate(c, t, t0, lines, y = 8) {
+  if (window.__uiCollect) { window.__uiCollect.push(['cap', t, t0, lines]); return; }
   if (window.__uiq) { window.__uiq.push(cc => { const q = window.__uiq; window.__uiq = null; capPlate(cc, t, t0, lines, y); window.__uiq = q; }); return; }
   const k = eOut(sg(t, t0, t0 + 0.45)); if (k <= 0) return;
   const w = Math.max(...lines.map(s => textSpr(s, 16, BR.cream).width)) + 18, h = lines.length * 18 + 8, x = Math.round(-w + (w + 6) * k);
@@ -134,6 +135,7 @@ function spinPaper(c, spr, cx, cy, u) { // u 0..1 spin-in
 
 /* ---- calendar / year card ---- */
 function yearCard(c, x, y, year, sub) {
+  if (window.__uiCollect) { window.__uiCollect.push(['year', year, sub]); return; }
   if (window.__uiq) { window.__uiq.push(cc => { const q = window.__uiq; window.__uiq = null; yearCard(cc, x, y, year, sub); window.__uiq = q; }); return; }
   const w = 96, h = sub ? 66 : 50;
   R(c, x, y, w, h, '#000000'); R(c, x + 1, y + 1, w - 2, h - 2, K.paper0); R(c, x + 1, y + 1, w - 2, 12, K.red1);

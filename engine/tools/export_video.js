@@ -23,7 +23,7 @@ const fs = require('fs'), path = require('path');
   fs.writeFileSync(wavPath, Buffer.from(a.wav, 'base64'));
   console.log('audio peak', a.peak.toFixed(3));
   await p.evaluate(() => document.fonts.load('16px "DotGothic16"').then(() => _tc.clear()));
-  const scale = mode === 'wide' ? 4 : 3;
+  const scale = 3; // 640x360 / 360x640 frames -> 1920x1080 / 1080x1920
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-c:v', 'png', '-i', '-', '-i', wavPath,
     '-vf', `scale=iw*${scale}:ih*${scale}:flags=neighbor`, '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-pix_fmt', 'yuv420p', '-r', String(fps),
     '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-ar', '48000', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
