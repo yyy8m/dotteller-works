@@ -5,6 +5,12 @@ const endOf = (S, id, def = 0) => { const l = ln(S, id); return l ? l.se : def; 
 const lastSe = S => S.lines[S.lines.length - 1].se;
 
 /* ---- cast ---- */
+const PORTRAITS = {
+  gein: p => withMouth('pmg', geinFace({ expr: p.expr === 'smile' ? 'smile' : 'blank', blink: p.blink }), p, 24, 29),
+  augusta: p => withMouth('pma', augustaFace(), p, 24, 30),
+  frank: p => withMouth('pmf', lawFace('frank', { coat: '#3c4c34', cap: '#3c4c34' }), p, 24, 29),
+  schley: p => withMouth('pms', lawFace('schley', { grey: true, mustache: true }), p, 24, 29),
+};
 const GEIN = { id: 'gein', coat: '#7c4c34', coat2: '#4c2c20', plaid: true, pants: '#3c3c44', skin: '#dcb08c', hat: 'hunt', hatCol: '#b82020', hatCol2: '#2c1010' };
 const EDBOY = { id: 'edboy', coat: '#6c6c7c', coat2: '#4c4c5c', pants: '#3c3c44', skin: '#e8c0a0', hair: '#7c5c3c' };
 const HENRY = { id: 'henry', coat: '#5c6c4c', coat2: '#3c4c34', pants: '#3c3c44', skin: '#dcb08c', hair: '#5c3c2c' };
@@ -162,7 +168,7 @@ const SC = {
 /* ---- SD: deaths — father 1940, Henry 1944 (fire), mother 1945 ---- */
 const SD = {
   name: '家族の死', ch: '家族の死', bgm: 'requiem',
-  init(S) { S.tFire = at(S, 'L6', 2) - 0.3; S.tQ = at(S, 'L7', 0); S.tMom = at(S, 'L8', 0) - 0.3; S.tAlone = at(S, 'L8', 2) - 0.2; S.dur = lastSe(S) + 1.4; },
+  init(S) { S.tCall = at(S, 'G1', 0) - 0.3; S.tBody = at(S, 'L6b', 0) + 0.8; S.tFire = at(S, 'L6', 2) - 0.3; S.tQ = at(S, 'L7', 0); S.tMom = at(S, 'L8', 0) - 0.3; S.tAlone = at(S, 'L8', 2) - 0.2; S.dur = lastSe(S) + 1.4; },
   draw(c, t, S) {
     if (t < S.tFire) { // father's grave, 1940
       VG(c, 0, 0, W, 140, ['#7c8494', '#9ca4b0']); R(c, 0, 136, W, 104, '#5c6448');
@@ -179,7 +185,7 @@ const SD = {
       for (let i = 0; i < 10; i++) flame(c, 20 + i * 32, 142, 8 + (i % 3) * 3, t, i + 30);
       embers(c, t, 30, 7, [0, 0, W, 140], [C.hell6, C.hell7]);
       for (let i = 0; i < 12; i++) { const v = fr(t * 0.2 + i / 12); E(c, 40 + i * 24 + v * 20, 120 - v * 110, 8 + v * 16, 5 + v * 10, DA('#1c1410', 0.6 * (1 - v))); }
-      R(c, 0, 138, W, 40, '#1c1008'); lyingBody(c, HENRY, 170, 146, 1, { id: 'hen' }); E(c, 170, 150, 30, 4, DA('#000000', 0.4));
+      R(c, 0, 138, W, 40, '#1c1008'); if (t > S.tBody) { lyingBody(c, HENRY, 170, 134, 1, { id: 'hen' }); E(c, 170, 138, 30, 4, DA('#000000', 0.4)); } else if (t > S.tCall) blit(c, personSpr(GEIN, { f: Math.floor(t * 8) & 3, id: 'gfire', shock: true }), 120 + Math.sin(t * 2) * 30, 140, PER_AX, PER_AY, { s: 1.3 });
       if (t > S.tQ) { const a = sg(t, S.tQ, S.tQ + 0.5); for (let i = 0; i < 3; i++) if (a > 0) TX(c, '？', 146 + i * 18, 100 - Math.abs(Math.sin(t * 3 + i)) * 4, K.win1, 32, '#000000'); }
       yearFlash(c, t, S.tFire + 0.2, 1944);
       return { z: 1 + 0.25 * ss(sg(u, 0, 6)), fx: 170, fy: 120 };

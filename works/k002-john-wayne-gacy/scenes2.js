@@ -18,16 +18,16 @@ const GA = {
 /* ---- GB: 1942, Chicago — the father ---- */
 const GB = {
   name: '父と息子', ch: '生い立ち', bgm: 'eerie',
-  init(S) { S.tDad = at(S, 'L2', 3) - 0.3; S.tHeart = at(S, 'L3', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
+  init(S) { S.tDad = at(S, 'L2', 3) - 0.3; S.tHeart = at(S, 'L3', 0) - 0.3; S.tLeave = ln(S, 'L3c') ? at(S, 'L3c', 0) - 0.3 : 1e9; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     roomBg(c, { wall: '#6c5c4c', wall2: '#64544a', floor: '#4c3c30', fy: 140, window: [24, 30], lamp: [200, 22] });
     R(c, 160, 110, 70, 6, '#5c4430'); R(c, 166, 116, 4, 24, '#4c3424'); R(c, 222, 116, 4, 24, '#4c3424'); R(c, 180, 104, 4, 6, '#3c6c3c'); R(c, 188, 105, 4, 5, '#3c6c3c');
     const yell = t > S.tDad && (Math.floor(t * 3) & 1);
     blit(c, personSpr(DAD, { f: -1, weapon: 'bottle', arm: yell ? 'up' : 'fwd', id: yell ? 'dy' : 'dn' }), 200, 140, PER_AX, PER_AY, { s: 1.6, flip: true });
-    if (t > S.tDad) { const s = ['このできそこないめ！', 'なさけない奴だ！'][Math.floor(t / 2.2) % 2]; speech(c, s, 186, 64, 200); }
-    blit(c, personSpr(KID, { f: -1, id: 'kg', shock: t > S.tDad }), 120, 140, PER_AX, PER_AY, { s: 1.0 });
-    if (t > S.tHeart) { const u = t - S.tHeart, b = 1 + 0.25 * Math.max(0, Math.sin(u * 7)); E(c, 120, 112, 4 * b, 3.5 * b, K.red0); E(c, 118, 111, 1.5 * b, 1, '#f88888'); }
-    yearFlash(c, t, 0.2, 1942); capPlate(c, t, 0.5, ['1942年', 'イリノイ州 シカゴ']);
+    if (t > S.tLeave) { const u = t - S.tLeave; blit(c, personSpr(GACY, { f: Math.floor(u * 8) & 3, id: 'gleave' }), 130 - Math.max(0, u - 3.5) * 22, 140, PER_AX, PER_AY, { s: 1.4, flip: true }); yearFlash(c, t, S.tLeave + 0.2, 1962); }
+    else blit(c, personSpr(KID, { f: -1, id: 'kg', shock: t > S.tDad }), 120, 140, PER_AX, PER_AY, { s: 1.0 });
+    if (t > S.tHeart && t < S.tLeave) { const u = t - S.tHeart, b = 1 + 0.25 * Math.max(0, Math.sin(u * 7)); E(c, 120, 112, 4 * b, 3.5 * b, K.red0); E(c, 118, 111, 1.5 * b, 1, '#f88888'); }
+    if (t < S.tLeave) { yearFlash(c, t, 0.2, 1942); capPlate(c, t, 0.5, ['1942年', 'イリノイ州 シカゴ']); }
     return { z: 1.04, fx: 160, fy: 110 };
   }
 };
@@ -80,7 +80,7 @@ const GD = {
 /* ---- GE: Pogo the clown; the photo with the First Lady ---- */
 const GE = {
   name: 'ピエロのポゴ', ch: 'ピエロのポゴ', bgm: 'memory',
-  init(S) { S.tPhoto = at(S, 'L9', 0) - 0.2; S.dur = lastSe(S) + 1.4; },
+  init(S) { S.tPhoto = ln(S, 'L9') ? at(S, 'L9', 0) - 0.2 : 1e9; S.dur = lastSe(S) + 1.4; },
   draw(c, t, S) {
     if (t < S.tPhoto) {
       VG(c, 0, 0, W, 140, ['#5c88d0', '#8cb4e0', '#d8e4f0']); R(c, 0, 120, W, 120, '#6c9c48');

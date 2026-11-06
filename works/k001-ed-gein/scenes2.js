@@ -75,7 +75,7 @@ const SI = {
 /* ---- SJ: her son, the deputy; the receipt ---- */
 const SJ = {
   name: '保安官代理の息子', bgm: 'pulse',
-  init(S) { S.tBack = at(S, 'L19', 2) - 0.3; S.tSlip = at(S, 'L20', 0) - 0.3; S.dur = lastSe(S) + 1.4; },
+  init(S) { S.tBack = at(S, 'F1', 0) - 0.2; S.tSlip = at(S, 'L20', 0) - 0.3; S.dur = lastSe(S) + 1.4; },
   draw(c, t, S) {
     if (t < S.tBack) { storeInside(c, t); bloodTrail(c, [240, 146, 140, 150, 30, 154], 8);
       blit(c, personSpr(COP, { f: -1, id: 'fw', shock: true }), 150, 154, PER_AX, PER_AY, { s: 1.5, flip: true });
@@ -106,7 +106,7 @@ function hangingBody(c, x, y, t) { // dark silhouette hanging upside down from t
 }
 const SK = {
   name: '農場の小屋', ch: '農場の小屋', bgm: 'pulse',
-  init(S) { S.has21 = !!ln(S, 'L21'); S.tFarm = S.has21 ? at(S, 'L21', 2) - 0.2 : -1; S.tShed = S.has21 ? at(S, 'L22', 0) - 0.4 : 0.1; S.tReveal = at(S, 'L22', 3); S.tShock = at(S, 'L22', 4) + 1.0; S.dur = lastSe(S) + 1.6; },
+  init(S) { S.has21 = !!ln(S, 'L21'); S.tFarm = S.has21 ? at(S, 'L21', 2) - 0.2 : -1; S.tShed = S.has21 ? at(S, 'L22', 0) - 0.4 : 0.1; S.tReveal = at(S, 'L22', 3); S.tShock = ln(S, 'C1') ? at(S, 'C1', 0) - 0.1 : at(S, 'L22', 4) + 1.0; S.dur = lastSe(S) + 1.6; },
   draw(c, t, S) {
     if (S.has21 && t < S.tFarm) { // arrested at a grocery
       roomBg(c, { wall: '#6c6454', wall2: '#645c4c', floor: '#4c443c', window: [30, 34] });

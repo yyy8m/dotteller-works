@@ -73,15 +73,18 @@ const GK = {
 /* ---- GL: 1980 trial; the paintings ---- */
 const GL = {
   name: '裁判', ch: '裁判', bgm: 'requiem',
-  init(S) { S.tGavel = at(S, 'L22', 1) + 0.8; S.tPaint = at(S, 'L23', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
+  init(S) { S.tJack = ln(S, 'G2') ? at(S, 'G2', 0) : 1e9; S.tTrial = ln(S, 'L22') ? at(S, 'L22', 0) - 0.3 : 0; S.tGavel = at(S, 'L22', 1) + 0.8; S.tPaint = at(S, 'L23', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     if (t < S.tPaint) { VG(c, 0, 0, W, H, ['#3c2a20', '#2c1e18', '#1c1410']); for (let x = 0; x < W; x += 24) R(c, x, 0, 2, 120, '#4c3628');
       R(c, 80, 60, 160, 60, '#5c3c28'); R(c, 80, 60, 160, 4, '#7c5438'); E(c, 160, 40, 9, 10, '#d8b090'); R(c, 148, 48, 24, 14, '#141010'); R(c, 152, 28, 16, 6, '#c8c8c8');
       const hit = t > S.tGavel && t < S.tGavel + 0.25; blit(c, cached('gavel', () => SPR(null, 22, 8, x => { R(x, 0, 0, 10, 8, '#6c4428'); R(x, 10, 3, 12, 2, '#8c5c38'); })), 200, 66, 20, 4, { rot: hit ? 0.2 : -0.9 }); R(c, 186, 70, 20, 4, '#4c2c1c');
       if (hit) for (let i = 0; i < 6; i++) L(c, 192, 70, 192 + Math.cos(i) * 14, 70 - Math.abs(Math.sin(i)) * 10, C.white);
+      if (t > S.tJack) { const k = ss(sg(t, S.tJack, S.tJack + 2.5)), dk = t < S.tTrial ? 1 : 1 - ss(sg(t, S.tTrial, S.tTrial + 0.6)); c.fillStyle = DA('#000000', 0.55 * dk); c.fillRect(0, 0, W, H);
+        if (dk > 0) for (let i = 0; i < 4; i++) { const ox = (i - 1.5) * 34 * k, sh = personSpr(GACY, { f: -1, id: 'gj' + i }); c.globalAlpha = 0.35 * dk; blit(c, sh, 120 + ox, 156, PER_AX, PER_AY, { flip: i < 2, s: 1.4 }); c.globalAlpha = 1; }
+        if (dk > 0 && k > 0.6) for (let i = 0; i < 4; i++) TX(c, 'JACK', 120 + (i - 1.5) * 34 - 16, 64, DA(K.red0, dk), 16, '#000000'); }
       blit(c, personSpr(GACY, { f: -1, id: 'gt' }), 120, 156, PER_AX, PER_AY, { flip: true, s: 1.4 });
       for (let i = 0; i < 5; i++) { const x = 20 + i * 64; E(c, x, 190, 12, 12, '#0c0806'); R(c, x - 14, 196, 28, 44, '#0c0806'); }
-      yearFlash(c, t, 0.2, 1980, 14, 10, t > S.tGavel ? '死刑判決' : ''); return { z: 1.05, fx: 160, fy: 80, sy: hit ? 2 : 0 }; }
+      if (t > S.tTrial) yearFlash(c, t, S.tTrial + 0.2, 1980, 14, 10, t > S.tGavel ? '死刑判決' : ''); return { z: 1.05, fx: 160, fy: 80, sy: hit ? 2 : 0 }; }
     // the cell, clown paintings on the wall
     R(c, 0, 0, W, H, '#4c4c54'); for (let y = 0; y < H; y += 10) R(c, 0, y, W, 1, '#44444c'); R(c, 0, 150, W, 90, '#3c3c44');
     [[30, 30], [130, 24], [230, 34]].forEach(([x, y], i) => { R(c, x - 4, y - 4, 68, 76, '#5c3c24'); R(c, x, y, 60, 68, ['#3c6cb8', '#c83c3c', '#48a048'][i]); bigFace(c, pogoFace({ expr: i === 1 ? 'creepy' : 'smile' }), x + 30, y + 34, 1, 1, 'pp' + i); });
@@ -93,8 +96,17 @@ const GL = {
 /* ---- GM: May 10, 1994 ---- */
 const GM = {
   name: '死刑執行', bgm: 'requiem',
-  init(S) { S.dur = lastSe(S) + 1.6; },
+  init(S) { S.tMeal = ln(S, 'L24b') ? at(S, 'L24b', 0) - 0.3 : 1e9; S.dur = lastSe(S) + 1.6; },
   draw(c, t, S) {
+    if (t > S.tMeal) { // the last meal
+      VG(c, 0, 0, W, H, ['#14100c', '#2c2018', '#14100c']); R(c, 0, 110, W, 130, '#4c3424'); for (let x = 0; x < W; x += 40) R(c, x, 110, 1, 130, '#3c2818');
+      R(c, 90, 78, 140, 64, '#a8a8a0'); R(c, 92, 80, 136, 60, '#c8c8c0'); E(c, 160, 110, 52, 20, '#f4f0e8'); E(c, 160, 110, 46, 16, '#e8e4dc');
+      for (let i = 0; i < 5; i++) { const x = 128 + i * 12, y = 104 + (i & 1) * 6; E(c, x, y, 7, 5, '#b8702c'); E(c, x - 1, y - 1, 5, 3, '#d8984c'); R(c, x + 5, y + 1, 5, 2, '#f0e0c0'); }
+      for (let i = 0; i < 10; i++) R(c, 182 + i * 2, 96 + (i * 5 % 9), 2, 12, '#f0c840');
+      for (let i = 0; i < 4; i++) { E(c, 108 + i * 9, 128 + (i & 1) * 3, 3.5, 4, '#d8283c'); P(c, 108 + i * 9, 124 + (i & 1) * 3, '#48a048'); }
+      const fl = 0.5 + 0.5 * Math.sin(t * 6); E(c, 160, 60, 60, 24, DA(K.win1, 0.06 + 0.04 * fl));
+      return { z: 1.1 + 0.08 * ss(sg(t, S.tMeal, S.dur)), fx: 160, fy: 110 };
+    }
     nightSky(c, t, 150, [K.night0, K.night1, K.night2]);
     R(c, 0, 90, W, 60, '#4c4c54'); for (let x = 0; x < W; x += 16) R(c, x, 90, 1, 60, '#3c3c44'); R(c, 0, 84, W, 6, '#5c5c64');
     for (let x = 4; x < W; x += 12) { L(c, x, 84, x + 6, 74, '#8c8c94'); L(c, x + 6, 74, x + 12, 84, '#8c8c94'); }

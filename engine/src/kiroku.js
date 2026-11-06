@@ -257,3 +257,22 @@ function horrorGrade(ox, tl, S) {
   if (hash(fseed * 17 + 3) > 0.94) { const y0 = Math.floor(hash(fseed) * (H - 8)), sh = Math.round((hash(fseed * 5) - 0.5) * 10); for (let y = y0; y < y0 + 4; y++) d.copyWithin((y * W + Math.max(0, sh)) * 4, (y * W + Math.max(0, -sh)) * 4, (y * W + W - Math.abs(sh)) * 4); } // rare glitch
   ox.putImageData(im, 0, 0);
 }
+
+/* ---- talking portraits: open a dark mouth on a still 48x48 portrait while the line is spoken ---- */
+function withMouth(id, base, p, mx, my, w = 6) {
+  if (!p || !p.mouth) return base;
+  const [c, x] = slot(id, base.width, base.height); x.drawImage(base, 0, 0);
+  E(x, mx + 1, my + 1, w / 2 + p.mouth * 0.5, 0.7 + p.mouth * 0.8, '#2c0c0c'); return c;
+}
+/* lawman portrait 48x48 (deputy / sheriff): peaked cap with badge, square jaw */
+function lawFace(id, o = {}) {
+  return cached('law' + id, () => SPR(null, 48, 48, c => {
+    const sk = o.skin || '#e0b08c', sk2 = '#b48464', cap = o.cap || '#2c3448';
+    PF(c, [2, 48, 8, 36, 40, 36, 46, 48], o.coat || '#34405c'); R(c, 20, 36, 8, 12, '#e8e4dc'); L(c, 24, 38, 24, 48, '#5c1c1c', 2); P(c, 14, 40, K.badge); P(c, 15, 40, K.badge);
+    R(c, 19, 30, 10, 7, sk2); E(c, 24, 21, 11, 12, sk2); E(c, 23.5, 20.5, 10.5, 11.5, sk); R(c, 15, 28, 18, 4, sk);
+    R(c, 11, 5, 26, 9, cap); R(c, 9, 12, 30, 3, '#141824'); R(c, 22, 7, 4, 4, K.badge);
+    if (o.grey) { R(c, 13, 15, 3, 6, '#a8a8b0'); R(c, 32, 15, 3, 6, '#a8a8b0'); }
+    L(c, 17, 18, 22, 18, '#5c4030'); L(c, 26, 18, 31, 18, '#5c4030'); for (const x0 of [18, 26]) { R(c, x0, 20, 4, 2, '#f4ecdc'); R(c, x0 + 1, 20, 2, 2, C.k); }
+    L(c, 24, 21, 23, 26, sk2); R(c, 20, 29, 8, 1, '#7c3c34'); if (o.mustache) R(c, 19, 27, 10, 2, '#4c3424');
+  }, null));
+}

@@ -61,6 +61,22 @@ function ranchHouse(c, x, y, t, o = {}) { // single-storey 1970s house
   for (const wx of [10, 62, 78]) { R(c, x + wx, y - 22, 12, 10, o.lit ? K.win0 : '#3c4c64'); R(c, x + wx + 5, y - 22, 1, 10, '#ffffff'); }
 }
 
+/* talking portraits */
+function stanleyFace() {
+  return cached('stanF', () => SPR(null, 48, 48, c => {
+    const sk = '#e0b090', sk2 = '#b08060';
+    PF(c, [2, 48, 8, 38, 40, 38, 46, 48], '#5c4c3c'); R(c, 20, 38, 8, 10, '#d8d0c0');
+    E(c, 24, 22, 12, 14, sk2); E(c, 23.5, 21.5, 11.5, 13.5, sk); PF(c, [12, 14, 16, 6, 30, 5, 36, 12, 36, 16, 30, 10, 18, 10], '#4c3c34');
+    L(c, 16, 16, 22, 19, '#3c2c24', 2); L(c, 26, 19, 32, 16, '#3c2c24', 2); for (const x0 of [17, 27]) { R(c, x0, 20, 4, 2, '#f4ecdc'); R(c, x0 + 1, 20, 2, 2, C.k); }
+    L(c, 24, 21, 23, 27, sk2); R(c, 18, 28, 12, 2, '#3c2c24'); R(c, 19, 31, 10, 1, '#6c2c24'); E(c, 30, 26, 2.5, 1.5, '#d88070');
+  }, null));
+}
+const PORTRAITS = {
+  gacy: p => withMouth('pmg2', gacyFace({ blink: p.blink }), p, 24, 29),
+  pogo: p => pogoFace({ blink: p.blink }),
+  stanley: p => withMouth('pms2', stanleyFace(), p, 24, 30),
+  kozen: p => withMouth('pmk2', lawFace('kozen', { coat: '#3c3c44', cap: '#2c2c3c' }), p, 24, 29),
+};
 const ln = (S, id) => S.lines.find(l => l.id === id);
 const at = (S, id, k = 0, def = 0) => { const l = ln(S, id); return l ? l.t0 + l.segs[Math.min(k, l.segs.length - 1)].a : def; };
 const lastSe = S => S.lines[S.lines.length - 1].se;
