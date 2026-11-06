@@ -40,16 +40,21 @@ function drawThumb(t = 0) {
    o = { face: 48x48 portrait sprite, s: face scale, eyes: [[x,y]...] in sprite px, title: ['line1','line2'], hook: 'one line',
          bg: [top, bottom], rim: color, light: true (lit from below), tcol: title color, hcol: hook color } */
 function thumbBigFace(c, o, t = 0) {
-  const bg = o.bg || ['#050203', '#2c0408'];
-  VG(c, 0, 0, TW, TH, [bg[0], bg[0], bg[1]]);
-  const s = o.s || 3.6, f = o.face, fw = f.width * s, fh = f.height * s, fx = TW - fw / 2 - 6, fy = TH - fh / 2 + 10;
-  E(c, fx, fy - 6, fw * 0.55, fh * 0.5, DA(o.rim || '#c81818', 0.22)); E(c, fx, fy - 6, fw * 0.45, fh * 0.42, DA(o.rim || '#c81818', 0.18));
+  const bg = o.bg || ['#050203', '#3c060a'];
+  // smooth background (real gradients, no dither mesh)
+  let g = c.createLinearGradient(0, 0, 0, TH); g.addColorStop(0, bg[0]); g.addColorStop(1, bg[1]); c.fillStyle = g; c.fillRect(0, 0, TW, TH);
+  const s = o.s || 3.5, f = o.face, fw = f.width * s, fh = f.height * s, fx = o.fx || (TW - fw / 2 - 4), fy = o.fy || (TH - fh / 2 + 2);
+  // soft rim light behind the head
+  g = c.createRadialGradient(fx, fy - fh * 0.1, fw * 0.15, fx, fy - fh * 0.1, fw * 0.62); g.addColorStop(0, o.rim || '#e02020'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  c.save(); c.globalAlpha = o.rimA || 0.55; c.fillStyle = g; c.fillRect(0, 0, TW, TH); c.restore();
   blit(c, f, fx, fy, f.width / 2, f.height / 2, { s });
-  if (o.light !== false) { for (let r = 0; r < 9; r++) { c.fillStyle = DA('#000000', 0.62 - r * 0.07); c.fillRect(fx - fw / 2, fy - fh / 2 + r * fh / 18, fw, fh / 18 + 1); } }
-  for (const [ex, ey] of (o.eyes || [])) { const gx = fx - fw / 2 + ex * s, gy = fy - fh / 2 + ey * s; R(c, gx, gy, Math.max(2, s * 0.7), Math.max(2, s * 0.7), '#ffffff'); E(c, gx + 1, gy + 1, 6, 4, DA('#ff4040', 0.35)); }
-  const tl = o.title || [WORK.title]; let y = 14;
-  tl.forEach(line => { const sz = thumbFit(line, 168, 48); thumbText(c, line, 10, y, sz, o.tcol || C.white, '#000000', 3, '#5c0c10'); y += sz + 8; });
-  if (o.hook) { const sz = thumbFit(o.hook, 176, 24); thumbText(c, o.hook, 10, y + 4, sz, o.hcol || '#ff4848', '#000000', 2); }
+  // optional glowing eyes (portrait coordinates)
+  for (const [ex, ey] of (o.eyes || [])) { const gx = fx - fw / 2 + ex * s, gy = fy - fh / 2 + ey * s; g = c.createRadialGradient(gx, gy, 0, gx, gy, s * 3); g.addColorStop(0, 'rgba(255,60,60,0.8)'); g.addColorStop(1, 'rgba(255,0,0,0)'); c.fillStyle = g; c.fillRect(gx - s * 3, gy - s * 3, s * 6, s * 6); }
+  // left side darkened smoothly so the words stand out
+  g = c.createLinearGradient(0, 0, 200, 0); g.addColorStop(0, 'rgba(0,0,0,0.7)'); g.addColorStop(0.75, 'rgba(0,0,0,0.35)'); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0, 0, 200, TH);
+  const tl = o.title || [WORK.title]; let y = 12;
+  tl.forEach(line => { const sz = thumbFit(line, 164, 48); thumbText(c, line, 10, y, sz, o.tcol || C.white, '#000000', 3, '#5c0c10'); y += sz + 8; });
+  if (o.hook) { const sz = thumbFit(o.hook, 164, 24), hw = thumbW(o.hook, sz); R(c, 6, y + 1, hw + 10, sz + 8, o.hbg || '#b01010'); thumbText(c, o.hook, 11, y + 5, sz, o.hcol || '#ffffff', '#000000', 2); }
   const lbl = SERIES[WORK.series].name + '#' + WORK.no, lw = thumbW(lbl, 16);
-  R(c, TW - lw - 12, TH - 22, lw + 10, 20, DA('#000000', 0.6)); TX(c, lbl, TW - lw - 7, TH - 20, BR.cream, 16, null);
+  R(c, TW - lw - 12, TH - 22, lw + 10, 20, 'rgba(0,0,0,0.6)'); TX(c, lbl, TW - lw - 7, TH - 20, BR.cream, 16, null);
 }

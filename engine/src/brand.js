@@ -117,14 +117,14 @@ function drawGameWin(f, st, t) {
   const sp = SPK[st.spk] || { bg: ['#222', '#444'] };
   const fb = cached('fbg' + st.spk, () => { const [cv, x] = mk(48, 48); VG(x, 0, 0, 48, 48, [sp.bg[1], sp.bg[0]]); return cv; });
   f.save(); f.scale(2, 2);
-  frameBox(f, 4, 131, 312, 46, winBg);           // window
-  frameBox(f, 8, 134, 42, 42, null);             // face frame (inner 34x34)
-  f.drawImage(fb, 12, 138, 34, 34);
-  if (st.name) { const nw = textSpr(st.name, 16, C.uiY).width; frameBox(f, 4, 117, Math.ceil(nw / 2) + 12, 15, winBg); }
+  frameBox(f, 4, 129, 312, 48, winBg);           // window
+  frameBox(f, 8, 131, 44, 44, null);             // face frame (inner 36x36)
+  f.drawImage(fb, 12, 135, 36, 36);
+  if (st.name) { const nw = textSpr(st.name, 16, C.uiY).width; frameBox(f, 4, 115, Math.ceil(nw / 2) + 12, 15, winBg); }
   f.restore();
-  f.drawImage(st.face, 7, 3, 34, 34, 24, 276, 68, 68); // the face part of the 48x48 portrait, at 2x like the scene
-  if (st.name) TX(f, st.name, 20, 241, C.uiY, 16, null);
-  lines.forEach(([l, v], i) => { if (v) TX(f, v, 116, 284 + i * lh, C.uiB, size, null); });
+  f.drawImage(st.face, 0, 0, 48, 48, 24, 270, 72, 72); // the whole 48x48 portrait at 1.5x (never cropped)
+  if (st.name) TX(f, st.name, 20, 237, C.uiY, 16, null);
+  lines.forEach(([l, v], i) => { if (v) TX(f, v, 120, 282 + i * lh, C.uiB, size, null); });
   if (lines.length && lines[lines.length - 1][1].length === lines[lines.length - 1][0].length && (Math.floor(t * 3) & 1) === 0) { const by = 340 + (Math.floor(t * 6) & 1) * 2; PF(f, [606, by, 618, by, 612, by + 7], C.uiB); }
 }
 function composeFrame(mode, T) {
