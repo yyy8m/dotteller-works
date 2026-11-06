@@ -1666,21 +1666,22 @@ function drawSubs(f, st, cx, yBottom, perLine, lh, face, size = 16, maxL = 3) {
 }
 /* wide video: the game's dialog window (chunky 2x frame, name plate, face, typewriter text, blinking ▼) */
 function drawGameWin(f, st, t) {
-  const perLine = 21, size = 24, lh = 30, maxL = 2;
+  const perLine = 20, size = 24, lh = 30, maxL = 2;
   const full = wrapJa(st.full.join(''), perLine), vis = st.lines.join(''); let k = 0;
   let lines = full.map(l => { const v = vis.slice(k, k + l.length); k += l.length; return [l, v]; });
   if (lines.length > maxL) { const last = Math.max(maxL, lines.findLastIndex(x => x[1]) + 1); lines = lines.slice(last - maxL, last); }
-  f.save(); f.scale(2, 2);
-  frameBox(f, 4, 139, 312, 38, winBg);
-  frameBox(f, 9, 143, 30, 30, null);
   const sp = SPK[st.spk] || { bg: ['#222', '#444'] };
   const fb = cached('fbg' + st.spk, () => { const [cv, x] = mk(48, 48); VG(x, 0, 0, 48, 48, [sp.bg[1], sp.bg[0]]); return cv; });
-  f.drawImage(fb, 13, 147, 22, 22);
+  f.save(); f.scale(2, 2);
+  frameBox(f, 4, 131, 312, 46, winBg);           // window
+  frameBox(f, 8, 134, 42, 42, null);             // face frame (inner 34x34)
+  f.drawImage(fb, 12, 138, 34, 34);
+  if (st.name) { const nw = textSpr(st.name, 16, C.uiY).width; frameBox(f, 4, 117, Math.ceil(nw / 2) + 12, 15, winBg); }
   f.restore();
-  f.save(); f.beginPath(); f.rect(26, 294, 44, 44); f.clip(); f.drawImage(st.face, 24, 292, 48, 48); f.restore();
-  if (st.name) { const nw = textSpr(st.name, 16, C.uiY).width; f.save(); f.scale(2, 2); frameBox(f, 4, 125, Math.ceil(nw / 2) + 12, 15, winBg); f.restore(); TX(f, st.name, 20, 257, C.uiY, 16, null); }
-  lines.forEach(([l, v], i) => { if (v) TX(f, v, 96, 292 + i * lh, C.uiB, size, null); });
-  if (lines.length && lines[lines.length - 1][1].length === lines[lines.length - 1][0].length && (Math.floor(t * 3) & 1) === 0) { const by = 338 + (Math.floor(t * 6) & 1) * 2; PF(f, [606, by, 618, by, 612, by + 7], C.uiB); }
+  f.drawImage(st.face, 7, 3, 34, 34, 24, 276, 68, 68); // the face part of the 48x48 portrait, at 2x like the scene
+  if (st.name) TX(f, st.name, 20, 241, C.uiY, 16, null);
+  lines.forEach(([l, v], i) => { if (v) TX(f, v, 116, 284 + i * lh, C.uiB, size, null); });
+  if (lines.length && lines[lines.length - 1][1].length === lines[lines.length - 1][0].length && (Math.floor(t * 3) & 1) === 0) { const by = 340 + (Math.floor(t * 6) & 1) * 2; PF(f, [606, by, 618, by, 612, by + 7], C.uiB); }
 }
 function composeFrame(mode, T) {
   const wide = mode === 'wide';
