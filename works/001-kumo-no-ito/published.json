@@ -10,6 +10,13 @@
  ],
  "blog_post_id": "3010234550194888788",
  "blog_url": "https://somosomo-cho.blogspot.com/2026/11/001.html",
- "youtube_main": "https://youtu.be/TE_B44JIzgM",
- "youtube_short": "https://youtu.be/Y9etqO-iTD8"
+ "replaced": [
+  {
+   "youtube_main": "https://youtu.be/TE_B44JIzgM",
+   "youtube_short": "https://youtu.be/Y9etqO-iTD8",
+   "note": "2分版（2026-11-06 長尺版に差し替え・削除）"
+  }
+ ],
+ "youtube_main": "https://youtu.be/vGKyeEO86wQ",
+ "youtube_short": "https://youtu.be/euVDeDWB8pA"
 }
