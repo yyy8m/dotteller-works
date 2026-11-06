@@ -108,6 +108,24 @@ function drawSubs(f, st, cx, yBottom, perLine, lh, face, size = 16, maxL = 3) {
   lines.forEach(([l, v], i) => { const w = textSpr(l, size, '#fff').width - 2; if (v) outlineText(f, v, cx - w / 2, y0 + i * lh, C.white, size, size > 16 ? 3 : 2); });
   if (face) { const fx = 8, fy = y0 - 8 - 54; R(f, fx - 2, fy - 2, 52, 52, '#000000'); R(f, fx - 1, fy - 1, 50, 50, BR.cream); R(f, fx, fy, 48, 48, (SPK[st.spk] || { bg: ['#222', '#444'] }).bg[0]); f.drawImage(st.face, fx - 1, fy - 1); outlineText(f, st.name, fx + 56, fy + 30, C.uiY, 16, 1); }
 }
+/* wide video: the game's dialog window (chunky 2x frame, name plate, face, typewriter text, blinking ▼) */
+function drawGameWin(f, st, t) {
+  const perLine = 21, size = 24, lh = 30, maxL = 2;
+  const full = wrapJa(st.full.join(''), perLine), vis = st.lines.join(''); let k = 0;
+  let lines = full.map(l => { const v = vis.slice(k, k + l.length); k += l.length; return [l, v]; });
+  if (lines.length > maxL) { const last = Math.max(maxL, lines.findLastIndex(x => x[1]) + 1); lines = lines.slice(last - maxL, last); }
+  f.save(); f.scale(2, 2);
+  frameBox(f, 4, 141, 312, 38, winBg);
+  frameBox(f, 9, 145, 30, 30, null);
+  const sp = SPK[st.spk] || { bg: ['#222', '#444'] };
+  const fb = cached('fbg' + st.spk, () => { const [cv, x] = mk(48, 48); VG(x, 0, 0, 48, 48, [sp.bg[1], sp.bg[0]]); return cv; });
+  f.drawImage(fb, 13, 149, 22, 22);
+  f.restore();
+  f.save(); f.beginPath(); f.rect(26, 298, 44, 44); f.clip(); f.drawImage(st.face, 24, 296, 48, 48); f.restore();
+  if (st.name) { const nw = textSpr(st.name, 16, C.uiY).width; f.save(); f.scale(2, 2); frameBox(f, 44, 131, Math.ceil(nw / 2) + 10, 15, winBg); f.restore(); TX(f, st.name, 98, 269, C.uiY, 16, null); }
+  lines.forEach(([l, v], i) => { if (v) TX(f, v, 96, 296 + i * lh, C.uiB, size, null); });
+  if (lines.length && lines[lines.length - 1][1].length === lines[lines.length - 1][0].length && (Math.floor(t * 3) & 1) === 0) { const by = 344 + (Math.floor(t * 6) & 1) * 2; PF(f, [606, by, 618, by, 612, by + 7], C.uiB); }
+}
 function composeFrame(mode, T) {
   const wide = mode === 'wide';
   if (!FRAME[mode]) FRAME[mode] = mk(wide ? 640 : 360, wide ? 360 : 640);
@@ -118,8 +136,7 @@ function composeFrame(mode, T) {
   const st = T >= 0 ? subtitleState(T) : null;
   if (wide) {
     f.drawImage(cv, 0, 0, W, 180, 0, 0, 640, 360);
-    if (st) drawSubs(f, st, 360, 346, 30, 20, true);
-    else { const lw = logoMetrics(16).w; logoAt(f, 640 - lw - 10, 336, 16, t); }
+    if (st) drawGameWin(f, st, t);
     return fc;
   }
   R(f, 0, 0, 360, 640, '#05080a'); c0: {

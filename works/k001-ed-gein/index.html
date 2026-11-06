@@ -1060,18 +1060,18 @@ function horrorGrade(ox, tl, S) {
   const im = ox.getImageData(0, 0, W, H), d = im.data, k = o.k;
   const fl = 1 - 0.06 * (hash(Math.floor(tl * 12)) > 0.85 ? 1 : 0) * k, fseed = Math.floor(tl * 15);
   for (let y = 0; y < H; y++) {
-    const scan = (y & 1) ? 0.93 : 1, vy = (y - 120) / 120;
+    const scan = (y & 1) ? 0.96 : 1, vy = (y - 90) / 110;
     for (let x = 0; x < W; x++) {
       const i = (y * W + x) * 4; let r = d[i], g = d[i + 1], b = d[i + 2];
       const lum = r * 0.3 + g * 0.59 + b * 0.11;
       const red = r > 90 && r > g * 1.7 && r > b * 1.7; // blood / red light stays saturated
       let nr, ng, nb;
       if (red) { nr = r * 1.05; ng = g * 0.7; nb = b * 0.7; }
-      else { const hi = clamp((lum - 150) / 80, 0, 1), s = 0.48 + 0.4 * hi, cool = 1 - hi; nr = lum + (r - lum) * s - 6 * cool; ng = lum + (g - lum) * s + 3 * cool; nb = lum + (b - lum) * s + 10 * cool; } // cold shadows, warm lights kept
-      const vx = (x - 160) / 160, v = 1 - 0.55 * Math.min(1, (vx * vx + vy * vy) * 0.75); // vignette
+      else { const hi = clamp((lum - 150) / 80, 0, 1), s = 0.6 + 0.35 * hi, cool = 1 - hi; nr = lum + (r - lum) * s - 6 * cool; ng = lum + (g - lum) * s + 3 * cool; nb = lum + (b - lum) * s + 10 * cool; } // cold shadows, warm lights kept
+      const vx = (x - 160) / 160, v = 1 - 0.3 * Math.min(1, (vx * vx + vy * vy) * 0.75); // vignette
       const crush = Math.pow(Math.max(0, lum) / 255, 0.25) ; // darker darks
       const gr = (hash(i * 7 + fseed * 131) - 0.5) * 18; // grain
-      const m = scan * v * fl * (0.75 + 0.25 * crush);
+      const m = 1.08 * scan * v * fl * (0.88 + 0.12 * crush);
       d[i] = lerp(r, nr * m + gr, k); d[i + 1] = lerp(g, ng * m + gr, k); d[i + 2] = lerp(b, nb * m + gr, k);
     }
   }
@@ -1802,6 +1802,24 @@ function drawSubs(f, st, cx, yBottom, perLine, lh, face, size = 16, maxL = 3) {
   lines.forEach(([l, v], i) => { const w = textSpr(l, size, '#fff').width - 2; if (v) outlineText(f, v, cx - w / 2, y0 + i * lh, C.white, size, size > 16 ? 3 : 2); });
   if (face) { const fx = 8, fy = y0 - 8 - 54; R(f, fx - 2, fy - 2, 52, 52, '#000000'); R(f, fx - 1, fy - 1, 50, 50, BR.cream); R(f, fx, fy, 48, 48, (SPK[st.spk] || { bg: ['#222', '#444'] }).bg[0]); f.drawImage(st.face, fx - 1, fy - 1); outlineText(f, st.name, fx + 56, fy + 30, C.uiY, 16, 1); }
 }
+/* wide video: the game's dialog window (chunky 2x frame, name plate, face, typewriter text, blinking ▼) */
+function drawGameWin(f, st, t) {
+  const perLine = 21, size = 24, lh = 30, maxL = 2;
+  const full = wrapJa(st.full.join(''), perLine), vis = st.lines.join(''); let k = 0;
+  let lines = full.map(l => { const v = vis.slice(k, k + l.length); k += l.length; return [l, v]; });
+  if (lines.length > maxL) { const last = Math.max(maxL, lines.findLastIndex(x => x[1]) + 1); lines = lines.slice(last - maxL, last); }
+  f.save(); f.scale(2, 2);
+  frameBox(f, 4, 141, 312, 38, winBg);
+  frameBox(f, 9, 145, 30, 30, null);
+  const sp = SPK[st.spk] || { bg: ['#222', '#444'] };
+  const fb = cached('fbg' + st.spk, () => { const [cv, x] = mk(48, 48); VG(x, 0, 0, 48, 48, [sp.bg[1], sp.bg[0]]); return cv; });
+  f.drawImage(fb, 13, 149, 22, 22);
+  f.restore();
+  f.save(); f.beginPath(); f.rect(26, 298, 44, 44); f.clip(); f.drawImage(st.face, 24, 296, 48, 48); f.restore();
+  if (st.name) { const nw = textSpr(st.name, 16, C.uiY).width; f.save(); f.scale(2, 2); frameBox(f, 44, 131, Math.ceil(nw / 2) + 10, 15, winBg); f.restore(); TX(f, st.name, 98, 269, C.uiY, 16, null); }
+  lines.forEach(([l, v], i) => { if (v) TX(f, v, 96, 296 + i * lh, C.uiB, size, null); });
+  if (lines.length && lines[lines.length - 1][1].length === lines[lines.length - 1][0].length && (Math.floor(t * 3) & 1) === 0) { const by = 344 + (Math.floor(t * 6) & 1) * 2; PF(f, [606, by, 618, by, 612, by + 7], C.uiB); }
+}
 function composeFrame(mode, T) {
   const wide = mode === 'wide';
   if (!FRAME[mode]) FRAME[mode] = mk(wide ? 640 : 360, wide ? 360 : 640);
@@ -1812,8 +1830,7 @@ function composeFrame(mode, T) {
   const st = T >= 0 ? subtitleState(T) : null;
   if (wide) {
     f.drawImage(cv, 0, 0, W, 180, 0, 0, 640, 360);
-    if (st) drawSubs(f, st, 360, 346, 30, 20, true);
-    else { const lw = logoMetrics(16).w; logoAt(f, 640 - lw - 10, 336, 16, t); }
+    if (st) drawGameWin(f, st, t);
     return fc;
   }
   R(f, 0, 0, 360, 640, '#05080a'); c0: {

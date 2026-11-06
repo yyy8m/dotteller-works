@@ -239,18 +239,18 @@ function horrorGrade(ox, tl, S) {
   const im = ox.getImageData(0, 0, W, H), d = im.data, k = o.k;
   const fl = 1 - 0.06 * (hash(Math.floor(tl * 12)) > 0.85 ? 1 : 0) * k, fseed = Math.floor(tl * 15);
   for (let y = 0; y < H; y++) {
-    const scan = (y & 1) ? 0.93 : 1, vy = (y - 120) / 120;
+    const scan = (y & 1) ? 0.96 : 1, vy = (y - 90) / 110;
     for (let x = 0; x < W; x++) {
       const i = (y * W + x) * 4; let r = d[i], g = d[i + 1], b = d[i + 2];
       const lum = r * 0.3 + g * 0.59 + b * 0.11;
       const red = r > 90 && r > g * 1.7 && r > b * 1.7; // blood / red light stays saturated
       let nr, ng, nb;
       if (red) { nr = r * 1.05; ng = g * 0.7; nb = b * 0.7; }
-      else { const hi = clamp((lum - 150) / 80, 0, 1), s = 0.48 + 0.4 * hi, cool = 1 - hi; nr = lum + (r - lum) * s - 6 * cool; ng = lum + (g - lum) * s + 3 * cool; nb = lum + (b - lum) * s + 10 * cool; } // cold shadows, warm lights kept
-      const vx = (x - 160) / 160, v = 1 - 0.55 * Math.min(1, (vx * vx + vy * vy) * 0.75); // vignette
+      else { const hi = clamp((lum - 150) / 80, 0, 1), s = 0.6 + 0.35 * hi, cool = 1 - hi; nr = lum + (r - lum) * s - 6 * cool; ng = lum + (g - lum) * s + 3 * cool; nb = lum + (b - lum) * s + 10 * cool; } // cold shadows, warm lights kept
+      const vx = (x - 160) / 160, v = 1 - 0.3 * Math.min(1, (vx * vx + vy * vy) * 0.75); // vignette
       const crush = Math.pow(Math.max(0, lum) / 255, 0.25) ; // darker darks
       const gr = (hash(i * 7 + fseed * 131) - 0.5) * 18; // grain
-      const m = scan * v * fl * (0.75 + 0.25 * crush);
+      const m = 1.08 * scan * v * fl * (0.88 + 0.12 * crush);
       d[i] = lerp(r, nr * m + gr, k); d[i + 1] = lerp(g, ng * m + gr, k); d[i + 2] = lerp(b, nb * m + gr, k);
     }
   }
