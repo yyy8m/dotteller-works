@@ -1671,16 +1671,16 @@ function drawGameWin(f, st, t) {
   let lines = full.map(l => { const v = vis.slice(k, k + l.length); k += l.length; return [l, v]; });
   if (lines.length > maxL) { const last = Math.max(maxL, lines.findLastIndex(x => x[1]) + 1); lines = lines.slice(last - maxL, last); }
   f.save(); f.scale(2, 2);
-  frameBox(f, 4, 141, 312, 38, winBg);
-  frameBox(f, 9, 145, 30, 30, null);
+  frameBox(f, 4, 139, 312, 38, winBg);
+  frameBox(f, 9, 143, 30, 30, null);
   const sp = SPK[st.spk] || { bg: ['#222', '#444'] };
   const fb = cached('fbg' + st.spk, () => { const [cv, x] = mk(48, 48); VG(x, 0, 0, 48, 48, [sp.bg[1], sp.bg[0]]); return cv; });
-  f.drawImage(fb, 13, 149, 22, 22);
+  f.drawImage(fb, 13, 147, 22, 22);
   f.restore();
-  f.save(); f.beginPath(); f.rect(26, 298, 44, 44); f.clip(); f.drawImage(st.face, 24, 296, 48, 48); f.restore();
-  if (st.name) { const nw = textSpr(st.name, 16, C.uiY).width; f.save(); f.scale(2, 2); frameBox(f, 44, 131, Math.ceil(nw / 2) + 10, 15, winBg); f.restore(); TX(f, st.name, 98, 269, C.uiY, 16, null); }
-  lines.forEach(([l, v], i) => { if (v) TX(f, v, 96, 296 + i * lh, C.uiB, size, null); });
-  if (lines.length && lines[lines.length - 1][1].length === lines[lines.length - 1][0].length && (Math.floor(t * 3) & 1) === 0) { const by = 344 + (Math.floor(t * 6) & 1) * 2; PF(f, [606, by, 618, by, 612, by + 7], C.uiB); }
+  f.save(); f.beginPath(); f.rect(26, 294, 44, 44); f.clip(); f.drawImage(st.face, 24, 292, 48, 48); f.restore();
+  if (st.name) { const nw = textSpr(st.name, 16, C.uiY).width; f.save(); f.scale(2, 2); frameBox(f, 4, 125, Math.ceil(nw / 2) + 12, 15, winBg); f.restore(); TX(f, st.name, 20, 257, C.uiY, 16, null); }
+  lines.forEach(([l, v], i) => { if (v) TX(f, v, 96, 292 + i * lh, C.uiB, size, null); });
+  if (lines.length && lines[lines.length - 1][1].length === lines[lines.length - 1][0].length && (Math.floor(t * 3) & 1) === 0) { const by = 338 + (Math.floor(t * 6) & 1) * 2; PF(f, [606, by, 618, by, 612, by + 7], C.uiB); }
 }
 function composeFrame(mode, T) {
   const wide = mode === 'wide';
