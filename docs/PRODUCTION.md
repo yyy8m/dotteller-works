@@ -26,6 +26,13 @@ whoami が失敗したら、その時点で止めてエラーを日本語でま�
   curl -sS -A "dotgatari-factcheck/1.0 (personal script)" -G https://ja.wikipedia.org/w/index.php --data-urlencode "title=記事名" -d action=raw -o article.wiki
   ```
   記事にない話（日付・地名・人数・セリフ）は入れない。英語版にしかない話も入れない。確証のない話は「〜と言われています」。表現の決まりは `docs/SCHEDULE.md` の「作り方の決まり」。
+- 文庫の原作は青空文庫から取得して全文を読み、`works/<id>/source_aozora.txt` に保存する（Shift_JIS の XHTML。`main_text` の部分からルビを除いて取り出す）。
+  ```bash
+  curl -sS -o src.html https://www.aozora.gr.jp/cards/<作家番号>/files/<ファイル名>.html
+  ```
+- 記録シリーズも人物の声を入れる（犯人本人・家族・警察など。`lines.json` の `speakers` に声を、`story.js` の `SPEAKERS_EXTRA` に名前と色を、`scenes*.js` の `PORTRAITS` に顔を）。
+  セリフは記事にある発言（「」で引かれたもの）を優先し、ない場合は短い反応（「なんだ、これは……！」など）だけにする。説明欄とブログに「※ 人物のセリフの一部は、記録をもとにした再現です。」を入れる。
+- ショートは30〜50秒（`HOOK` に画面上部のつかみ2行。2行目は赤字）。
 - 読み上げ用の `say` は、表示用 `text` と句読点の区切りをそろえる（「・」は使わない。年号は漢数字）。
 
 ## 3. 読みのチェック（必須）
