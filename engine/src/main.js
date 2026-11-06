@@ -153,6 +153,7 @@ function renderScene(i, tl, k) {
   const x0 = clamp(fx - fx / z + sx / z, 0, W - w), y0 = clamp(fy - fy / z + sy / z, 0, H - h);
   if (z === 1) ox.drawImage(WB, 0, 0); else ox.drawImage(WB, x0, y0, w, h, 0, 0, W, H);
   if (S.sc.post) { const im = ox.getImageData(0, 0, W, H); S.sc.post(im, tl, S); ox.putImageData(im, 0, 0); }
+  if (WORK.series === 'kiroku' && typeof horrorGrade === 'function') horrorGrade(ox, tl, S);
   for (const f of uiq) f(ox); // captions / year cards: drawn after the camera so they never get cropped
   return oc;
 }
