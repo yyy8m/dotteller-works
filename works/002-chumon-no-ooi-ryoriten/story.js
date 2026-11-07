@@ -52,4 +52,4 @@ SK.wideDY = 0; SL.wideDY = 8; SO.wideDY = 8;
 function TITLE_DECO(c, t) { // a door with a gold sign on the right
   R(c, 262, 150, 50, 70, '#5c3c24'); R(c, 266, 154, 42, 66, '#7c5434'); R(c, 270, 166, 34, 14, '#1c140c'); TX(c, '山猫軒', 271, 165, '#f8d860', 8, null);
 }
-SE.tallFit = true; SJ.tallFit = true;
+[SE, SF, SG, SH, SI, SJ].forEach(sc => sc.tallFit = true);
