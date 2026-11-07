@@ -1162,12 +1162,64 @@ function robeFig(st, o = {}) {
 function closeUp(c, t, face, o = {}) {
   const bg = o.bg || ['#1c0c08', '#5c2c14'];
   VG(c, 0, 0, W, H, [bg[0], bg[1], bg[0]]);
-  if (o.glow) { E(c, 160, 104, 110, 90, DA(o.glow, 0.12)); E(c, 160, 104, 80, 70, DA(o.glow, 0.12)); }
+  if (o.glow) glow(c, 160, 104, 120, 100, o.glow, 0.35);
   if (o.lines) for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + t * 0.2; L(c, 160 + Math.cos(a) * 90, 104 + Math.sin(a) * 90, 160 + Math.cos(a) * 200, 104 + Math.sin(a) * 200, DA(o.lines, 0.35)); }
   const br = Math.round(Math.sin(t * 2.2) * 1);
   blit(c, face, 160, 110 + br, 24, 24, { s: o.s || 3.5 });
   if (o.after) o.after(c, t);
   return { z: 1 + 0.03 * Math.sin(t * 0.5), fx: 160, fy: 104 };
+}
+
+/* ---- detailed figure in Western clothes (26x58, feet anchor 13,57): hunting jacket, trousers, boots ----
+   st: { id, coat, coat2, pants, boots, skin, hair, hat: 'hunt'|'bowler'|null, hatCol, moustache, glasses }
+   o:  { f, arm: null|'up'|'point'|'reach'|'rifle'|'cover', expr, blink, noHat, noCoat, cream, k } */
+function suitFig(st, o = {}) {
+  const f = o.f == null ? -1 : o.f, arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
+  return SPR('sf' + st.id + (o.k || '') + f + arm + ex + bl + (o.noHat ? 'h' : '') + (o.noCoat ? 'c' : '') + (o.cream ? 'w' : ''), 26, 58, c => {
+    const sw = f < 0 ? 0 : [0, 3, 0, -3][f & 3], bob = f < 0 ? 0 : (f & 1);
+    const coat = o.noCoat ? '#f0ece4' : st.coat, coat2 = o.noCoat ? '#d4cec4' : (st.coat2 || st.coat);
+    const sk = o.cream ? '#fcfaf2' : (st.skin || '#f0c8a8'), sk2 = o.cream ? '#e0dcd0' : '#c89c7c';
+    // legs & boots (barefoot when the shoes are taken)
+    L(c, 10, 36 - bob, 9 + sw, 53, st.pants, 4); L(c, 16, 36 - bob, 17 - sw, 53, st.pants, 4);
+    if (o.noCoat) { R(c, 7 + sw, 53, 5, 3, sk); R(c, 15 - sw, 53, 5, 3, sk); } else { R(c, 7 + sw, 47, 5, 9, st.boots || '#2c2420'); R(c, 15 - sw, 47, 5, 9, st.boots || '#2c2420'); }
+    // body
+    PF(c, [7, 20 - bob, 19, 20 - bob, 20, 38 - bob, 6, 38 - bob], coat); PF(c, [13, 20 - bob, 19, 20 - bob, 20, 38 - bob, 13, 38 - bob], coat2);
+    if (!o.noCoat) { R(c, 6, 31 - bob, 14, 2, '#3c2c1c'); R(c, 12, 31 - bob, 3, 2, '#d8b84c'); for (let y = 22; y < 30; y += 3) P(c, 13, y - bob, '#f8d860'); L(c, 10, 20 - bob, 13, 25 - bob, '#f4f0e8'); L(c, 16, 20 - bob, 13, 25 - bob, '#f4f0e8'); }
+    else { L(c, 13, 21 - bob, 13, 37 - bob, '#c8c0b4'); }
+    // arms
+    const arm1 = (ex1, ey1) => { L(c, 7, 22 - bob, ex1, ey1, coat, 3); E(c, ex1, ey1 + 1, 1.6, 1.6, sk); };
+    arm1(5 - sw * 0.5, 36 - bob);
+    if (arm === 'up') { L(c, 19, 22 - bob, 23, 8, coat2, 3); E(c, 23, 7, 1.6, 1.6, sk); }
+    else if (arm === 'point') { L(c, 19, 22 - bob, 25, 24 - bob, coat2, 3); E(c, 25, 24 - bob, 1.6, 1.6, sk); }
+    else if (arm === 'reach') { L(c, 19, 22 - bob, 24, 30 - bob, coat2, 3); E(c, 24, 31 - bob, 1.6, 1.6, sk); }
+    else if (arm === 'cover') { L(c, 19, 22 - bob, 15, 12, coat2, 3); E(c, 15, 11, 2, 2, sk); }
+    else { L(c, 19, 22 - bob, 21 + sw * 0.5, 36 - bob, coat2, 3); E(c, 21 + sw * 0.5, 37 - bob, 1.6, 1.6, sk); }
+    if (arm === 'rifle') { L(c, 3, 12 - bob, 22, 34 - bob, '#5c3c24', 2); L(c, 3, 12 - bob, 9, 19 - bob, '#3c3c44', 2); }
+    // head
+    const hx = 13, hy = 12 - bob;
+    R(c, hx - 2, hy + 5, 4, 3, sk2); E(c, hx, hy, 6, 7, sk2); E(c, hx - 0.4, hy - 0.4, 5.6, 6.6, sk);
+    PF(c, [hx - 6, hy, hx - 6, hy - 4, hx - 2, hy - 7, hx + 4, hy - 7, hx + 6, hy - 4, hx + 6, hy, hx + 4, hy - 3, hx - 4, hy - 3], st.hair || '#5c3c24');
+    if (!o.noHat && st.hat === 'hunt') { R(c, hx - 6, hy - 8, 12, 4, st.hatCol || '#4c4030'); R(c, hx - 7, hy - 5, 15, 2, st.hatCol || '#4c4030'); R(c, hx + 4, hy - 9, 2, 2, '#c8302c'); }
+    if (!o.noHat && st.hat === 'straw') { PF(c, [hx - 11, hy - 3, hx, hy - 13, hx + 11, hy - 3], '#c8a860'); for (let k = -8; k <= 8; k += 4) L(c, hx, hy - 12, hx + k, hy - 3, '#a88c48'); R(c, hx - 11, hy - 4, 22, 1, '#8c7034'); }
+    if (st.mino) { for (let k = 0; k < 9; k++) L(c, 6 + k * 2, 19 - bob, 4 + k * 2.4, 40 - bob + (k & 1) * 2, k & 1 ? '#a88c48' : '#c8a860', 2); }
+    if (!o.noHat && st.hat === 'bowler') { E(c, hx, hy - 6, 6, 4, st.hatCol || '#2c2c2c'); R(c, hx - 8, hy - 4, 16, 2, st.hatCol || '#2c2c2c'); }
+    const ey = hy;
+    if (bl === 2) { L(c, hx - 3, ey, hx - 2, ey, '#2c1c14'); L(c, hx + 2, ey, hx + 3, ey, '#2c1c14'); }
+    else { R(c, hx - 3, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); R(c, hx + 2, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); }
+    if (st.glasses) { R(c, hx - 5, ey - 2, 5, 1, '#1c1c1c'); R(c, hx + 1, ey - 2, 5, 1, '#1c1c1c'); R(c, hx - 5, ey + 1, 5, 1, '#1c1c1c'); R(c, hx + 1, ey + 1, 5, 1, '#1c1c1c'); P(c, hx, ey - 1, '#1c1c1c'); }
+    if (ex === 'sad' || ex === 'cry' || ex === 'shock') { L(c, hx - 4, ey - 3, hx - 1, ey - 4, '#3c2c1c'); L(c, hx + 1, ey - 4, hx + 4, ey - 3, '#3c2c1c'); }
+    if (ex === 'cry') { R(c, hx - 3, ey + 1, 1, 4, '#88c8f8'); R(c, hx + 2, ey + 1, 1, 4, '#88c8f8'); }
+    if (st.moustache) PF(c, [hx - 4, ey + 3, hx, ey + 2, hx + 4, ey + 3, hx + 2, ey + 4, hx - 2, ey + 4], '#4c3020');
+    if (ex === 'shock') E(c, hx, ey + 5, 1.5, 1.6, '#5c1c1c'); else if (ex === 'smile') { L(c, hx - 2, ey + 4, hx, ey + 5, '#8c4c3c'); L(c, hx, ey + 5, hx + 2, ey + 4, '#8c4c3c'); } else R(c, hx - 1, ey + 5, 3, 1, '#8c4c3c');
+  });
+}
+
+/* soft round glow with real alpha (no dither dots) */
+function glow(c, x, y, rx, ry, col, a = 0.3) {
+  if (a <= 0 || rx <= 0 || ry <= 0) return; const [r, g, b] = hex(col);
+  c.save(); c.translate(x, y); c.scale(1, ry / rx);
+  const gr = c.createRadialGradient(0, 0, 0, 0, 0, rx); gr.addColorStop(0, `rgba(${r},${g},${b},${Math.min(1, a)})`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  c.fillStyle = gr; c.fillRect(-rx, -rx, rx * 2, rx * 2); c.restore();
 }
 
 /* ================= 文庫 #003 杜子春: cast & props ================= */
@@ -1188,7 +1240,7 @@ function oldMan(c, x, y, s, o = {}) {
   const st = { id: 'omK', robe: '#a8a498', robe2: '#8c887c', trim: '#e8e4d8', sash: '#5c4c3c', old: true, beard: true, squint: true, hat: 'cap', hatCol: '#1c1c24' };
   const spr = robeFig(st, { f: o.f, arm: o.arm === 'fwd' ? 'point' : (o.arm || 'staff'), expr: o.expr, blink: o.blink, k: o.k });
   blit(c, a < 1 ? ditherFade(spr, a, 'omf' + (o.k || '')) : spr, x, y, FIG_AX2, FIG_AY2, { s: s * 0.72, flip: o.flip });
-  if (o.glow) E(c, x, y - 30 * s * 0.72, 22, 30, DA('#f8f0c0', 0.12 * a));
+  if (o.glow) glow(c, x, y - 30 * s * 0.72, 22, 30, '#f8f0c0', 2 * (0.12 * a));
 }
 /* faces for the dialog window (48x48) */
 function toshiFace(o = {}) {
@@ -1252,12 +1304,12 @@ const PORTRAITS = {
 function sunsetSky(c, t, o = {}) {
   VG(c, 0, 0, W, 130, o.night ? ['#1c1c3c', '#3c2c4c', '#7c4c4c'] : ['#5c6ca8', '#c8788c', '#f0a860', '#f8d08c']);
   const mx = 250, my = 24; ER(c, mx, my, 9, 9, '#fcf8e8', -1.2, 1.2); // thin crescent moon
-  for (let i = 0; i < 4; i++) { const x = mod(i * 110 - t * 3, 440) - 60; E(c, x, 40 + i * 9, 50, 5, DA('#f8c8a8', 0.5)); }
+  for (let i = 0; i < 4; i++) { const x = mod(i * 110 - t * 3, 440) - 60; glow(c, x, 40 + i * 9, 50, 5, '#f8c8a8', 2 * (0.5)); }
 }
 /* the west gate of Luoyang: city wall + a two-storey gate tower */
 function westGate(c, t, o = {}) {
   sunsetSky(c, t, o);
-  if (!o.night) { const sy = 92; E(c, 60, sy, 34, 34, DA('#f8d080', 0.35)); E(c, 60, sy, 20, 20, '#f8c060'); E(c, 60, sy, 14, 14, '#fce8a0'); }
+  if (!o.night) { const sy = 92; glow(c, 60, sy, 34, 34, '#f8d080', 2 * (0.35)); E(c, 60, sy, 20, 20, '#f8c060'); E(c, 60, sy, 14, 14, '#fce8a0'); }
   // far city roofs
   for (let i = 0; i < 9; i++) { const x = i * 40 - 10, h = 10 + (i * 7 % 12); PF(c, [x, 78, x + 10, 78 - h, x + 30, 78 - h, x + 40, 78], o.night ? '#2c2034' : '#8c5c5c'); R(c, x + 6, 78 - h + 2, 28, 2, o.night ? '#1c1424' : '#6c3c44'); }
   // wall with crenellations
@@ -1273,7 +1325,7 @@ function westGate(c, t, o = {}) {
   PF(c, [gx - 56, 32, gx - 48, 26, gx - 34, 18, gx + 34, 18, gx + 48, 26, gx + 56, 32, gx + 42, 30, gx - 42, 30], '#2c2430'); R(c, gx - 4, 12, 8, 6, '#2c2430'); E(c, gx, 11, 2, 2, '#d8a838');
   R(c, gx - 14, 44, 28, 9, '#1c140c'); R(c, gx - 13, 45, 26, 7, '#3c2c1c'); TX(c, '西門', gx - 13, 44, '#f8d050', 8, null);
   // lanterns
-  for (const lx of [gx - 50, gx + 50]) { L(c, lx, 71, lx, 76, '#1c1c1c'); E(c, lx, 81, 4, 5, o.night ? '#f86030' : '#e84c2c'); R(c, lx - 3, 76, 6, 1, '#1c1c1c'); if (o.night) E(c, lx, 81, 10, 10, DA('#f8a040', 0.25)); }
+  for (const lx of [gx - 50, gx + 50]) { L(c, lx, 71, lx, 76, '#1c1c1c'); E(c, lx, 81, 4, 5, o.night ? '#f86030' : '#e84c2c'); R(c, lx - 3, 76, 6, 1, '#1c1c1c'); if (o.night) glow(c, lx, 81, 10, 10, '#f8a040', 2 * (0.25)); }
   // willow
   { const wx = 286; R(c, wx - 2, 96, 5, 54, '#4c3424'); for (let k = 0; k < 9; k++) { const sx = wx - 20 + k * 5, sw2 = Math.sin(t * 1.2 + k) * 2; L(c, sx, 92 + (k % 3) * 2, sx + sw2, 132 + (k % 4) * 4, o.night ? '#2c4c34' : '#6c9c48'); } E(c, wx, 92, 24, 10, o.night ? '#2c4c34' : '#7cac54'); }
   R(c, 0, 150, W, H - 150, o.night ? '#5c4c44' : '#b8946c'); for (let i = 0; i < 30; i++) R(c, (i * 47) % W, 152 + (i * 13 % 80), 6, 1, o.night ? '#4c3c34' : '#a8845c');
@@ -1289,7 +1341,7 @@ function westGate(c, t, o = {}) {
 }
 function goldPile(c, x, y, n, t) { for (let i = 0; i < n; i++) { const a = hash(i) * Math.PI, r = Math.sqrt(i / n) * 26; const px = x + Math.cos(a) * r * 1.4, py = y - Math.sin(a) * r * 0.7; R(c, px, py, 4, 3, i % 3 ? '#f8d050' : '#c89c28'); if ((Math.floor(t * 4) + i) % 23 === 0) P(c, px + 1, py, C.white); } }
 function mountainsFar(c, t, ox, y, cols) { for (let k = 0; k < 3; k++) for (let i = 0; i < 10; i++) { const x = mod(i * 70 + k * 23 - ox * (0.3 + k * 0.3), 560) - 80, h = 40 + (i * 17 % 30) + k * 10; PF(c, [x - 50, y + k * 18, x, y - h + k * 18, x + 50, y + k * 18], cols[k]); } }
-function bigDipper(c, t, x, y, s) { const pts = [[0, 0], [14, 4], [26, 4], [36, 10], [40, 22], [56, 24], [58, 10]]; pts.forEach(([a, b], i) => { const tw = 0.7 + 0.3 * Math.sin(t * 3 + i); E(c, x + a * s, y + b * s, 3 * s * tw, 3 * s * tw, DA('#f8f0c0', 0.25)); E(c, x + a * s, y + b * s, 1.2 * s, 1.2 * s, '#ffffff'); }); }
+function bigDipper(c, t, x, y, s) { const pts = [[0, 0], [14, 4], [26, 4], [36, 10], [40, 22], [56, 24], [58, 10]]; pts.forEach(([a, b], i) => { const tw = 0.7 + 0.3 * Math.sin(t * 3 + i); glow(c, x + a * s, y + b * s, 3 * s * tw, 3 * s * tw, '#f8f0c0', 2 * (0.25)); E(c, x + a * s, y + b * s, 1.2 * s, 1.2 * s, '#ffffff'); }); }
 function cliffRock(c, t) {
   VG(c, 0, 0, W, 150, ['#03040c', '#0a0e24', '#1a1e3c']);
   for (let i = 0; i < 60; i++) { const tw = (Math.floor(t * 2) + i) % 7; P(c, (i * 71 + 13) % W, (i * 37 + 5) % 118, tw ? '#c8c8e0' : '#5c5c80'); }
@@ -1302,7 +1354,7 @@ function cliffRock(c, t) {
   // the flat rock
   PF(c, [0, 136, 30, 126, 120, 122, 210, 124, 270, 128, 320, 126, 320, 150, 0, 150], '#4c4c64'); PF(c, [0, 136, 30, 126, 120, 122, 210, 124, 270, 128, 320, 126, 320, 130, 0, 140], '#6c6c88');
   for (let i = 0; i < 12; i++) L(c, 10 + i * 26, 130 + (i % 3) * 3, 22 + i * 26, 132 + (i % 3) * 3, '#3c3c54');
-  R(c, 0, 150, W, H - 150, '#06060e'); for (let i = 0; i < 6; i++) E(c, 30 + i * 56, 170 + (i % 2) * 6, 40, 6, DA('#3c3c64', 0.4));
+  R(c, 0, 150, W, H - 150, '#06060e'); for (let i = 0; i < 6; i++) glow(c, 30 + i * 56, 170 + (i % 2) * 6, 40, 6, '#3c3c64', 2 * (0.4));
 }
 /* a thin horse with a human face (the parents, reborn as beasts) */
 function horseSpr(t, who, o = {}) {
@@ -1344,7 +1396,7 @@ const ZB = {
   draw(c, t, S) {
     westGate(c, t, { dusk: true, clear: [80, 200] });
     if (t > S.tShadow) { // the long shadow of Toshishun on the ground, and the spot of its head
-      PF(c, [96, 150, 104, 150, 178, 168, 170, 172], DA('#3c2414', 0.6)); E(c, 176, 170, 6, 3, DA('#3c2414', 0.7));
+      PF(c, [96, 150, 104, 150, 178, 168, 170, 172], DA('#3c2414', 0.6)); glow(c, 176, 170, 6, 3, '#3c2414', 2 * (0.7));
       const k = sg(t, S.tShadow + 1.5, S.tShadow + 2); if (k > 0) { L(c, 170, 164, 182, 176, '#f8d050', 2); L(c, 182, 164, 170, 176, '#f8d050', 2); }
     }
     toshi(c, 100, 150, 1.6, { shock: t > S.tGone && t < S.tGone + 2, k: 'b' });
@@ -1364,7 +1416,7 @@ const ZC = {
     const k = ss(sg(t, S.tGold, S.tGold + 1.6));
     toshi(c, 110, 148, 1.6, { arm: t < S.tGold ? (Math.floor(t * 3) & 1 ? 'dig' : 'up') : 'up', rich: t > S.tRich, k: 'c' + (Math.floor(t * 3) & 1) });
     if (t < S.tGold) for (let i = 0; i < 4; i++) { const u = fr(t * 1.5 + i / 4); R(c, 150 + u * 20, 140 - Math.sin(u * 3) * 14, 3, 3, '#7c5c3c'); }
-    if (k > 0) { E(c, 190, 120, 70 * k, 40 * k, DA('#f8d050', 0.18)); R(c, 160, 118, 70, 22, '#7c4c2c'); E(c, 172, 144, 8, 8, '#3c2c20'); E(c, 220, 144, 8, 8, '#3c2c20'); goldPile(c, 195, 120, Math.floor(120 * k), t); }
+    if (k > 0) { glow(c, 190, 120, 70 * k, 40 * k, '#f8d050', 2 * (0.18)); R(c, 160, 118, 70, 22, '#7c4c2c'); E(c, 172, 144, 8, 8, '#3c2c20'); E(c, 220, 144, 8, 8, '#3c2c20'); goldPile(c, 195, 120, Math.floor(120 * k), t); }
     for (let i = 0; i < 12 * k; i++) { const u = fr(t * 0.8 + i / 12); P(c, 160 + hash(i) * 80, 118 - u * 50, (i & 1) ? '#ffffff' : '#f8d050'); }
     return { z: 1.06, fx: 160, fy: 108 };
   }
@@ -1377,7 +1429,7 @@ const ZD = {
     VG(c, 0, 0, W, 150, ['#3c0c0c', '#6c1c14', '#8c2c1c']);
     for (let x = 14; x < W; x += 74) { R(c, x, 0, 12, 150, '#b8302c'); R(c, x + 2, 0, 3, 150, '#d84c3c'); R(c, x - 3, 0, 18, 8, '#d8a838'); R(c, x - 3, 140, 18, 10, '#d8a838'); }
     for (let x = 0; x < W; x += 24) { PF(c, [x, 0, x + 12, 10, x + 24, 0], '#d8a838'); }
-    for (let i = 0; i < 5; i++) { const x = 50 + i * 56, y = 30 + Math.sin(t * 2 + i) * 2; L(c, x, 8, x, y - 11, '#3c1c14'); E(c, x, y, 8, 11, '#e83c2c'); R(c, x - 6, y - 4, 12, 1, '#c82c1c'); R(c, x - 6, y + 4, 12, 1, '#c82c1c'); R(c, x - 3, y - 12, 6, 2, '#d8a838'); R(c, x - 3, y + 11, 6, 2, '#d8a838'); E(c, x, y, 16, 18, DA('#f8c040', 0.12)); }
+    for (let i = 0; i < 5; i++) { const x = 50 + i * 56, y = 30 + Math.sin(t * 2 + i) * 2; L(c, x, 8, x, y - 11, '#3c1c14'); E(c, x, y, 8, 11, '#e83c2c'); R(c, x - 6, y - 4, 12, 1, '#c82c1c'); R(c, x - 6, y + 4, 12, 1, '#c82c1c'); R(c, x - 3, y - 12, 6, 2, '#d8a838'); R(c, x - 3, y + 11, 6, 2, '#d8a838'); glow(c, x, y, 16, 18, '#f8c040', 2 * (0.12)); }
     R(c, 0, 122, W, 28, '#5c2c1c'); for (let x = 0; x < W; x += 20) R(c, x, 122, 10, 28, '#6c3424'); R(c, 0, 150, W, H - 150, '#2c140c');
     // the banquet table with dishes and a gold cup
     R(c, 90, 118, 140, 8, '#8c3c1c'); R(c, 90, 116, 140, 3, '#a84c24'); R(c, 96, 126, 4, 22, '#5c2c14'); R(c, 220, 126, 4, 22, '#5c2c14');
@@ -1416,7 +1468,7 @@ const ZF = {
   draw(c, t, S) {
     westGate(c, t, { dusk: true, empty: t > S.tGone });
     const g = t < S.tGold ? 0 : t < S.tGone ? ss(sg(t, S.tGold, S.tGold + 1)) : 1 - ss(sg(t, S.tGone, S.tGone + 2.5));
-    if (g > 0) { E(c, 220, 140, 50 * g, 14 * g, DA('#f8d050', 0.3)); goldPile(c, 220, 140, Math.floor(80 * g), t); }
+    if (g > 0) { glow(c, 220, 140, 50 * g, 14 * g, '#f8d050', 2 * (0.3)); goldPile(c, 220, 140, Math.floor(80 * g), t); }
     toshi(c, 100, 150, 1.6, { rich: t > S.tGold && t < S.tGone + 1, k: 'f' });
     oldMan(c, 150, 150, 1.6, { flip: true, a: t < S.tOld ? 0 : t < S.tGold ? 1 : 1 - sg(t, S.tGold, S.tGold + 0.6), arm: 'fwd', k: 'f' });
     return { z: 1.1, fx: 140, fy: 108 };
@@ -1429,7 +1481,7 @@ const ZG = {
   draw(c, t, S) {
     westGate(c, t, { night: true, empty: true });
     const r = ss(sg(t, S.tReveal, S.tReveal + 1.5));
-    if (r > 0) { for (let k = 0; k < 3; k++) E(c, 160, 110, (30 + k * 16) * r, (40 + k * 14) * r, DA('#f8f0c0', 0.08)); for (let i = 0; i < 10; i++) { const u = fr(t * 0.4 + i / 10); P(c, 160 + Math.cos(i * 2 + t) * 30, 140 - u * 80, DA('#fff8d0', 1 - u)); } }
+    if (r > 0) { for (let k = 0; k < 3; k++) glow(c, 160, 110, (30 + k * 16) * r, (40 + k * 14) * r, '#f8f0c0', 2 * (0.08)); for (let i = 0; i < 10; i++) { const u = fr(t * 0.4 + i / 10); P(c, 160 + Math.cos(i * 2 + t) * 30, 140 - u * 80, DA('#fff8d0', 1 - u)); } }
     toshi(c, 110, 150, 1.6, { arm: t > S.tStop && t < S.tStop + 3 ? 'up' : null, f: t > S.tBow ? -1 : -1, k: 'g' + (t > S.tStop && t < S.tStop + 3 ? 'u' : '') });
     oldMan(c, 170, 150, 1.6, { flip: true, k: 'g' });
     return { z: 1.12 + 0.1 * r, fx: 140, fy: 104 };
@@ -1515,7 +1567,7 @@ const ZL = {
     if (a > 0) { c.save(); c.globalAlpha = a; c.fillStyle = '#c8c8f0'; for (let i = 0; i < 46; i++) { const x = (i * 29 + 7) % W, y = 10 + (i * 17 % 74), b = Math.sin(t * 3 + i); E(c, x, y, 3, 3.5, '#8c8cb0'); R(c, x - 3, y + 3, 6, 8, '#6c6c94'); L(c, x + 4, y - 8 + b, x + 4, y + 10, '#e8e8f8'); P(c, x + 4, y - 9 + b, '#ffffff'); } c.restore(); }
     const g = ss(sg(t, S.tGen, S.tGen + 1.2)), gx = 214, gy = 136;
     if (g > 0) {
-      c.save(); c.globalAlpha = g; E(c, gx, 70, 60, 70, DA('#f8c040', 0.12));
+      c.save(); c.globalAlpha = g; glow(c, gx, 70, 60, 70, '#f8c040', 2 * (0.12));
       // legs, armoured skirt, body
       R(c, gx - 18, gy - 26, 12, 26, '#8c6c1c'); R(c, gx + 6, gy - 26, 12, 26, '#8c6c1c'); R(c, gx - 22, gy - 4, 18, 5, '#3c2c14'); R(c, gx + 4, gy - 4, 18, 5, '#3c2c14');
       PF(c, [gx - 30, gy - 56, gx + 30, gy - 56, gx + 34, gy - 24, gx - 34, gy - 24], '#c89428'); for (let y = gy - 54; y < gy - 24; y += 4) for (let x = gx - 30 + ((y / 4) & 1) * 3; x < gx + 30; x += 6) R(c, x, y, 5, 3, '#e8b438');
@@ -1528,7 +1580,7 @@ const ZL = {
       PF(c, [gx - 14, gy - 118, gx - 12, gy - 132, gx, gy - 138, gx + 12, gy - 132, gx + 14, gy - 118, gx + 9, gy - 124, gx - 9, gy - 124], '#d8a838'); R(c, gx - 15, gy - 120, 30, 3, '#a87c1c');
       for (let k = 0; k < 5; k++) L(c, gx, gy - 138, gx - 8 + k * 4 + Math.sin(t * 3 + k) * 2, gy - 152, '#e8302c', 2);
       L(c, gx - 9, gy - 121, gx - 3, gy - 118, C.k, 2); L(c, gx + 3, gy - 118, gx + 9, gy - 121, C.k, 2);
-      const eg = 0.6 + 0.4 * Math.sin(t * 6); R(c, gx - 7, gy - 117, 4, 2, '#f8f0a0'); R(c, gx + 3, gy - 117, 4, 2, '#f8f0a0'); E(c, gx - 5, gy - 116, 5, 3, DA('#f8f040', 0.3 * eg)); E(c, gx + 5, gy - 116, 5, 3, DA('#f8f040', 0.3 * eg));
+      const eg = 0.6 + 0.4 * Math.sin(t * 6); R(c, gx - 7, gy - 117, 4, 2, '#f8f0a0'); R(c, gx + 3, gy - 117, 4, 2, '#f8f0a0'); glow(c, gx - 5, gy - 116, 5, 3, '#f8f040', 2 * (0.3 * eg)); glow(c, gx + 5, gy - 116, 5, 3, '#f8f040', 2 * (0.3 * eg));
       PF(c, [gx - 7, gy - 109, gx + 7, gy - 109, gx + 5, gy - 105, gx - 5, gy - 105], '#3c0c0c'); R(c, gx - 5, gy - 109, 2, 2, C.white); R(c, gx + 3, gy - 109, 2, 2, C.white);
       PF(c, [gx - 9, gy - 108, gx - 12, gy - 98, gx - 4, gy - 104], '#1c1c1c'); PF(c, [gx + 9, gy - 108, gx + 12, gy - 98, gx + 4, gy - 104], '#1c1c1c');
       // the three-pronged halberd
@@ -1600,7 +1652,7 @@ const ZO = {
     for (let k = 0; k < 2; k++) { const hx = lerp(-60, 120 + k * 80, hk), spr = horseSpr(t, k, { down, tear: t > S.tWhip }); blit(c, spr, hx, 150, 30, 39, { s: 1.3, flip: false }); }
     if (t > S.tWhip && !down) for (let i = 0; i < 2; i++) { const ox = 60 + i * 200, f = Math.floor(t * 4 + i * 2) % 5; blit(c, oniSpr({ f, t, blink: 0 }), ox, 150, 32, 69, { flip: i === 1 }); if (f === 3) for (let k = 0; k < 5; k++) L(c, ox + (i ? -30 : 30), 90, ox + (i ? -50 : 50) + k * 4, 110 + k * 3, '#f8f8f8'); }
     toshi(c, 50, 150, 1.4, { k: 'o' });
-    if (t > S.tFace && t < S.tFace + 3) { const a = 1; E(c, 132, 112, 16, 16, DA('#f8f0c0', 0.15 * a)); E(c, 212, 112, 16, 16, DA('#f8f0c0', 0.15 * a)); }
+    if (t > S.tFace && t < S.tFace + 3) { const a = 1; glow(c, 132, 112, 16, 16, '#f8f0c0', 2 * (0.15 * a)); glow(c, 212, 112, 16, 16, '#f8f0c0', 2 * (0.15 * a)); }
     if (down) { c.fillStyle = DA('#000000', 0.35); c.fillRect(0, 0, W, H); }
     return { z: 1.06 + (down ? 0.2 * ss(sg(t, S.tDown, S.tDown + 3)) : 0), fx: down ? 140 : 150, fy: 110, sx: t > S.tWhip && !down ? Math.round(Math.sin(t * 30)) : 0 };
   }
@@ -1612,7 +1664,7 @@ const ZP = {
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#140810', '#2c0c14', '#3c1018']); R(c, 0, 140, W, H - 140, '#2c0c0c');
     const glow = t > S.tCry ? ss(sg(t, S.tCry, S.tCry + 1.2)) : 0.3 + 0.1 * Math.sin(t * 2);
-    E(c, 180, 120, 60, 30, DA('#f8f0c0', 0.12 * glow));
+    glow(c, 180, 120, 60, 30, '#f8f0c0', 2 * (0.12 * glow));
     blit(c, horseSpr(t, 1, { down: true, tear: true }), 190, 150, 30, 39, { s: 1.5 });
     const x = t < S.tRun ? 60 : lerp(60, 150, ss(sg(t, S.tRun, S.tHug)));
     toshi(c, x, 150, 1.6, { f: t > S.tRun && t < S.tHug ? Math.floor(t * 8) & 3 : -1, arm: t > S.tHug ? 'fwd' : null, k: 'p' + (t > S.tHug ? 'h' : '') });

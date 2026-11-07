@@ -341,7 +341,7 @@ function robeFig(st, o = {}) {
 function closeUp(c, t, face, o = {}) {
   const bg = o.bg || ['#1c0c08', '#5c2c14'];
   VG(c, 0, 0, W, H, [bg[0], bg[1], bg[0]]);
-  if (o.glow) { E(c, 160, 104, 110, 90, DA(o.glow, 0.12)); E(c, 160, 104, 80, 70, DA(o.glow, 0.12)); }
+  if (o.glow) glow(c, 160, 104, 120, 100, o.glow, 0.35);
   if (o.lines) for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + t * 0.2; L(c, 160 + Math.cos(a) * 90, 104 + Math.sin(a) * 90, 160 + Math.cos(a) * 200, 104 + Math.sin(a) * 200, DA(o.lines, 0.35)); }
   const br = Math.round(Math.sin(t * 2.2) * 1);
   blit(c, face, 160, 110 + br, 24, 24, { s: o.s || 3.5 });
@@ -379,6 +379,8 @@ function suitFig(st, o = {}) {
     R(c, hx - 2, hy + 5, 4, 3, sk2); E(c, hx, hy, 6, 7, sk2); E(c, hx - 0.4, hy - 0.4, 5.6, 6.6, sk);
     PF(c, [hx - 6, hy, hx - 6, hy - 4, hx - 2, hy - 7, hx + 4, hy - 7, hx + 6, hy - 4, hx + 6, hy, hx + 4, hy - 3, hx - 4, hy - 3], st.hair || '#5c3c24');
     if (!o.noHat && st.hat === 'hunt') { R(c, hx - 6, hy - 8, 12, 4, st.hatCol || '#4c4030'); R(c, hx - 7, hy - 5, 15, 2, st.hatCol || '#4c4030'); R(c, hx + 4, hy - 9, 2, 2, '#c8302c'); }
+    if (!o.noHat && st.hat === 'straw') { PF(c, [hx - 11, hy - 3, hx, hy - 13, hx + 11, hy - 3], '#c8a860'); for (let k = -8; k <= 8; k += 4) L(c, hx, hy - 12, hx + k, hy - 3, '#a88c48'); R(c, hx - 11, hy - 4, 22, 1, '#8c7034'); }
+    if (st.mino) { for (let k = 0; k < 9; k++) L(c, 6 + k * 2, 19 - bob, 4 + k * 2.4, 40 - bob + (k & 1) * 2, k & 1 ? '#a88c48' : '#c8a860', 2); }
     if (!o.noHat && st.hat === 'bowler') { E(c, hx, hy - 6, 6, 4, st.hatCol || '#2c2c2c'); R(c, hx - 8, hy - 4, 16, 2, st.hatCol || '#2c2c2c'); }
     const ey = hy;
     if (bl === 2) { L(c, hx - 3, ey, hx - 2, ey, '#2c1c14'); L(c, hx + 2, ey, hx + 3, ey, '#2c1c14'); }
@@ -389,4 +391,12 @@ function suitFig(st, o = {}) {
     if (st.moustache) PF(c, [hx - 4, ey + 3, hx, ey + 2, hx + 4, ey + 3, hx + 2, ey + 4, hx - 2, ey + 4], '#4c3020');
     if (ex === 'shock') E(c, hx, ey + 5, 1.5, 1.6, '#5c1c1c'); else if (ex === 'smile') { L(c, hx - 2, ey + 4, hx, ey + 5, '#8c4c3c'); L(c, hx, ey + 5, hx + 2, ey + 4, '#8c4c3c'); } else R(c, hx - 1, ey + 5, 3, 1, '#8c4c3c');
   });
+}
+
+/* soft round glow with real alpha (no dither dots) */
+function glow(c, x, y, rx, ry, col, a = 0.3) {
+  if (a <= 0 || rx <= 0 || ry <= 0) return; const [r, g, b] = hex(col);
+  c.save(); c.translate(x, y); c.scale(1, ry / rx);
+  const gr = c.createRadialGradient(0, 0, 0, 0, 0, rx); gr.addColorStop(0, `rgba(${r},${g},${b},${Math.min(1, a)})`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+  c.fillStyle = gr; c.fillRect(-rx, -rx, rx * 2, rx * 2); c.restore();
 }

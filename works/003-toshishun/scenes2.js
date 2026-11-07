@@ -16,7 +16,7 @@ const ZB = {
   draw(c, t, S) {
     westGate(c, t, { dusk: true, clear: [80, 200] });
     if (t > S.tShadow) { // the long shadow of Toshishun on the ground, and the spot of its head
-      PF(c, [96, 150, 104, 150, 178, 168, 170, 172], DA('#3c2414', 0.6)); E(c, 176, 170, 6, 3, DA('#3c2414', 0.7));
+      PF(c, [96, 150, 104, 150, 178, 168, 170, 172], DA('#3c2414', 0.6)); glow(c, 176, 170, 6, 3, '#3c2414', 2 * (0.7));
       const k = sg(t, S.tShadow + 1.5, S.tShadow + 2); if (k > 0) { L(c, 170, 164, 182, 176, '#f8d050', 2); L(c, 182, 164, 170, 176, '#f8d050', 2); }
     }
     toshi(c, 100, 150, 1.6, { shock: t > S.tGone && t < S.tGone + 2, k: 'b' });
@@ -36,7 +36,7 @@ const ZC = {
     const k = ss(sg(t, S.tGold, S.tGold + 1.6));
     toshi(c, 110, 148, 1.6, { arm: t < S.tGold ? (Math.floor(t * 3) & 1 ? 'dig' : 'up') : 'up', rich: t > S.tRich, k: 'c' + (Math.floor(t * 3) & 1) });
     if (t < S.tGold) for (let i = 0; i < 4; i++) { const u = fr(t * 1.5 + i / 4); R(c, 150 + u * 20, 140 - Math.sin(u * 3) * 14, 3, 3, '#7c5c3c'); }
-    if (k > 0) { E(c, 190, 120, 70 * k, 40 * k, DA('#f8d050', 0.18)); R(c, 160, 118, 70, 22, '#7c4c2c'); E(c, 172, 144, 8, 8, '#3c2c20'); E(c, 220, 144, 8, 8, '#3c2c20'); goldPile(c, 195, 120, Math.floor(120 * k), t); }
+    if (k > 0) { glow(c, 190, 120, 70 * k, 40 * k, '#f8d050', 2 * (0.18)); R(c, 160, 118, 70, 22, '#7c4c2c'); E(c, 172, 144, 8, 8, '#3c2c20'); E(c, 220, 144, 8, 8, '#3c2c20'); goldPile(c, 195, 120, Math.floor(120 * k), t); }
     for (let i = 0; i < 12 * k; i++) { const u = fr(t * 0.8 + i / 12); P(c, 160 + hash(i) * 80, 118 - u * 50, (i & 1) ? '#ffffff' : '#f8d050'); }
     return { z: 1.06, fx: 160, fy: 108 };
   }
@@ -49,7 +49,7 @@ const ZD = {
     VG(c, 0, 0, W, 150, ['#3c0c0c', '#6c1c14', '#8c2c1c']);
     for (let x = 14; x < W; x += 74) { R(c, x, 0, 12, 150, '#b8302c'); R(c, x + 2, 0, 3, 150, '#d84c3c'); R(c, x - 3, 0, 18, 8, '#d8a838'); R(c, x - 3, 140, 18, 10, '#d8a838'); }
     for (let x = 0; x < W; x += 24) { PF(c, [x, 0, x + 12, 10, x + 24, 0], '#d8a838'); }
-    for (let i = 0; i < 5; i++) { const x = 50 + i * 56, y = 30 + Math.sin(t * 2 + i) * 2; L(c, x, 8, x, y - 11, '#3c1c14'); E(c, x, y, 8, 11, '#e83c2c'); R(c, x - 6, y - 4, 12, 1, '#c82c1c'); R(c, x - 6, y + 4, 12, 1, '#c82c1c'); R(c, x - 3, y - 12, 6, 2, '#d8a838'); R(c, x - 3, y + 11, 6, 2, '#d8a838'); E(c, x, y, 16, 18, DA('#f8c040', 0.12)); }
+    for (let i = 0; i < 5; i++) { const x = 50 + i * 56, y = 30 + Math.sin(t * 2 + i) * 2; L(c, x, 8, x, y - 11, '#3c1c14'); E(c, x, y, 8, 11, '#e83c2c'); R(c, x - 6, y - 4, 12, 1, '#c82c1c'); R(c, x - 6, y + 4, 12, 1, '#c82c1c'); R(c, x - 3, y - 12, 6, 2, '#d8a838'); R(c, x - 3, y + 11, 6, 2, '#d8a838'); glow(c, x, y, 16, 18, '#f8c040', 2 * (0.12)); }
     R(c, 0, 122, W, 28, '#5c2c1c'); for (let x = 0; x < W; x += 20) R(c, x, 122, 10, 28, '#6c3424'); R(c, 0, 150, W, H - 150, '#2c140c');
     // the banquet table with dishes and a gold cup
     R(c, 90, 118, 140, 8, '#8c3c1c'); R(c, 90, 116, 140, 3, '#a84c24'); R(c, 96, 126, 4, 22, '#5c2c14'); R(c, 220, 126, 4, 22, '#5c2c14');
@@ -88,7 +88,7 @@ const ZF = {
   draw(c, t, S) {
     westGate(c, t, { dusk: true, empty: t > S.tGone });
     const g = t < S.tGold ? 0 : t < S.tGone ? ss(sg(t, S.tGold, S.tGold + 1)) : 1 - ss(sg(t, S.tGone, S.tGone + 2.5));
-    if (g > 0) { E(c, 220, 140, 50 * g, 14 * g, DA('#f8d050', 0.3)); goldPile(c, 220, 140, Math.floor(80 * g), t); }
+    if (g > 0) { glow(c, 220, 140, 50 * g, 14 * g, '#f8d050', 2 * (0.3)); goldPile(c, 220, 140, Math.floor(80 * g), t); }
     toshi(c, 100, 150, 1.6, { rich: t > S.tGold && t < S.tGone + 1, k: 'f' });
     oldMan(c, 150, 150, 1.6, { flip: true, a: t < S.tOld ? 0 : t < S.tGold ? 1 : 1 - sg(t, S.tGold, S.tGold + 0.6), arm: 'fwd', k: 'f' });
     return { z: 1.1, fx: 140, fy: 108 };
@@ -101,7 +101,7 @@ const ZG = {
   draw(c, t, S) {
     westGate(c, t, { night: true, empty: true });
     const r = ss(sg(t, S.tReveal, S.tReveal + 1.5));
-    if (r > 0) { for (let k = 0; k < 3; k++) E(c, 160, 110, (30 + k * 16) * r, (40 + k * 14) * r, DA('#f8f0c0', 0.08)); for (let i = 0; i < 10; i++) { const u = fr(t * 0.4 + i / 10); P(c, 160 + Math.cos(i * 2 + t) * 30, 140 - u * 80, DA('#fff8d0', 1 - u)); } }
+    if (r > 0) { for (let k = 0; k < 3; k++) glow(c, 160, 110, (30 + k * 16) * r, (40 + k * 14) * r, '#f8f0c0', 2 * (0.08)); for (let i = 0; i < 10; i++) { const u = fr(t * 0.4 + i / 10); P(c, 160 + Math.cos(i * 2 + t) * 30, 140 - u * 80, DA('#fff8d0', 1 - u)); } }
     toshi(c, 110, 150, 1.6, { arm: t > S.tStop && t < S.tStop + 3 ? 'up' : null, f: t > S.tBow ? -1 : -1, k: 'g' + (t > S.tStop && t < S.tStop + 3 ? 'u' : '') });
     oldMan(c, 170, 150, 1.6, { flip: true, k: 'g' });
     return { z: 1.12 + 0.1 * r, fx: 140, fy: 104 };
@@ -187,7 +187,7 @@ const ZL = {
     if (a > 0) { c.save(); c.globalAlpha = a; c.fillStyle = '#c8c8f0'; for (let i = 0; i < 46; i++) { const x = (i * 29 + 7) % W, y = 10 + (i * 17 % 74), b = Math.sin(t * 3 + i); E(c, x, y, 3, 3.5, '#8c8cb0'); R(c, x - 3, y + 3, 6, 8, '#6c6c94'); L(c, x + 4, y - 8 + b, x + 4, y + 10, '#e8e8f8'); P(c, x + 4, y - 9 + b, '#ffffff'); } c.restore(); }
     const g = ss(sg(t, S.tGen, S.tGen + 1.2)), gx = 214, gy = 136;
     if (g > 0) {
-      c.save(); c.globalAlpha = g; E(c, gx, 70, 60, 70, DA('#f8c040', 0.12));
+      c.save(); c.globalAlpha = g; glow(c, gx, 70, 60, 70, '#f8c040', 2 * (0.12));
       // legs, armoured skirt, body
       R(c, gx - 18, gy - 26, 12, 26, '#8c6c1c'); R(c, gx + 6, gy - 26, 12, 26, '#8c6c1c'); R(c, gx - 22, gy - 4, 18, 5, '#3c2c14'); R(c, gx + 4, gy - 4, 18, 5, '#3c2c14');
       PF(c, [gx - 30, gy - 56, gx + 30, gy - 56, gx + 34, gy - 24, gx - 34, gy - 24], '#c89428'); for (let y = gy - 54; y < gy - 24; y += 4) for (let x = gx - 30 + ((y / 4) & 1) * 3; x < gx + 30; x += 6) R(c, x, y, 5, 3, '#e8b438');
@@ -200,7 +200,7 @@ const ZL = {
       PF(c, [gx - 14, gy - 118, gx - 12, gy - 132, gx, gy - 138, gx + 12, gy - 132, gx + 14, gy - 118, gx + 9, gy - 124, gx - 9, gy - 124], '#d8a838'); R(c, gx - 15, gy - 120, 30, 3, '#a87c1c');
       for (let k = 0; k < 5; k++) L(c, gx, gy - 138, gx - 8 + k * 4 + Math.sin(t * 3 + k) * 2, gy - 152, '#e8302c', 2);
       L(c, gx - 9, gy - 121, gx - 3, gy - 118, C.k, 2); L(c, gx + 3, gy - 118, gx + 9, gy - 121, C.k, 2);
-      const eg = 0.6 + 0.4 * Math.sin(t * 6); R(c, gx - 7, gy - 117, 4, 2, '#f8f0a0'); R(c, gx + 3, gy - 117, 4, 2, '#f8f0a0'); E(c, gx - 5, gy - 116, 5, 3, DA('#f8f040', 0.3 * eg)); E(c, gx + 5, gy - 116, 5, 3, DA('#f8f040', 0.3 * eg));
+      const eg = 0.6 + 0.4 * Math.sin(t * 6); R(c, gx - 7, gy - 117, 4, 2, '#f8f0a0'); R(c, gx + 3, gy - 117, 4, 2, '#f8f0a0'); glow(c, gx - 5, gy - 116, 5, 3, '#f8f040', 2 * (0.3 * eg)); glow(c, gx + 5, gy - 116, 5, 3, '#f8f040', 2 * (0.3 * eg));
       PF(c, [gx - 7, gy - 109, gx + 7, gy - 109, gx + 5, gy - 105, gx - 5, gy - 105], '#3c0c0c'); R(c, gx - 5, gy - 109, 2, 2, C.white); R(c, gx + 3, gy - 109, 2, 2, C.white);
       PF(c, [gx - 9, gy - 108, gx - 12, gy - 98, gx - 4, gy - 104], '#1c1c1c'); PF(c, [gx + 9, gy - 108, gx + 12, gy - 98, gx + 4, gy - 104], '#1c1c1c');
       // the three-pronged halberd
@@ -272,7 +272,7 @@ const ZO = {
     for (let k = 0; k < 2; k++) { const hx = lerp(-60, 120 + k * 80, hk), spr = horseSpr(t, k, { down, tear: t > S.tWhip }); blit(c, spr, hx, 150, 30, 39, { s: 1.3, flip: false }); }
     if (t > S.tWhip && !down) for (let i = 0; i < 2; i++) { const ox = 60 + i * 200, f = Math.floor(t * 4 + i * 2) % 5; blit(c, oniSpr({ f, t, blink: 0 }), ox, 150, 32, 69, { flip: i === 1 }); if (f === 3) for (let k = 0; k < 5; k++) L(c, ox + (i ? -30 : 30), 90, ox + (i ? -50 : 50) + k * 4, 110 + k * 3, '#f8f8f8'); }
     toshi(c, 50, 150, 1.4, { k: 'o' });
-    if (t > S.tFace && t < S.tFace + 3) { const a = 1; E(c, 132, 112, 16, 16, DA('#f8f0c0', 0.15 * a)); E(c, 212, 112, 16, 16, DA('#f8f0c0', 0.15 * a)); }
+    if (t > S.tFace && t < S.tFace + 3) { const a = 1; glow(c, 132, 112, 16, 16, '#f8f0c0', 2 * (0.15 * a)); glow(c, 212, 112, 16, 16, '#f8f0c0', 2 * (0.15 * a)); }
     if (down) { c.fillStyle = DA('#000000', 0.35); c.fillRect(0, 0, W, H); }
     return { z: 1.06 + (down ? 0.2 * ss(sg(t, S.tDown, S.tDown + 3)) : 0), fx: down ? 140 : 150, fy: 110, sx: t > S.tWhip && !down ? Math.round(Math.sin(t * 30)) : 0 };
   }
@@ -284,7 +284,7 @@ const ZP = {
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#140810', '#2c0c14', '#3c1018']); R(c, 0, 140, W, H - 140, '#2c0c0c');
     const glow = t > S.tCry ? ss(sg(t, S.tCry, S.tCry + 1.2)) : 0.3 + 0.1 * Math.sin(t * 2);
-    E(c, 180, 120, 60, 30, DA('#f8f0c0', 0.12 * glow));
+    glow(c, 180, 120, 60, 30, '#f8f0c0', 2 * (0.12 * glow));
     blit(c, horseSpr(t, 1, { down: true, tear: true }), 190, 150, 30, 39, { s: 1.5 });
     const x = t < S.tRun ? 60 : lerp(60, 150, ss(sg(t, S.tRun, S.tHug)));
     toshi(c, x, 150, 1.6, { f: t > S.tRun && t < S.tHug ? Math.floor(t * 8) & 3 : -1, arm: t > S.tHug ? 'fwd' : null, k: 'p' + (t > S.tHug ? 'h' : '') });

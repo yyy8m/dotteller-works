@@ -39,12 +39,14 @@ function dogSpr(t, pose = 'walk', k = 0) { // big white dog "like a polar bear",
 /* faces for the dialog window (48x48) */
 function gentFace(g, o = {}) {
   const st = GENT[g];
-  return SPR('gf' + g + (o.cream ? 'c' : '') + (o.crumple ? 'k' : '') + (o.scared ? 's' : '') + (o.blink || 0), 48, 48, c => {
+  return SPR('gf' + g + (o.cream ? 'c' : '') + (o.crumple ? 'k' : '') + (o.scared ? 's' : '') + (o.shirt ? 'w' : '') + (o.bath ? 'b' : '') + (o.blink || 0), 48, 48, c => {
     const sk = o.cream ? '#fcfaf2' : st.skin, sk2 = o.cream ? '#e0dcd0' : '#c89c7c';
-    PF(c, [2, 48, 8, 37, 40, 37, 46, 48], st.coat); R(c, 21, 37, 6, 11, '#f4f0e8'); R(c, 23, 39, 2, 9, '#2c2c3c');
-    for (const y of [41, 45]) { P(c, 14, y, '#f8d860'); P(c, 33, y, '#f8d860'); }
+    if (o.bath) { PF(c, [0, 48, 6, 38, 42, 38, 48, 48], st.skin); PF(c, [0, 48, 6, 38, 12, 40, 4, 48], '#d8a888'); L(c, 14, 44, 20, 42, '#d8a888'); L(c, 34, 44, 28, 42, '#d8a888'); }
+    else if (o.shirt || o.cream || o.scared || o.crumple) { PF(c, [2, 48, 8, 37, 40, 37, 46, 48], '#f0ece4'); PF(c, [24, 37, 40, 37, 46, 48, 24, 48], '#dcd6cc'); PF(c, [18, 37, 24, 42, 30, 37], '#ffffff'); for (const y of [42, 46]) P(c, 24, y, '#c8c0b4'); }
+    else { PF(c, [2, 48, 8, 37, 40, 37, 46, 48], st.coat); R(c, 21, 37, 6, 11, '#f4f0e8'); R(c, 23, 39, 2, 9, '#2c2c3c'); for (const y of [41, 45]) { P(c, 14, y, '#f8d860'); P(c, 33, y, '#f8d860'); } }
     R(c, 19, 30, 10, 8, sk2); E(c, 24, 21, 11, 12.5, sk2); E(c, 23.5, 20.5, 10.5, 12, sk);
     PF(c, [12, 16, 14, 8, 22, 5, 32, 6, 36, 12, 36, 17, 31, 11, 22, 10, 16, 12], st.hair);
+    if (o.bath) { R(c, 15, 3, 18, 5, '#f8f8f4'); R(c, 15, 7, 18, 1, '#d8d8d0'); for (let x = 17; x < 33; x += 4) P(c, x, 5, '#88b4d8'); }
     const ey = 20;
     for (const x0 of [18, 27]) { if (o.blink === 2) { L(c, x0, ey + 1, x0 + 3, ey + 1, '#3c2c24'); continue; } R(c, x0, ey, 4, 3, '#fcfaf2'); R(c, x0 + 1, ey + (o.scared ? 0 : 1), 2, 2, C.k); }
     if (g === 1) { for (const x0 of [17, 26]) { R(c, x0 - 1, ey - 2, 7, 1, '#2c2c2c'); R(c, x0 - 1, ey + 4, 7, 1, '#2c2c2c'); R(c, x0 - 1, ey - 2, 1, 7, '#2c2c2c'); R(c, x0 + 5, ey - 2, 1, 7, '#2c2c2c'); } R(c, 22, ey, 3, 1, '#2c2c2c'); }

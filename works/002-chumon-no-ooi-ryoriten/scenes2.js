@@ -1,21 +1,22 @@
 /* ================= 文庫 #002 注文の多い料理店: scenes ================= */
-const GS = 1.25; // scale of the two gentlemen in wide shots
+const GS = 1.25;
+const HUNTER = { id: 'hu', coat: '#8c7c4c', coat2: '#6c5c34', pants: '#5c4c34', boots: '#2c2014', hair: '#2c1c14', hat: 'straw', mino: true, moustache: true }; // scale of the two gentlemen in wide shots
 /* ---- SA: deep in the mountains (walking, parallax) ---- */
 const SA = {
   name: '山奥の二人', ch: '山奥の二人', bgm: 'memory',
   init(S) { S.dur = lastSe(S) + 1.0; },
   draw(c, t, S) {
     const ox = t * 26; forestDeep(c, t, ox);
-    for (let k = 0; k < 2; k++) blit(c, dogSpr(t, 'walk', k), 214 + k * 46 + Math.sin(t * 2 + k) * 4, 152, 18, 23, { s: 1.3 });
+    for (let k = 0; k < 2; k++) blit(c, dogSpr(t, 'walk', k), 206 + k * 42 + Math.sin(t * 2 + k) * 4, 152, 18, 23, { s: 1.3 });
+    blit(c, suitFig(HUNTER, { f: Math.floor(t * 7 + 1) & 3, arm: 'rifle', k: 'a' }), 294, 154, FIG_AX2, FIG_AY2, { s: GS });
     drawGents(c, 168, 154, GS / 0.7, { per: g => ({ f: Math.floor(t * 7 + g * 2) & 3, weapon: 'rifle', k: 'w' }) });
-    foreTrunks(c, t, ox);
     return { z: 1.04, fx: 170, fy: 104 };
   }
 };
 /* ---- SB: the dogs go dizzy and die ---- */
 const SB = {
   name: '犬', bgm: 'memory',
-  init(S) { S.tDizzy = at(S, 'L2', 2) - 0.3; S.tDead = at(S, 'L2', 4) - 0.2; S.tTalk = ln(S, 'A2') ? at(S, 'A2', 0) - 0.4 : 1e9; S.dur = lastSe(S) + 1.2; },
+  init(S) { S.tLost = at(S, 'L2', 1) - 0.2; S.tGone = at(S, 'L2', 3) + 0.4; S.tDizzy = at(S, 'L2b', 2) - 0.3; S.tDead = at(S, 'L2b', 3) - 0.2; S.tTalk = ln(S, 'A2') ? at(S, 'A2', 0) - 0.4 : 1e9; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     const dark = ss(sg(t, S.tDizzy, S.tDead + 2));
     forestDeep(c, t, 300, { rays: false });
@@ -24,8 +25,11 @@ const SB = {
       const x = 206 + k * 52, pose = t < S.tDizzy ? 'walk' : t < S.tDead ? 'dizzy' : 'dead', wob = pose === 'dizzy' ? Math.sin(t * 9 + k) * 3 : 0;
       blit(c, dogSpr(pose === 'walk' ? 0 : t, pose, k), x + wob, 152, 18, 23, { s: 1.3 });
       if (pose === 'dizzy') for (let i = 0; i < 6; i++) { const a = t * 6 + i; P(c, x + 6 + Math.cos(a) * 9, 116 + Math.sin(a) * 3, i & 1 ? '#f8f8f8' : '#f8d860'); }
-      if (pose === 'dead') for (let i = 0; i < 4; i++) { const u = fr(t * 0.6 + i / 4 + k * 0.3); E(c, x + 22 + i * 2, 142 - u * 6, 1.5 + u * 2, 1.5 + u * 2, DA('#ffffff', 0.9 * (1 - u))); }
+      if (pose === 'dead') for (let i = 0; i < 4; i++) { const u = fr(t * 0.6 + i / 4 + k * 0.3); glow(c, x + 22 + i * 2, 142 - u * 6, 1.5 + u * 2, 1.5 + u * 2, '#ffffff', 2 * (0.9 * (1 - u))); }
     }
+    if (t < S.tGone + 3) { const u = sg(t, S.tLost + 1.2, S.tGone + 2.5), hx = lerp(294, 360, ss(u)), fl = false, look = t > S.tLost && t < S.tLost + 1.2 && (Math.floor(t * 2) & 1);
+      blit(c, suitFig(HUNTER, { f: fl ? Math.floor(t * 7) & 3 : -1, arm: 'rifle', expr: 'sad', k: 'b' }), hx, 154, FIG_AX2, FIG_AY2, { s: GS, flip: fl || look });
+      if (t > S.tLost && t < S.tLost + 1.2) TX(c, '？', 300, 92, '#f8f8f8', 16, '#000000'); }
     drawGents(c, 160, 154, GS / 0.7, { per: g => ({ weapon: 'rifle', shock: t > S.tDead && t < S.tTalk, k: 's' }) });
     return { z: 1.04 + 0.12 * ss(sg(t, S.tDizzy, S.tDead + 1)), fx: 210, fy: 112 };
   }
@@ -48,7 +52,7 @@ const SD = {
   draw(c, t, S) {
     forestDeep(c, t, 520, { dusk: true });
     const k = ss(sg(t, S.tHouse, S.tHouse + 1.8));
-    if (k > 0) { c.fillStyle = DA('#e8e0f0', 0.25 * (1 - k)); c.fillRect(0, 0, W, 150); wildcatHouse(c, t, 150, 150, k, t > S.tSign ? eOut(sg(t, S.tSign, S.tSign + 0.5)) : 0); E(c, 225, 150, 90, 10, DA('#f8c060', 0.12 * k)); }
+    if (k > 0) { c.fillStyle = DA('#e8e0f0', 0.25 * (1 - k)); c.fillRect(0, 0, W, 150); wildcatHouse(c, t, 150, 150, k, t > S.tSign ? eOut(sg(t, S.tSign, S.tSign + 0.5)) : 0); glow(c, 225, 150, 90, 10, '#f8c060', 2 * (0.12 * k)); }
     drawGents(c, 104, 154, GS / 0.7, { per: g => ({ weapon: 'rifle', flip: t < S.tHouse + 0.4, arm: t > S.tSign + 1 && g === 0 ? 'point' : null, expr: t > S.tSign ? 'smile' : 'sad', k: 'd' }) });
     susuki2(c, t, 170, false, 16, 9);
     return { z: lerp(1.12, 1.0, k), fx: lerp(104, 180, k), fy: 100 };
@@ -126,7 +130,7 @@ const SI = doorScene({
   base: { name: '香水', bgm: 'carnival' },
   signs: S => [[at(S, 'L10', 0) - 0.2, ['料理はもうすぐ', 'できます', '頭に香水を', 'ふりかけてください'], '#f8d860', { room: { door: ['#3c3c44', '#2c2c34', '#1c1c24'] } }]],
   init2(S) { S.tSpray = at(S, 'L10', 2) - 0.2; S.tSour = at(S, 'L10', 4) - 0.2; },
-  props(c, t, S) { const px = 252, py = 150; R(c, px - 7, py - 26, 14, 26, '#f8d050'); R(c, px - 5, py - 24, 3, 22, '#fff8c0'); R(c, px - 3, py - 32, 6, 6, '#c8a040'); E(c, px, py - 34, 4, 2, '#e8b838'); E(c, px, py - 14, 16, 16, DA('#f8e080', 0.15)); R(c, px - 18, py, 36, 4, '#5c3c24'); },
+  props(c, t, S) { const px = 252, py = 150; R(c, px - 7, py - 26, 14, 26, '#f8d050'); R(c, px - 5, py - 24, 3, 22, '#fff8c0'); R(c, px - 3, py - 32, 6, 6, '#c8a040'); E(c, px, py - 34, 4, 2, '#e8b838'); glow(c, px, py - 14, 16, 16, '#f8e080', 2 * (0.15)); R(c, px - 18, py, 36, 4, '#5c3c24'); },
   gents: (t, S) => ({ per: g => ({ noHat: true, noCoat: true, cream: true, arm: t > S.tSpray && t < S.tSpray + 2 ? 'up' : null, expr: t > S.tSour ? 'sad' : 'normal', k: 'i' }) }),
   front(c, t, S) {
     if (t > S.tSpray && t < S.tSpray + 2) for (let i = 0; i < 14; i++) { const u = fr(t * 2 + i / 14); P(c, 60 + i * 3, 104 - u * 14, '#c8e0f8'); }
@@ -153,11 +157,11 @@ const SK = {
     for (let y = 10; y < 200; y += 6) R(c, 42, y, 236, 1, '#3c1c14'); R(c, 40, 6, 6, 194, '#5c2c1c'); R(c, 274, 6, 6, 194, '#2c1008');
     R(c, 74, 40, 6, 120, '#d8dce4'); R(c, 76, 40, 1, 120, '#ffffff'); for (let k = 0; k < 4; k++) R(c, 66 + k * 6, 22, 3, 22, '#d8dce4'); R(c, 66, 42, 21, 4, '#d8dce4');
     R(c, 240, 50, 8, 112, '#d8dce4'); PF(c, [240, 20, 252, 24, 254, 70, 240, 74], '#e8ecf4'); L(c, 242, 26, 242, 70, '#ffffff');
-    for (const kx of [134, 186]) { E(c, kx, 98, 12, 12, '#000000'); PF(c, [kx - 7, 104, kx + 7, 104, kx + 5, 132, kx - 5, 132], '#000000'); E(c, kx, 98, 14, 14, DA('#c8a040', 0.3));
-      if (t > S.tEyes) { const look = Math.sin(t * 1.6) * 3, bl = blinkOf(t, kx) === 2; if (!bl) { E(c, kx + look, 98, 7, 7, '#e8f0f8'); E(c, kx + look, 98, 5.5, 5.5, '#2c7cf0'); R(c, kx + look - 1, 93, 2, 10, '#000000'); P(c, kx + look - 3, 95, '#ffffff'); P(c, kx + look - 2, 95, '#ffffff'); } else L(c, kx - 6, 98, kx + 6, 98, '#2c7cf0'); E(c, kx, 98, 18, 14, DA('#2c7cf0', 0.12)); } }
+    for (const kx of [134, 186]) { E(c, kx, 98, 12, 12, '#000000'); PF(c, [kx - 7, 104, kx + 7, 104, kx + 5, 132, kx - 5, 132], '#000000'); glow(c, kx, 98, 14, 14, '#c8a040', 0.2);
+      if (t > S.tEyes) { const look = Math.sin(t * 1.6) * 3, bl = blinkOf(t, kx) === 2; if (!bl) { E(c, kx + look, 98, 7, 7, '#e8f0f8'); E(c, kx + look, 98, 5.5, 5.5, '#2c7cf0'); R(c, kx + look - 1, 93, 2, 10, '#000000'); P(c, kx + look - 3, 95, '#ffffff'); P(c, kx + look - 2, 95, '#ffffff'); } else L(c, kx - 6, 98, kx + 6, 98, '#2c7cf0'); glow(c, kx, 98, 18, 14, '#2c7cf0', 2 * (0.12)); } }
     if (t > S.tSign) plaque(c, ['いや わざわざ', 'ご苦労です'], '#f8f8f8', ss(sg(t, S.tSign, S.tSign + 0.4)), 26);
     const voice = S.lines.find(l => l.spk !== 'narrator' && t > l.t0 - 0.2 && t < l.se + 0.2);
-    if (voice) { const p = 0.5 + 0.5 * Math.sin(t * 8); E(c, 160, 110, 80, 26, DA('#2c7cf0', 0.06 * p)); }
+    if (voice) { const p = 0.5 + 0.5 * Math.sin(t * 8); glow(c, 160, 110, 80, 26, '#2c7cf0', 2 * (0.06 * p)); }
     return { z: lerp(1.0, 1.25, ss(sg(t, S.tEyes, S.tEyes + 4))), fx: 160, fy: 94 };
   }
 };
@@ -186,13 +190,14 @@ const SM = {
       corridor(c, t, { door: ['#1c1c24', '#141418', '#0c0c10'], wall: ['#4c1c1c', '#3c1414', '#2c0c0c'] });
       if (t > S.tBurst) { const u = t - S.tBurst; for (let i = 0; i < 14; i++) R(c, 30 + i * 6 + u * 60 * Math.cos(i), 110 + u * 70 * Math.sin(i * 2) + u * u * 60, 6, 3, '#6c4c2c');
         for (let k = 0; k < 2; k++) { const run = t < S.tJump, jk = sg(t, S.tJump, S.tJump + 0.6), x = run ? 50 + (Math.sin(u * 3 + k * 3) + 1) * 90 + k * 20 : lerp(170, 160, jk), y = run ? 176 - Math.abs(Math.sin(u * 8 + k)) * 10 : lerp(176, 100, jk); if (jk < 1) blit(c, dogSpr(t, 'run', k), x, y, 18, 23, { s: run ? 1.6 : lerp(1.6, 0.8, jk), flip: run && Math.cos(u * 3 + k * 3) < 0 }); } }
-      drawGents(c, 56, 160, 1.45 / 0.7, { per: g => ({ noHat: true, noCoat: true, cream: true, shock: true, k: 'm' }) });
+      drawGents(c, 92, 160, 1.45 / 0.7, { per: g => ({ noHat: true, noCoat: true, cream: true, shock: true, k: 'm' }) });
       return { z: 1, fx: 160, fy: 110, sx: t > S.tBurst && t < S.tBurst + 0.4 ? Math.round(Math.sin(t * 60) * 3) : 0 };
     }
     const v = ss(sg(t, S.tVanish, S.tVanish + 2));
     R(c, 0, 0, W, H, '#040305');
-    if (v < 1) { c.save(); c.globalAlpha = 1 - v; E(c, 160, 96, 80, 70, DA('#f86c1c', 0.08)); blit(c, bossFace({ lick: (Math.floor(t * 3) & 1) === 1 }), 160, 102, 24, 24, { s: 3.2 }); ['にゃあお', 'くゎあ', 'ごろごろ'].forEach((s, i) => { if (t > S.tDark + 1.2 + i * 1.1) TX(c, s, [16, 224, 120][i] + Math.sin(t * 30 + i) * 2, [24, 56, 150][i], '#f8f8f8', 24, '#000000'); }); c.restore(); }
-    if (v > 0) { c.save(); c.globalAlpha = v; forestDeep(c, t, 700, { dusk: true }); c.restore(); for (let i = 0; i < 12; i++) E(c, (i * 47) % W, 60 + (i * 31) % 100, 40 * (1 - v) + 10, 10, DA('#e8e0f0', 0.3 * (1 - v))); }
+    const ca = 1 - ss(sg(v, 0, 0.5)), fa = ss(sg(v, 0.5, 1));
+    if (ca > 0) { c.save(); c.globalAlpha = ca; glow(c, 160, 96, 80, 70, '#f86c1c', 2 * (0.08)); blit(c, bossFace({ lick: (Math.floor(t * 3) & 1) === 1 }), 160, 102, 24, 24, { s: 3.2 }); ['にゃあお', 'くゎあ', 'ごろごろ'].forEach((s, i) => { if (t > S.tDark + 1.2 + i * 1.1) TX(c, s, [16, 224, 120][i] + Math.sin(t * 30 + i) * 2, [24, 56, 150][i], '#f8f8f8', 24, '#000000'); }); c.restore(); }
+    if (fa > 0) { c.save(); c.globalAlpha = fa; forestDeep(c, t, 700, { dusk: true }); c.restore(); }
     return { z: 1, fx: 160, fy: 100 };
   }
 };
@@ -206,7 +211,7 @@ const SN = {
     R(c, 120, 146, 10, 6, '#2c2014'); R(c, 132, 148, 10, 4, '#2c2014'); R(c, 280, 150, 10, 6, '#5c3c24'); P(c, 210, 152, '#f8d860'); P(c, 214, 154, '#c8c8d0');
     blit(c, dogSpr(t, 'walk', 0), 214, 156, 18, 23, { s: 1.2 }); blit(c, dogSpr(t, 'walk', 1), 262, 158, 18, 23, { s: 1.2 });
     drawGents(c, 166, 156, GS / 0.7, { per: g => ({ noHat: true, noCoat: true, dx: t < S.tHunter ? Math.round(Math.sin(t * 30 + g)) : 0, arm: t > S.tHunter + 1 && g === 0 ? 'up' : null, expr: t > S.tHunter + 1 ? 'smile' : 'cry', k: 'n' }) });
-    if (t > S.tHunter) { const x = lerp(-20, 84, ss(sg(t, S.tHunter, S.tHunter + 3))); blit(c, suitFig({ id: 'hu', coat: '#8c7c4c', coat2: '#6c5c34', pants: '#5c4c34', boots: '#2c2014', hair: '#2c1c14', hat: 'bowler', hatCol: '#c8a860', moustache: true }, { f: Math.floor(t * 7) & 3, arm: 'rifle', k: 'h' }), x, 156, FIG_AX2, FIG_AY2, { s: 1.25 }); }
+    if (t > S.tHunter) { const x = lerp(-20, 84, ss(sg(t, S.tHunter, S.tHunter + 3))); blit(c, suitFig(HUNTER, { f: Math.floor(t * 7) & 3, arm: 'rifle', k: 'h' }), x, 156, FIG_AX2, FIG_AY2, { s: 1.25 }); }
     susuki2(c, t, 172, t < 6, 18, 2);
     return { z: 1.04, fx: 150, fy: 106 };
   }
@@ -220,8 +225,8 @@ const SO = {
     for (let y = 0; y < 118; y += 10) for (let x = ((y / 10) & 1) * 10; x < W; x += 20) { R(c, x, y, 19, 9, '#8cacbc'); R(c, x, y, 19, 1, '#a8c4d0'); }
     R(c, 0, 116, W, 4, '#3c5c6c');
     R(c, 40, 104, 240, 60, '#8c6c4c'); R(c, 46, 100, 228, 10, '#b8946c'); for (let x = 46; x < 274; x += 12) R(c, x, 100, 1, 10, '#8c6c4c'); R(c, 50, 106, 220, 20, '#4c9cc8');
-    for (let i = 0; i < 16; i++) { const u = fr(t * 0.25 + i / 16); E(c, 60 + i * 14 + Math.sin(t + i) * 4, 100 - u * 70, 6 + u * 12, 4 + u * 6, DA('#f8f8f8', 0.3 * (1 - u))); }
-    for (let g = 0; g < 2; g++) blit(c, gentFace(g, { crumple: true }), 124 + g * 76, 96, 24, 36, { s: 1.4 });
+    for (let i = 0; i < 16; i++) { const u = fr(t * 0.25 + i / 16); glow(c, 60 + i * 14 + Math.sin(t + i) * 4, 100 - u * 70, 6 + u * 12, 4 + u * 6, '#f8f8f8', 2 * (0.3 * (1 - u))); }
+    for (let g = 0; g < 2; g++) blit(c, gentFace(g, { crumple: true, bath: true }), 124 + g * 76, 96, 24, 36, { s: 1.4 });
     R(c, 50, 118, 220, 8, '#4c9cc8'); for (let i = 0; i < 6; i++) L(c, 60 + i * 36 + Math.sin(t * 2 + i) * 3, 120, 76 + i * 36 + Math.sin(t * 2 + i) * 3, 120, '#a8d8f0');
     return { z: lerp(1.25, 1, ss(sg(t, 0, S.tEnd))), fx: 160, fy: 100 };
   }

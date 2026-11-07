@@ -18,7 +18,7 @@ function trunk(c, x, y0, y1, w) { R(c, x - w / 2, y0, w, y1 - y0, PAL.trunk[1]);
 function forestDeep(c, t, ox, o = {}) {
   const sky = o.dusk ? PAL.dusk : PAL.sky;
   band(c, 0, 40, sky[3], sky[2]); band(c, 40, 80, sky[2], sky[1]); band(c, 80, 110, sky[1], sky[0]);
-  if (!o.dusk) { E(c, 250, 40, 30, 30, DA('#fff0c0', 0.25)); E(c, 250, 40, 14, 14, '#fff4d0'); } else { ER(c, 260, 28, 8, 8, '#fcf4d8', -1.3, 1.3); }
+  if (!o.dusk) { glow(c, 250, 40, 30, 30, '#fff0c0', 2 * (0.25)); E(c, 250, 40, 14, 14, '#fff4d0'); } else { ER(c, 260, 28, 8, 8, '#fcf4d8', -1.3, 1.3); }
   for (let i = 0; i < 8; i++) { const x = mod(i * 60 - ox * 0.1, 480) - 80, h = 44 + (i * 23 % 30); PF(c, [x - 70, 112, x, 112 - h, x + 70, 112], o.dusk ? '#4c3c5c' : PAL.far[0]); PF(c, [x, 112 - h, x + 70, 112, x + 20, 112], o.dusk ? '#3c2c4c' : PAL.far[1]); }
   band(c, 96, 114, DA(o.dusk ? '#6c5c7c' : '#f8e0c0', 0.0), o.dusk ? '#5c4c64' : '#e8c8a8'); // mist
   for (let i = 0; i < 10; i++) { const x = mod(i * 44 - ox * 0.35, 460) - 60; crown(c, x, 92 + (i % 3) * 4, 18, o.dusk ? ['#a86c5c', '#8c4c4c', '#6c3440', '#4c2434'] : PAL.leafB, 10 + i, t); }
@@ -50,11 +50,11 @@ function wildcatHouse(c, t, hx, hy, a = 1, sign = 1) {
   for (let r = 0; r < 5; r++) for (let x = hx - 6 + r * 6; x < hx + wW + 6 - r * 6; x += 8) R(c, x, hy - wH - 4 - r * 6, 7, 3, r & 1 ? '#4c3c4c' : '#5c4c5c');
   R(c, hx + 110, hy - wH - 46, 12, 22, '#8c5c4c'); R(c, hx + 108, hy - wH - 48, 16, 4, '#5c3c34'); smoke(c, hx + 116, hy - wH - 50, t, 3);
   // windows glowing warm
-  for (const wx of [hx + 14, hx + 106]) { R(c, wx - 2, hy - 72, 32, 40, '#5c3c2c'); R(c, wx, hy - 70, 28, 36, '#f8d070'); R(c, wx + 13, hy - 70, 2, 36, '#5c3c2c'); R(c, wx, hy - 54, 28, 2, '#5c3c2c'); E(c, wx + 14, hy - 52, 30, 26, DA('#f8c060', 0.15)); PF(c, [wx - 4, hy - 72, wx + 14, hy - 80, wx + 32, hy - 72], '#5c3c2c'); }
+  for (const wx of [hx + 14, hx + 106]) { R(c, wx - 2, hy - 72, 32, 40, '#5c3c2c'); R(c, wx, hy - 70, 28, 36, '#f8d070'); R(c, wx + 13, hy - 70, 2, 36, '#5c3c2c'); R(c, wx, hy - 54, 28, 2, '#5c3c2c'); glow(c, wx + 14, hy - 52, 30, 26, '#f8c060', 2 * (0.15)); PF(c, [wx - 4, hy - 72, wx + 14, hy - 80, wx + 32, hy - 72], '#5c3c2c'); }
   // porch, glass door with gold letters, lamps
   R(c, hx + 52, hy - 60, 46, 60, '#3c2c20'); R(c, hx + 56, hy - 56, 38, 56, '#a8c8d8'); for (let k = 0; k < 3; k++) L(c, hx + 60 + k * 10, hy - 54, hx + 58 + k * 10, hy - 30, '#e0f0f8');
   R(c, hx + 74, hy - 56, 2, 56, '#3c2c20'); for (let k = 0; k < 3; k++) R(c, hx + 60, hy - 46 + k * 5, 30, 1, '#f8d050');
-  for (const lx of [hx + 46, hx + 104]) { R(c, lx - 2, hy - 64, 5, 8, '#2c2420'); E(c, lx, hy - 58, 3, 3, '#f8e080'); E(c, lx, hy - 58, 9, 9, DA('#f8d060', 0.2 + 0.05 * Math.sin(t * 7 + lx))); }
+  for (const lx of [hx + 46, hx + 104]) { R(c, lx - 2, hy - 64, 5, 8, '#2c2420'); E(c, lx, hy - 58, 3, 3, '#f8e080'); glow(c, lx, hy - 58, 9, 9, '#f8d060', 2 * (0.2 + 0.05 * Math.sin(t * 7 + lx))); }
   R(c, hx + 44, hy, 62, 4, '#c8c0b0'); R(c, hx + 48, hy + 4, 54, 3, '#a8a090');
   c.restore();
   if (sign > 0) { // the signboard over the door
@@ -81,7 +81,7 @@ function corridor(c, t, o = {}) {
   for (let k = -6; k <= 6; k++) L(c, 160 + k * 12, VP.y1, 160 + k * 60, H, '#4c2a1c');
   PF(c, [70, H, 136, VP.y1, 184, VP.y1, 250, H], '#8c1c1c'); L(c, 70, H, 136, VP.y1, '#d8a838'); L(c, 250, H, 184, VP.y1, '#d8a838'); L(c, 78, H, 138, VP.y1, '#5c1010'); L(c, 242, H, 182, VP.y1, '#5c1010');
   // wall sconces with flickering light
-  for (const [sx, sy, side] of [[24, 70, -1], [70, 54, -1], [296, 70, 1], [250, 54, 1]]) { const f = 0.8 + 0.2 * Math.sin(t * 9 + sx) * Math.sin(t * 5.3 + sy); E(c, sx, sy, 22 * f, 18 * f, DA('#f8c060', 0.14)); R(c, sx - 1, sy, 3, 8, '#c8a040'); E(c, sx, sy - 2, 2, 3, '#fff0a0'); }
+  for (const [sx, sy, side] of [[24, 70, -1], [70, 54, -1], [296, 70, 1], [250, 54, 1]]) { const f = 0.8 + 0.2 * Math.sin(t * 9 + sx) * Math.sin(t * 5.3 + sy); glow(c, sx, sy, 22 * f, 18 * f, '#f8c060', 2 * (0.14)); R(c, sx - 1, sy, 3, 8, '#c8a040'); E(c, sx, sy - 2, 2, 3, '#fff0a0'); }
   // back wall and the door
   R(c, VP.x0, VP.y0, VP.x1 - VP.x0, VP.y1 - VP.y0, wall[0]); for (let x = VP.x0 + 4; x < VP.x1; x += 10) R(c, x, VP.y0, 1, VP.y1 - VP.y0 - 18, wall[1]); R(c, VP.x0, VP.y1 - 18, VP.x1 - VP.x0, 18, '#3c2418');
   const dx0 = 128, dx1 = 192, dy0 = 44;

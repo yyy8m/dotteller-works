@@ -16,7 +16,7 @@ function oldMan(c, x, y, s, o = {}) {
   const st = { id: 'omK', robe: '#a8a498', robe2: '#8c887c', trim: '#e8e4d8', sash: '#5c4c3c', old: true, beard: true, squint: true, hat: 'cap', hatCol: '#1c1c24' };
   const spr = robeFig(st, { f: o.f, arm: o.arm === 'fwd' ? 'point' : (o.arm || 'staff'), expr: o.expr, blink: o.blink, k: o.k });
   blit(c, a < 1 ? ditherFade(spr, a, 'omf' + (o.k || '')) : spr, x, y, FIG_AX2, FIG_AY2, { s: s * 0.72, flip: o.flip });
-  if (o.glow) E(c, x, y - 30 * s * 0.72, 22, 30, DA('#f8f0c0', 0.12 * a));
+  if (o.glow) glow(c, x, y - 30 * s * 0.72, 22, 30, '#f8f0c0', 2 * (0.12 * a));
 }
 /* faces for the dialog window (48x48) */
 function toshiFace(o = {}) {
@@ -80,12 +80,12 @@ const PORTRAITS = {
 function sunsetSky(c, t, o = {}) {
   VG(c, 0, 0, W, 130, o.night ? ['#1c1c3c', '#3c2c4c', '#7c4c4c'] : ['#5c6ca8', '#c8788c', '#f0a860', '#f8d08c']);
   const mx = 250, my = 24; ER(c, mx, my, 9, 9, '#fcf8e8', -1.2, 1.2); // thin crescent moon
-  for (let i = 0; i < 4; i++) { const x = mod(i * 110 - t * 3, 440) - 60; E(c, x, 40 + i * 9, 50, 5, DA('#f8c8a8', 0.5)); }
+  for (let i = 0; i < 4; i++) { const x = mod(i * 110 - t * 3, 440) - 60; glow(c, x, 40 + i * 9, 50, 5, '#f8c8a8', 2 * (0.5)); }
 }
 /* the west gate of Luoyang: city wall + a two-storey gate tower */
 function westGate(c, t, o = {}) {
   sunsetSky(c, t, o);
-  if (!o.night) { const sy = 92; E(c, 60, sy, 34, 34, DA('#f8d080', 0.35)); E(c, 60, sy, 20, 20, '#f8c060'); E(c, 60, sy, 14, 14, '#fce8a0'); }
+  if (!o.night) { const sy = 92; glow(c, 60, sy, 34, 34, '#f8d080', 2 * (0.35)); E(c, 60, sy, 20, 20, '#f8c060'); E(c, 60, sy, 14, 14, '#fce8a0'); }
   // far city roofs
   for (let i = 0; i < 9; i++) { const x = i * 40 - 10, h = 10 + (i * 7 % 12); PF(c, [x, 78, x + 10, 78 - h, x + 30, 78 - h, x + 40, 78], o.night ? '#2c2034' : '#8c5c5c'); R(c, x + 6, 78 - h + 2, 28, 2, o.night ? '#1c1424' : '#6c3c44'); }
   // wall with crenellations
@@ -101,7 +101,7 @@ function westGate(c, t, o = {}) {
   PF(c, [gx - 56, 32, gx - 48, 26, gx - 34, 18, gx + 34, 18, gx + 48, 26, gx + 56, 32, gx + 42, 30, gx - 42, 30], '#2c2430'); R(c, gx - 4, 12, 8, 6, '#2c2430'); E(c, gx, 11, 2, 2, '#d8a838');
   R(c, gx - 14, 44, 28, 9, '#1c140c'); R(c, gx - 13, 45, 26, 7, '#3c2c1c'); TX(c, '西門', gx - 13, 44, '#f8d050', 8, null);
   // lanterns
-  for (const lx of [gx - 50, gx + 50]) { L(c, lx, 71, lx, 76, '#1c1c1c'); E(c, lx, 81, 4, 5, o.night ? '#f86030' : '#e84c2c'); R(c, lx - 3, 76, 6, 1, '#1c1c1c'); if (o.night) E(c, lx, 81, 10, 10, DA('#f8a040', 0.25)); }
+  for (const lx of [gx - 50, gx + 50]) { L(c, lx, 71, lx, 76, '#1c1c1c'); E(c, lx, 81, 4, 5, o.night ? '#f86030' : '#e84c2c'); R(c, lx - 3, 76, 6, 1, '#1c1c1c'); if (o.night) glow(c, lx, 81, 10, 10, '#f8a040', 2 * (0.25)); }
   // willow
   { const wx = 286; R(c, wx - 2, 96, 5, 54, '#4c3424'); for (let k = 0; k < 9; k++) { const sx = wx - 20 + k * 5, sw2 = Math.sin(t * 1.2 + k) * 2; L(c, sx, 92 + (k % 3) * 2, sx + sw2, 132 + (k % 4) * 4, o.night ? '#2c4c34' : '#6c9c48'); } E(c, wx, 92, 24, 10, o.night ? '#2c4c34' : '#7cac54'); }
   R(c, 0, 150, W, H - 150, o.night ? '#5c4c44' : '#b8946c'); for (let i = 0; i < 30; i++) R(c, (i * 47) % W, 152 + (i * 13 % 80), 6, 1, o.night ? '#4c3c34' : '#a8845c');
@@ -117,7 +117,7 @@ function westGate(c, t, o = {}) {
 }
 function goldPile(c, x, y, n, t) { for (let i = 0; i < n; i++) { const a = hash(i) * Math.PI, r = Math.sqrt(i / n) * 26; const px = x + Math.cos(a) * r * 1.4, py = y - Math.sin(a) * r * 0.7; R(c, px, py, 4, 3, i % 3 ? '#f8d050' : '#c89c28'); if ((Math.floor(t * 4) + i) % 23 === 0) P(c, px + 1, py, C.white); } }
 function mountainsFar(c, t, ox, y, cols) { for (let k = 0; k < 3; k++) for (let i = 0; i < 10; i++) { const x = mod(i * 70 + k * 23 - ox * (0.3 + k * 0.3), 560) - 80, h = 40 + (i * 17 % 30) + k * 10; PF(c, [x - 50, y + k * 18, x, y - h + k * 18, x + 50, y + k * 18], cols[k]); } }
-function bigDipper(c, t, x, y, s) { const pts = [[0, 0], [14, 4], [26, 4], [36, 10], [40, 22], [56, 24], [58, 10]]; pts.forEach(([a, b], i) => { const tw = 0.7 + 0.3 * Math.sin(t * 3 + i); E(c, x + a * s, y + b * s, 3 * s * tw, 3 * s * tw, DA('#f8f0c0', 0.25)); E(c, x + a * s, y + b * s, 1.2 * s, 1.2 * s, '#ffffff'); }); }
+function bigDipper(c, t, x, y, s) { const pts = [[0, 0], [14, 4], [26, 4], [36, 10], [40, 22], [56, 24], [58, 10]]; pts.forEach(([a, b], i) => { const tw = 0.7 + 0.3 * Math.sin(t * 3 + i); glow(c, x + a * s, y + b * s, 3 * s * tw, 3 * s * tw, '#f8f0c0', 2 * (0.25)); E(c, x + a * s, y + b * s, 1.2 * s, 1.2 * s, '#ffffff'); }); }
 function cliffRock(c, t) {
   VG(c, 0, 0, W, 150, ['#03040c', '#0a0e24', '#1a1e3c']);
   for (let i = 0; i < 60; i++) { const tw = (Math.floor(t * 2) + i) % 7; P(c, (i * 71 + 13) % W, (i * 37 + 5) % 118, tw ? '#c8c8e0' : '#5c5c80'); }
@@ -130,7 +130,7 @@ function cliffRock(c, t) {
   // the flat rock
   PF(c, [0, 136, 30, 126, 120, 122, 210, 124, 270, 128, 320, 126, 320, 150, 0, 150], '#4c4c64'); PF(c, [0, 136, 30, 126, 120, 122, 210, 124, 270, 128, 320, 126, 320, 130, 0, 140], '#6c6c88');
   for (let i = 0; i < 12; i++) L(c, 10 + i * 26, 130 + (i % 3) * 3, 22 + i * 26, 132 + (i % 3) * 3, '#3c3c54');
-  R(c, 0, 150, W, H - 150, '#06060e'); for (let i = 0; i < 6; i++) E(c, 30 + i * 56, 170 + (i % 2) * 6, 40, 6, DA('#3c3c64', 0.4));
+  R(c, 0, 150, W, H - 150, '#06060e'); for (let i = 0; i < 6; i++) glow(c, 30 + i * 56, 170 + (i % 2) * 6, 40, 6, '#3c3c64', 2 * (0.4));
 }
 /* a thin horse with a human face (the parents, reborn as beasts) */
 function horseSpr(t, who, o = {}) {
