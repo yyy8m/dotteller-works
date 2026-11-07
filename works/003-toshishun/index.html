@@ -1663,13 +1663,13 @@ const ZP = {
   init(S) { S.tRun = ln(S, 'L23') ? at(S, 'L23', 2) - 0.2 : 1e9; S.tHug = ln(S, 'L23') ? at(S, 'L23', 4) - 0.3 : 1e9; S.tCry = ln(S, 'T6') ? at(S, 'T6', 0) - 0.1 : 1e9; S.dur = lastSe(S) + 1.4; },
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#140810', '#2c0c14', '#3c1018']); R(c, 0, 140, W, H - 140, '#2c0c0c');
-    const glow = t > S.tCry ? ss(sg(t, S.tCry, S.tCry + 1.2)) : 0.3 + 0.1 * Math.sin(t * 2);
-    glow(c, 180, 120, 60, 30, '#f8f0c0', 2 * (0.12 * glow));
+    const gk = t > S.tCry ? ss(sg(t, S.tCry, S.tCry + 1.2)) : 0.3 + 0.1 * Math.sin(t * 2);
+    glow(c, 180, 120, 60, 30, '#f8f0c0', 2 * (0.12 * gk));
     blit(c, horseSpr(t, 1, { down: true, tear: true }), 190, 150, 30, 39, { s: 1.5 });
     const x = t < S.tRun ? 60 : lerp(60, 150, ss(sg(t, S.tRun, S.tHug)));
     toshi(c, x, 150, 1.6, { f: t > S.tRun && t < S.tHug ? Math.floor(t * 8) & 3 : -1, arm: t > S.tHug ? 'fwd' : null, k: 'p' + (t > S.tHug ? 'h' : '') });
     if (t > S.tHug) for (let i = 0; i < 3; i++) { const u = fr(t * 1.4 + i / 3); R(c, x + 6, 102 + u * 30, 1, 3, DA('#88c8f8', 1 - u)); }
-    if (glow > 0.6) { c.fillStyle = DA('#ffffff', (glow - 0.6) * 1.5); c.fillRect(0, 0, W, H); }
+    if (gk > 0.6) { c.fillStyle = DA('#ffffff', (gk - 0.6) * 1.5); c.fillRect(0, 0, W, H); }
     return { z: 1.12, fx: 150, fy: 108 };
   }
 };
