@@ -5,7 +5,7 @@ const SA = {
   init(S) { S.dur = lastSe(S) + 1.0; },
   draw(c, t, S) {
     const ox = t * 22; autumnForest(c, t, ox);
-    for (let k = 0; k < 2; k++) blit(c, dogSpr(t, 'walk', k), 214 + k * 34 + Math.sin(t * 2 + k) * 4, 148, 13, 17, { s: 1.4 });
+    for (let k = 0; k < 2; k++) blit(c, dogSpr(t, 'walk', k), 206 + k * 46 + Math.sin(t * 2 + k) * 4, 148, 18, 23, { s: 1.2 });
     drawGents(c, 170, 148, 1.6, { per: g => ({ f: Math.floor(t * 7 + g * 2) & 3, weapon: 'rifle', k: 'w' + (Math.floor(t * 7 + g * 2) & 3) }) });
     return { z: 1.05, fx: 170, fy: 108 };
   }
@@ -17,9 +17,9 @@ const SB = {
   draw(c, t, S) {
     autumnForest(c, t, 300, { dusk: t > S.tDead });
     for (let k = 0; k < 2; k++) {
-      const x = 214 + k * 40, pose = t < S.tDizzy ? 'walk' : t < S.tDead ? 'dizzy' : 'dead';
+      const x = 210 + k * 50, pose = t < S.tDizzy ? 'walk' : t < S.tDead ? 'dizzy' : 'dead';
       const wob = pose === 'dizzy' ? Math.sin(t * 9 + k) * 3 : 0;
-      blit(c, dogSpr(pose === 'walk' ? 0 : t, pose, k), x + wob, 148, 13, 17, { s: 1.4 });
+      blit(c, dogSpr(pose === 'walk' ? 0 : t, pose, k), x + wob, 148, 18, 23, { s: 1.2 });
       if (pose === 'dizzy') for (let i = 0; i < 6; i++) { const a = t * 6 + i; P(c, x + 6 + Math.cos(a) * 8, 118 + Math.sin(a) * 3, i & 1 ? '#f8f8f8' : '#f8d860'); }
       if (pose === 'dead') for (let i = 0; i < 4; i++) { const u = fr(t * 0.6 + i / 4 + k * 0.3); E(c, x + 18 + i * 2, 140 - u * 6, 1.5 + u * 2, 1.5 + u * 2, DA('#ffffff', 0.9 * (1 - u))); }
     }
@@ -182,14 +182,15 @@ const SM = {
     if (t < S.tDark) {
       hallway(c, { door: '#1c1c24', door2: '#2c2c34' });
       if (t > S.tBurst) { const u = t - S.tBurst; for (let i = 0; i < 10; i++) R(c, 20 + i * 4 + u * 40 * Math.cos(i), 90 + u * 60 * Math.sin(i * 2), 5, 3, '#5c3c24');
-        for (let k = 0; k < 2; k++) { const run = t < S.tJump, x = run ? 40 + (Math.sin(u * 3 + k * 3) + 1) * 80 + k * 20 : lerp(160, 210, sg(t, S.tJump, S.tJump + 0.6)); blit(c, dogSpr(t, 'run', k), x, 150 - (run ? Math.abs(Math.sin(u * 8 + k)) * 8 : 30 * sg(t, S.tJump, S.tJump + 0.6)), 13, 17, { s: 2, flip: run && Math.cos(u * 3 + k * 3) < 0 }); } }
+        for (let k = 0; k < 2; k++) { const run = t < S.tJump, x = run ? 40 + (Math.sin(u * 3 + k * 3) + 1) * 80 + k * 20 : lerp(160, 210, sg(t, S.tJump, S.tJump + 0.6)); blit(c, dogSpr(t, 'run', k), x, 150 - (run ? Math.abs(Math.sin(u * 8 + k)) * 8 : 30 * sg(t, S.tJump, S.tJump + 0.6)), 18, 23, { s: 1.6, flip: run && Math.cos(u * 3 + k * 3) < 0 }); } }
       drawGents(c, 70, 160, 1.7, { per: g => ({ noHat: true, noCoat: true, cream: true, shock: true, k: 'm' + g }) });
       return { z: 1, fx: 160, fy: 110, sx: t > S.tBurst && t < S.tBurst + 0.4 ? Math.round(Math.sin(t * 60) * 3) : 0 };
     }
     // darkness; the cry; the room fades away into grass
     const v = ss(sg(t, S.tVanish, S.tVanish + 2));
     R(c, 0, 0, W, H, '#050405');
-    if (v < 1) { const words = ['にゃあお', 'くゎあ', 'ごろごろ']; words.forEach((s, i) => { const tt = S.tDark + 1.2 + i * 1.1; if (t > tt) { c.globalAlpha = 1 - v; TX(c, s, 60 + i * 80 + Math.sin(t * 30 + i) * 2, 60 + i * 20, '#f8f8f8', 24, null); c.globalAlpha = 1; } }); }
+    if (v < 1) { c.save(); c.globalAlpha = 1 - v; E(c, 160, 96, 70, 60, DA('#f86c1c', 0.08)); blit(c, bossFace({ lick: (Math.floor(t * 3) & 1) === 1 }), 160, 100, 24, 24, { s: 3.2 }); c.restore(); }
+    if (v < 1) { const words = ['にゃあお', 'くゎあ', 'ごろごろ']; words.forEach((s, i) => { const tt = S.tDark + 1.2 + i * 1.1; if (t > tt) { c.globalAlpha = 1 - v; TX(c, s, [20, 220, 120][i] + Math.sin(t * 30 + i) * 2, [30, 60, 150][i], '#f8f8f8', 24, '#000000'); c.globalAlpha = 1; } }); }
     if (v > 0) { c.save(); c.globalAlpha = v; autumnForest(c, t, 700, { dusk: true }); c.restore(); }
     return { z: 1, fx: 160, fy: 100 };
   }
@@ -202,9 +203,9 @@ const SN = {
     autumnForest(c, t, 700, { dusk: true, wind: t < 6 });
     // clothes on the branches and among the roots
     R(c, 52, 46, 14, 20, GENT[0].coat); R(c, 238, 52, 14, 20, GENT[1].coat); R(c, 120, 140, 10, 4, '#2c2c2c'); R(c, 270, 142, 8, 5, '#5c3c24'); P(c, 200, 146, '#f8d860');
-    blit(c, dogSpr(t, 'walk', 0), 220, 150, 13, 17, { s: 1.4 }); blit(c, dogSpr(t, 'walk', 1), 250, 152, 13, 17, { s: 1.4 });
+    blit(c, dogSpr(t, "walk", 0), 214, 150, 18, 23, { s: 1.2 }); blit(c, dogSpr(t, "walk", 1), 262, 152, 18, 23, { s: 1.2 });
     drawGents(c, 160, 150, 1.6, { per: g => ({ noHat: true, noCoat: true, dx: t < S.tHunter ? Math.round(Math.sin(t * 30 + g)) : 0, arm: t > S.tHunter + 1 && g === 0 ? 'up' : null, k: 'n' + g }) });
-    if (t > S.tHunter) { const x = lerp(-20, 90, ss(sg(t, S.tHunter, S.tHunter + 3))); blit(c, personSpr({ id: 'hunter', coat: '#8c7c4c', coat2: '#6c5c34', pants: '#4c4030', skin: '#c89060', hair: '#2c1c14', hat: 'fedora', hatCol: '#c8a860' }, { f: Math.floor(t * 7) & 3, weapon: 'rifle', id: 'hu' }), x, 150, PER_AX, PER_AY, { s: 1.6 }); }
+    if (t > S.tHunter) { const x = lerp(-20, 90, ss(sg(t, S.tHunter, S.tHunter + 3))); blit(c, suitFig({ id: 'hu', coat: '#8c7c4c', coat2: '#6c5c34', pants: '#5c4c34', boots: '#2c2014', hair: '#2c1c14', hat: 'bowler', hatCol: '#c8a860', moustache: true }, { f: Math.floor(t * 7) & 3, arm: 'rifle', k: 'h' }), x, 150, FIG_AX2, FIG_AY2, { s: 1.12 }); }
     susuki(c, t, 166, t < 6, 16, 2);
     return { z: 1.04, fx: 150, fy: 106 };
   }

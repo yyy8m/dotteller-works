@@ -1098,6 +1098,120 @@ function lawFace(id, o = {}) {
   }, null));
 }
 
+/* ---- detailed robed figure (26x58, feet anchor 13,57) for the literature series ----
+   st: { id, robe, robe2, trim, sash, skin, skin2, hair, hat: 'bun'|'cap'|'crown'|null, hatCol, beard, old, female }
+   o:  { f (walk frame -1..3), pose: 'stand'|'sit'|'bow'|'kneel', arm: null|'up'|'point'|'clasp'|'reach'|'staff', expr: 'normal'|'shock'|'sad'|'cry'|'smile'|'angry', blink, k } */
+const FIG_AX2 = 13, FIG_AY2 = 57;
+function robeFig(st, o = {}) {
+  const f = o.f == null ? -1 : o.f, pose = o.pose || 'stand', arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
+  return SPR('rf' + st.id + (o.k || '') + f + pose + arm + ex + bl, 26, 58, c => {
+    const R2 = st.robe2 || st.robe, sk = st.skin || '#f0c8a0', sk2 = st.skin2 || '#c8946c';
+    const sw = f < 0 ? 0 : [0, 2, 0, -2][f & 3], bob = f < 0 ? 0 : (f & 1);
+    const top = pose === 'sit' ? 18 : pose === 'kneel' ? 16 : 0, bow = pose === 'bow' ? 1 : 0;
+    const hx = 13, hy = 11 + top + bow * 10 - bob;
+    // body
+    if (pose === 'sit' || pose === 'kneel') {
+      PF(c, [6, 22 + top, 20, 22 + top, 25, 56, 1, 56], st.robe); PF(c, [13, 22 + top, 20, 22 + top, 25, 56, 13, 56], R2); R(c, 1, 53, 24, 3, st.trim || R2);
+    } else {
+      R(c, 8 + sw, 54, 4, 3, '#2c2420'); R(c, 14 - sw, 54, 4, 3, '#2c2420');
+      PF(c, [7, 20 + bow * 8 - bob, 19, 20 + bow * 8 - bob, 22 + sw * 0.5, 55, 4 + sw * 0.5, 55], st.robe);
+      PF(c, [13, 20 + bow * 8 - bob, 19, 20 + bow * 8 - bob, 22 + sw * 0.5, 55, 13, 55], R2);
+      R(c, 4 + sw * 0.5, 51, 18, 3, st.trim || R2); L(c, 13, 32, 13 + sw * 0.3, 52, DA('#000000', 0.25));
+    }
+    const by = 20 + top + bow * 8 - bob;
+    R(c, 7, by + 10, 12, 3, st.sash || '#1c1c24'); L(c, 15, by + 13, 16, by + 22, st.sash || '#1c1c24', 2);
+    L(c, 10, by, 13, by + 6, st.trim || '#f4f0e8', 2); L(c, 16, by, 13, by + 6, st.trim || '#f4f0e8', 2); // crossed collar
+    // sleeves / arms (wide sleeves)
+    const sl = (sx, sy, ex2, ey2, hand = true) => { PF(c, [sx - 2, sy, sx + 3, sy, ex2 + 3, ey2, ex2 - 3, ey2 + 2], st.robe); L(c, ex2 - 3, ey2 + 2, ex2 + 3, ey2, st.trim || R2, 2); if (hand) E(c, ex2, ey2 + 2, 1.6, 1.6, sk); };
+    const ls = [7, by + 1], rs = [19, by + 1];
+    if (arm === 'clasp' || pose === 'bow' || pose === 'kneel') { sl(ls[0], ls[1], 11, by + 11); sl(rs[0], rs[1], 15, by + 11); E(c, 13, by + 13, 2.5, 2, sk); }
+    else {
+      sl(ls[0], ls[1], 5 - sw * 0.4, by + 16);
+      if (arm === 'up') sl(rs[0], rs[1], 23, by - 10);
+      else if (arm === 'point') sl(rs[0], rs[1], 25, by + 3);
+      else if (arm === 'reach') sl(rs[0], rs[1], 24, by + 9);
+      else if (arm === 'staff') { sl(rs[0], rs[1], 21, by + 12); L(c, 22, by - 8, 22, 56, '#7c5434', 2); E(c, 22, by - 9, 2, 2, '#9c6c44'); }
+      else sl(rs[0], rs[1], 21 + sw * 0.4, by + 16);
+    }
+    // head
+    R(c, hx - 2, hy + 5, 4, 4, sk2);
+    E(c, hx, hy, 6, 7, sk2); E(c, hx - 0.4, hy - 0.4, 5.6, 6.6, sk);
+    // hair / hat
+    if (st.old) { PF(c, [hx - 6, hy - 1, hx - 5, hy - 6, hx, hy - 8, hx + 5, hy - 6, hx + 6, hy - 1, hx + 4, hy - 4, hx - 4, hy - 4], '#f4f4f0'); }
+    else PF(c, [hx - 6, hy + 1, hx - 6, hy - 5, hx, hy - 8, hx + 6, hy - 5, hx + 6, hy + 1, hx + 4, hy - 3, hx - 4, hy - 3], st.hair || '#1c1c24');
+    if (st.hat === 'bun') { E(c, hx, hy - 9, 2.6, 2.4, st.hair || '#1c1c24'); R(c, hx - 1, hy - 7, 3, 1, st.hatCol || '#c8302c'); }
+    if (st.hat === 'cap') { R(c, hx - 4, hy - 10, 8, 4, st.hatCol || '#1c1c24'); R(c, hx - 5, hy - 7, 10, 1, st.hatCol || '#1c1c24'); }
+    if (st.female) { E(c, hx, hy - 8, 4, 2.6, st.hair); R(c, hx + 3, hy - 9, 3, 1, '#d8c890'); L(c, hx - 6, hy, hx - 6, hy + 6, st.hair, 2); L(c, hx + 6, hy, hx + 6, hy + 6, st.hair, 2); }
+    // face
+    const ey = hy;
+    if (bl === 2 || ex === 'cry') { L(c, hx - 3, ey, hx - 2, ey, '#2c1c14'); L(c, hx + 2, ey, hx + 3, ey, '#2c1c14'); }
+    else if (st.squint) { R(c, hx - 3, ey - 1, 2, 2, C.k); L(c, hx + 1, ey, hx + 3, ey, '#2c1c14'); }
+    else { R(c, hx - 3, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); R(c, hx + 2, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); }
+    if (ex === 'angry') { L(c, hx - 4, ey - 3, hx - 1, ey - 2, '#2c1c14'); L(c, hx + 1, ey - 2, hx + 4, ey - 3, '#2c1c14'); }
+    else if (ex === 'sad' || ex === 'cry') { L(c, hx - 4, ey - 2, hx - 1, ey - 3, '#2c1c14'); L(c, hx + 1, ey - 3, hx + 4, ey - 2, '#2c1c14'); }
+    else if (st.old) { L(c, hx - 4, ey - 3, hx - 1, ey - 3, '#f4f4f0'); L(c, hx + 1, ey - 3, hx + 4, ey - 3, '#f4f4f0'); }
+    if (ex === 'cry') { R(c, hx - 3, ey + 1, 1, 4, '#88c8f8'); R(c, hx + 2, ey + 1, 1, 4, '#88c8f8'); }
+    if (st.beard) { PF(c, [hx - 4, ey + 3, hx + 4, ey + 3, hx + 3, ey + 12, hx, ey + 16, hx - 3, ey + 12], '#f4f4f0'); R(c, hx - 1, ey + 3, 3, 1, '#8c5c4c'); }
+    else if (ex === 'shock') E(c, hx, ey + 4, 1.4, 1.6, '#5c1c1c');
+    else if (ex === 'smile') { L(c, hx - 2, ey + 3, hx, ey + 4, '#8c4c3c'); L(c, hx, ey + 4, hx + 2, ey + 3, '#8c4c3c'); }
+    else R(c, hx - 1, ey + 4, 3, 1, '#8c4c3c');
+    if (!st.beard && !st.female) P(c, hx, ey + 2, sk2);
+  });
+}
+/* portrait close-up cut: a big face (48x48 portrait) over a soft background */
+function closeUp(c, t, face, o = {}) {
+  const bg = o.bg || ['#1c0c08', '#5c2c14'];
+  VG(c, 0, 0, W, H, [bg[0], bg[1], bg[0]]);
+  if (o.glow) { E(c, 160, 104, 110, 90, DA(o.glow, 0.12)); E(c, 160, 104, 80, 70, DA(o.glow, 0.12)); }
+  if (o.lines) for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + t * 0.2; L(c, 160 + Math.cos(a) * 90, 104 + Math.sin(a) * 90, 160 + Math.cos(a) * 200, 104 + Math.sin(a) * 200, DA(o.lines, 0.35)); }
+  const br = Math.round(Math.sin(t * 2.2) * 1);
+  blit(c, face, 160, 110 + br, 24, 24, { s: o.s || 3.5 });
+  if (o.after) o.after(c, t);
+  return { z: 1 + 0.03 * Math.sin(t * 0.5), fx: 160, fy: 104 };
+}
+
+/* ---- detailed figure in Western clothes (26x58, feet anchor 13,57): hunting jacket, trousers, boots ----
+   st: { id, coat, coat2, pants, boots, skin, hair, hat: 'hunt'|'bowler'|null, hatCol, moustache, glasses }
+   o:  { f, arm: null|'up'|'point'|'reach'|'rifle'|'cover', expr, blink, noHat, noCoat, cream, k } */
+function suitFig(st, o = {}) {
+  const f = o.f == null ? -1 : o.f, arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
+  return SPR('sf' + st.id + (o.k || '') + f + arm + ex + bl + (o.noHat ? 'h' : '') + (o.noCoat ? 'c' : '') + (o.cream ? 'w' : ''), 26, 58, c => {
+    const sw = f < 0 ? 0 : [0, 3, 0, -3][f & 3], bob = f < 0 ? 0 : (f & 1);
+    const coat = o.noCoat ? '#f0ece4' : st.coat, coat2 = o.noCoat ? '#d4cec4' : (st.coat2 || st.coat);
+    const sk = o.cream ? '#fcfaf2' : (st.skin || '#f0c8a8'), sk2 = o.cream ? '#e0dcd0' : '#c89c7c';
+    // legs & boots (barefoot when the shoes are taken)
+    L(c, 10, 36 - bob, 9 + sw, 53, st.pants, 4); L(c, 16, 36 - bob, 17 - sw, 53, st.pants, 4);
+    if (o.noCoat) { R(c, 7 + sw, 53, 5, 3, sk); R(c, 15 - sw, 53, 5, 3, sk); } else { R(c, 7 + sw, 47, 5, 9, st.boots || '#2c2420'); R(c, 15 - sw, 47, 5, 9, st.boots || '#2c2420'); }
+    // body
+    PF(c, [7, 20 - bob, 19, 20 - bob, 20, 38 - bob, 6, 38 - bob], coat); PF(c, [13, 20 - bob, 19, 20 - bob, 20, 38 - bob, 13, 38 - bob], coat2);
+    if (!o.noCoat) { R(c, 6, 31 - bob, 14, 2, '#3c2c1c'); R(c, 12, 31 - bob, 3, 2, '#d8b84c'); for (let y = 22; y < 30; y += 3) P(c, 13, y - bob, '#f8d860'); L(c, 10, 20 - bob, 13, 25 - bob, '#f4f0e8'); L(c, 16, 20 - bob, 13, 25 - bob, '#f4f0e8'); }
+    else { L(c, 13, 21 - bob, 13, 37 - bob, '#c8c0b4'); }
+    // arms
+    const arm1 = (ex1, ey1) => { L(c, 7, 22 - bob, ex1, ey1, coat, 3); E(c, ex1, ey1 + 1, 1.6, 1.6, sk); };
+    arm1(5 - sw * 0.5, 36 - bob);
+    if (arm === 'up') { L(c, 19, 22 - bob, 23, 8, coat2, 3); E(c, 23, 7, 1.6, 1.6, sk); }
+    else if (arm === 'point') { L(c, 19, 22 - bob, 25, 24 - bob, coat2, 3); E(c, 25, 24 - bob, 1.6, 1.6, sk); }
+    else if (arm === 'reach') { L(c, 19, 22 - bob, 24, 30 - bob, coat2, 3); E(c, 24, 31 - bob, 1.6, 1.6, sk); }
+    else if (arm === 'cover') { L(c, 19, 22 - bob, 15, 12, coat2, 3); E(c, 15, 11, 2, 2, sk); }
+    else { L(c, 19, 22 - bob, 21 + sw * 0.5, 36 - bob, coat2, 3); E(c, 21 + sw * 0.5, 37 - bob, 1.6, 1.6, sk); }
+    if (arm === 'rifle') { L(c, 3, 12 - bob, 22, 34 - bob, '#5c3c24', 2); L(c, 3, 12 - bob, 9, 19 - bob, '#3c3c44', 2); }
+    // head
+    const hx = 13, hy = 12 - bob;
+    R(c, hx - 2, hy + 5, 4, 3, sk2); E(c, hx, hy, 6, 7, sk2); E(c, hx - 0.4, hy - 0.4, 5.6, 6.6, sk);
+    PF(c, [hx - 6, hy, hx - 6, hy - 4, hx - 2, hy - 7, hx + 4, hy - 7, hx + 6, hy - 4, hx + 6, hy, hx + 4, hy - 3, hx - 4, hy - 3], st.hair || '#5c3c24');
+    if (!o.noHat && st.hat === 'hunt') { R(c, hx - 6, hy - 8, 12, 4, st.hatCol || '#4c4030'); R(c, hx - 7, hy - 5, 15, 2, st.hatCol || '#4c4030'); R(c, hx + 4, hy - 9, 2, 2, '#c8302c'); }
+    if (!o.noHat && st.hat === 'bowler') { E(c, hx, hy - 6, 6, 4, st.hatCol || '#2c2c2c'); R(c, hx - 8, hy - 4, 16, 2, st.hatCol || '#2c2c2c'); }
+    const ey = hy;
+    if (bl === 2) { L(c, hx - 3, ey, hx - 2, ey, '#2c1c14'); L(c, hx + 2, ey, hx + 3, ey, '#2c1c14'); }
+    else { R(c, hx - 3, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); R(c, hx + 2, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); }
+    if (st.glasses) { R(c, hx - 5, ey - 2, 5, 1, '#1c1c1c'); R(c, hx + 1, ey - 2, 5, 1, '#1c1c1c'); R(c, hx - 5, ey + 1, 5, 1, '#1c1c1c'); R(c, hx + 1, ey + 1, 5, 1, '#1c1c1c'); P(c, hx, ey - 1, '#1c1c1c'); }
+    if (ex === 'sad' || ex === 'cry' || ex === 'shock') { L(c, hx - 4, ey - 3, hx - 1, ey - 4, '#3c2c1c'); L(c, hx + 1, ey - 4, hx + 4, ey - 3, '#3c2c1c'); }
+    if (ex === 'cry') { R(c, hx - 3, ey + 1, 1, 4, '#88c8f8'); R(c, hx + 2, ey + 1, 1, 4, '#88c8f8'); }
+    if (st.moustache) PF(c, [hx - 4, ey + 3, hx, ey + 2, hx + 4, ey + 3, hx + 2, ey + 4, hx - 2, ey + 4], '#4c3020');
+    if (ex === 'shock') E(c, hx, ey + 5, 1.5, 1.6, '#5c1c1c'); else if (ex === 'smile') { L(c, hx - 2, ey + 4, hx, ey + 5, '#8c4c3c'); L(c, hx, ey + 5, hx + 2, ey + 4, '#8c4c3c'); } else R(c, hx - 1, ey + 5, 3, 1, '#8c4c3c');
+  });
+}
+
 /* ================= 文庫 #002 注文の多い料理店: cast & props ================= */
 const ln = (S, id) => S.lines.find(l => l.id === id);
 const at = (S, id, k = 0, def = 0) => { const l = ln(S, id); return l ? l.t0 + l.segs[Math.min(k, l.segs.length - 1)].a : def; };
@@ -1108,31 +1222,32 @@ const GENT = [
   { id: 'gA', coat: '#a8302c', coat2: '#7c1c1c', pants: '#2c2c3c', skin: '#f0c8a8', hair: '#5c3c24', hat: 'hunt', hatCol: '#2c2c3c', hatCol2: '#3c3c4c' },
   { id: 'gB', coat: '#b84030', coat2: '#8c2420', pants: '#3c3428', skin: '#f4d0b0', hair: '#2c1c14', hat: 'hunt', hatCol: '#5c4c34', hatCol2: '#6c5c44' },
 ];
-/* g: 0/1, o: { f, arm, weapon, noHat, noCoat, cream } */
+/* g: 0/1, o: { f, arm, weapon, noHat, noCoat, cream, shock, flip, dx, dy } */
+const GENT2 = [
+  { id: 'gA', coat: '#a8302c', coat2: '#7c1c1c', pants: '#e8dcc0', boots: '#3c2418', hair: '#5c3c24', hat: 'hunt', hatCol: '#3c3c4c', moustache: true },
+  { id: 'gB', coat: '#b84c2c', coat2: '#8c2c1c', pants: '#d8ccb0', boots: '#2c1c14', hair: '#2c1c14', hat: 'hunt', hatCol: '#5c4c34', glasses: true },
+];
 function gentSpr(g, o = {}) {
-  const st = Object.assign({}, GENT[g]);
-  if (o.noHat) st.hat = null;
-  if (o.noCoat) { st.coat = '#e8e0d0'; st.coat2 = '#c8c0b0'; }
-  if (o.cream) st.skin = '#fcfaf2';
-  return personSpr(st, { f: o.f == null ? -1 : o.f, arm: o.arm, weapon: o.weapon, shock: o.shock, id: 'g' + g + (o.k || '') });
+  const arm = o.weapon === 'rifle' && !o.arm ? 'rifle' : o.arm === 'fwd' ? 'reach' : o.arm;
+  return suitFig(GENT2[g], { f: o.f, arm, expr: o.expr || (o.shock ? 'shock' : 'normal'), blink: o.blink, noHat: o.noHat, noCoat: o.noCoat, cream: o.cream, k: o.k });
 }
 function drawGents(c, x, y, s, o = {}) { // the pair, B a little behind A
   for (const g of [1, 0]) {
-    const oo = Object.assign({}, o, typeof o.per === 'function' ? o.per(g) : {}), dx = g ? -22 * s : 0;
-    blit(c, gentSpr(g, oo), x + dx + (oo.dx || 0), y + (oo.dy || 0), PER_AX, PER_AY, { s, flip: oo.flip });
-    if (g === 1 && !o.noGlasses) { const gx = x + dx + (oo.flip ? -2 : 2) * s, gy = y - 34 * s + (oo.dy || 0); R(c, gx - s, gy, 3 * s, s, '#1c1c1c'); }
+    const oo = Object.assign({}, o, typeof o.per === 'function' ? o.per(g) : {}), dx = g ? -24 * s : 0;
+    blit(c, gentSpr(g, oo), x + dx + (oo.dx || 0), y + (oo.dy || 0), FIG_AX2, FIG_AY2, { s: s * 0.7, flip: oo.flip });
   }
 }
 /* white dog "like a polar bear", 24x16, facing right; pose: walk / dizzy / dead / run */
-function dogSpr(t, pose = 'walk', k = 0) {
-  return SPR('dog' + k, 26, 18, c => {
-    const f = Math.floor(t * 8 + k) & 3, sw = pose === 'walk' || pose === 'run' ? [0, 2, 0, -2][f] : 0;
-    if (pose === 'dead') { E(c, 12, 13, 10, 4, '#f4f4f0'); E(c, 21, 12, 4, 3, '#f4f4f0'); for (let i = 0; i < 4; i++) L(c, 6 + i * 4, 15, 4 + i * 4, 17, '#e0e0d8'); P(c, 23, 11, C.k); return; }
-    E(c, 11, 9, 9, 5, '#f8f8f4'); E(c, 11, 10, 8, 3, '#e4e4dc');
-    E(c, 20, 6, 4.5, 4, '#f8f8f4'); E(c, 24, 7, 2, 1.5, '#e4e4dc'); P(c, 25, 7, C.k); R(c, 17, 2, 2, 2, '#e4e4dc');
-    P(c, 21, 5, pose === 'dizzy' ? '#8c8c94' : C.k);
-    for (const [lx, d] of [[5, sw], [9, -sw], [14, sw], [17, -sw]]) L(c, lx, 13, lx + d, 17, '#e8e8e0', 2);
-    L(c, 2, 8, 0, 5 + (f & 1), '#f0f0e8', 2);
+function dogSpr(t, pose = 'walk', k = 0) { // big white dog "like a polar bear", 36x24, facing right
+  return SPR('dog' + k + pose + (pose === 'walk' || pose === 'run' ? Math.floor(t * 8 + k) & 3 : 0), 36, 24, c => {
+    const f = Math.floor(t * 8 + k) & 3, sw = pose === 'walk' || pose === 'run' ? [0, 3, 0, -3][f] : 0, W1 = '#fbfbf6', W2 = '#e2e2da', W3 = '#c8c8c0';
+    if (pose === 'dead') { E(c, 16, 18, 14, 5, W1); E(c, 16, 21, 12, 2, W3); E(c, 30, 17, 5, 4, W1); E(c, 34, 18, 2, 1.5, W2); L(c, 29, 17, 31, 17, C.k); for (let i = 0; i < 4; i++) L(c, 6 + i * 6, 21, 4 + i * 6, 23, W3, 3); return; }
+    E(c, 15, 12, 13, 7, W1); E(c, 15, 15, 11, 4, W2); for (let i = 0; i < 6; i++) L(c, 6 + i * 4, 8, 7 + i * 4, 11, W2);
+    E(c, 28, 8, 6.5, 6, W1); E(c, 33, 10, 3, 2.5, W2); E(c, 35, 10, 1.4, 1.2, C.k); E(c, 25, 3, 2.2, 2.2, W2);
+    if (pose === 'dizzy') { L(c, 28, 6, 30, 8, '#5c5c64'); L(c, 30, 6, 28, 8, '#5c5c64'); } else R(c, 29, 6, 2, 2, C.k);
+    if (pose === 'run') { R(c, 31, 12, 4, 2, '#3c0c0c'); R(c, 32, 13, 2, 1, '#f8f8f8'); }
+    for (const [lx, d] of [[6, sw], [11, -sw], [20, sw], [25, -sw]]) { L(c, lx, 17, lx + d, 23, W2, 3); R(c, lx + d - 1, 22, 3, 2, W3); }
+    L(c, 2, 10, 0, 6 + (f & 1), W1, 3);
   });
 }
 /* faces for the dialog window (48x48) */
@@ -1153,16 +1268,32 @@ function gentFace(g, o = {}) {
     if (o.crumple) { for (const [x0, y0, x1, y1] of [[14, 14, 19, 16], [29, 16, 34, 14], [15, 25, 18, 28], [31, 28, 34, 25], [20, 12, 27, 13], [21, 33, 27, 33]]) L(c, x0, y0, x1, y1, sk2); for (const x0 of [19, 28]) { R(c, x0, ey + 3, 1, 6, '#88c8f8'); } }
   });
 }
-function nekoFace(o = {}) { // the wildcat's henchman: grey tabby, blue eyes
+function nekoFace(o = {}) { // the wildcat's henchman: grey tabby, cold blue eyes with slit pupils
   return SPR('nf' + (o.blink || 0) + (o.grin ? 'g' : ''), 48, 48, c => {
-    PF(c, [4, 48, 10, 38, 38, 38, 44, 48], '#e8e4dc'); PF(c, [18, 38, 24, 45, 30, 38], '#c82828');
-    PF(c, [8, 22, 10, 4, 20, 14], '#8c8c94'); PF(c, [40, 22, 38, 4, 28, 14], '#8c8c94'); PF(c, [11, 18, 12, 9, 17, 14], '#e8b0b0'); PF(c, [37, 18, 36, 9, 31, 14], '#e8b0b0');
-    E(c, 24, 25, 16, 13, '#9c9ca4'); E(c, 24, 30, 9, 7, '#d8d8dc');
-    for (const x0 of [14, 21, 28]) { L(c, x0, 13, x0 + 2, 18, '#6c6c74'); }
-    for (const x0 of [17, 31]) { if (o.blink === 2) { L(c, x0 - 3, 23, x0 + 3, 23, C.k); continue; } E(c, x0, 23, 3.5, 3.5, '#3c8cf0'); R(c, x0, 21, 1, 5, C.k); P(c, x0 - 2, 21, C.white); }
-    PF(c, [22, 28, 26, 28, 24, 30], '#e86c8c');
-    if (o.grin) { PF(c, [17, 31, 31, 31, 28, 35, 20, 35], '#3c0c10'); R(c, 20, 31, 2, 2, C.white); R(c, 26, 31, 2, 2, C.white); } else { L(c, 24, 30, 21, 33, '#4c4c54'); L(c, 24, 30, 27, 33, '#4c4c54'); }
-    for (const s of [-1, 1]) for (let k = 0; k < 3; k++) L(c, 24 + s * 9, 29 + k * 2, 24 + s * 20, 27 + k * 3, '#f4f4f4');
+    PF(c, [4, 48, 10, 39, 38, 39, 44, 48], '#3c3c44'); PF(c, [16, 39, 24, 46, 32, 39], '#f4f4f0'); R(c, 22, 40, 4, 3, '#c82828');
+    PF(c, [7, 24, 9, 2, 21, 13], '#5c5c64'); PF(c, [41, 24, 39, 2, 27, 13], '#5c5c64'); PF(c, [10, 19, 11, 8, 17, 14], '#c89090'); PF(c, [38, 19, 37, 8, 31, 14], '#c89090');
+    E(c, 24, 25, 16, 13.5, '#6c6c74'); E(c, 24, 31, 9, 6, '#e8e8ec');
+    for (const x0 of [12, 18, 24, 30, 36]) L(c, x0, 13, x0 + (x0 - 24) * 0.1, 19, '#3c3c44');
+    for (const x0 of [16, 32]) { if (o.blink === 2) { L(c, x0 - 4, 24, x0 + 4, 24, C.k); continue; } E(c, x0, 24, 4.5, 4, '#e8f0f8'); E(c, x0, 24, 3.5, 3.5, '#2c7cf0'); R(c, x0, 21, 1, 7, C.k); P(c, x0 - 2, 22, C.white); L(c, x0 - 5, 20, x0 + 4, 21, '#3c3c44'); }
+    PF(c, [22, 29, 26, 29, 24, 31], '#c86c8c');
+    if (o.grin) { PF(c, [17, 32, 31, 32, 28, 37, 20, 37], '#2c0408'); for (const x0 of [19, 27]) PF(c, [x0, 32, x0 + 2, 32, x0 + 1, 35], C.white); } else { L(c, 24, 31, 21, 34, '#3c3c44'); L(c, 24, 31, 27, 34, '#3c3c44'); }
+    for (const s2 of [-1, 1]) for (let k = 0; k < 4; k++) L(c, 24 + s2 * 8, 30 + k * 2, 24 + s2 * (21 + k), 26 + k * 4, '#f4f4f4');
+  });
+}
+/* the wildcat boss (山猫): shaggy dark fur, white muzzle, huge round orange eyes, bristling whiskers */
+function bossFace(o = {}) {
+  return SPR('bf' + (o.blink || 0) + (o.lick ? 'l' : ''), 48, 48, c => {
+    for (let i = 0; i < 18; i++) { const a = i / 18 * TAU; PF(c, [24 + Math.cos(a) * 15, 25 + Math.sin(a) * 13, 24 + Math.cos(a + 0.17) * 21, 25 + Math.sin(a + 0.17) * 18, 24 + Math.cos(a + 0.35) * 15, 25 + Math.sin(a + 0.35) * 13], '#2c2a2c'); }
+    PF(c, [5, 22, 8, -1, 20, 11], '#2c2a2c'); PF(c, [43, 22, 40, -1, 28, 11], '#2c2a2c'); PF(c, [9, 16, 9, 5, 16, 12], '#8c6c6c'); PF(c, [39, 16, 39, 5, 32, 12], '#8c6c6c');
+    L(c, 8, -1, 7, -4, '#2c2a2c'); L(c, 40, -1, 41, -4, '#2c2a2c');
+    E(c, 24, 25, 17, 15, '#3c3a3e'); for (let k = 0; k < 14; k++) L(c, 10 + k * 2, 10 + (k % 3), 9 + k * 2, 16, '#1c1a1c');
+    PF(c, [14, 26, 24, 18, 34, 26, 32, 38, 24, 42, 16, 38], '#ecebe6'); E(c, 24, 34, 9, 6, '#f8f8f4');
+    for (const x0 of [15, 33]) { if (o.blink === 2) { L(c, x0 - 6, 24, x0 + 6, 24, C.k); continue; }
+      E(c, x0, 24, 7, 7, '#1c1a1c'); E(c, x0, 24, 6, 6, '#fcf8f0'); E(c, x0, 24, 4.2, 4.2, '#e86c1c'); E(c, x0, 24, 3, 3, '#f8a03c'); E(c, x0, 24, 1.8, 1.8, C.k); P(c, x0 - 2, 22, C.white); P(c, x0 - 1, 22, C.white);
+      L(c, x0 - 6, 20, x0 + 5, 19, '#1c1a1c'); }
+    PF(c, [21, 30, 27, 30, 24, 33], '#3c2c2c');
+    if (o.lick) { PF(c, [19, 36, 29, 36, 27, 40, 21, 40], '#2c0408'); E(c, 26, 39, 3, 2, '#e86c8c'); } else { L(c, 24, 33, 20, 36, '#5c5c5c'); L(c, 24, 33, 28, 36, '#5c5c5c'); }
+    for (const s2 of [-1, 1]) for (let k = 0; k < 5; k++) L(c, 24 + s2 * 7, 32 + k, 24 + s2 * (23 + k % 2 * 2), 25 + k * 4 + (k & 1) * 2, '#f8f8f8');
   });
 }
 function hunterFace(o = {}) { // the professional hunter with a straw (mino) hat
@@ -1175,6 +1306,7 @@ function hunterFace(o = {}) { // the professional hunter with a straw (mino) hat
   });
 }
 const PORTRAITS = {
+  boss: p => withMouth('pmBo', bossFace({ blink: p.blink, lick: p.expr === 'grin' }), p, 23, 35),
   hige: p => withMouth('pmA', gentFace(0, { blink: p.blink, cream: p.expr === 'cream', crumple: p.expr === 'crumple', scared: p.expr === 'scared' }), p, 23, 29),
   megane: p => withMouth('pmB', gentFace(1, { blink: p.blink, cream: p.expr === 'cream', crumple: p.expr === 'crumple', scared: p.expr === 'scared' }), p, 23, 29),
   neko1: p => withMouth('pmN', nekoFace({ blink: p.blink, grin: p.expr === 'grin' }), p, 23, 31),
@@ -1223,7 +1355,7 @@ const SA = {
   init(S) { S.dur = lastSe(S) + 1.0; },
   draw(c, t, S) {
     const ox = t * 22; autumnForest(c, t, ox);
-    for (let k = 0; k < 2; k++) blit(c, dogSpr(t, 'walk', k), 214 + k * 34 + Math.sin(t * 2 + k) * 4, 148, 13, 17, { s: 1.4 });
+    for (let k = 0; k < 2; k++) blit(c, dogSpr(t, 'walk', k), 206 + k * 46 + Math.sin(t * 2 + k) * 4, 148, 18, 23, { s: 1.2 });
     drawGents(c, 170, 148, 1.6, { per: g => ({ f: Math.floor(t * 7 + g * 2) & 3, weapon: 'rifle', k: 'w' + (Math.floor(t * 7 + g * 2) & 3) }) });
     return { z: 1.05, fx: 170, fy: 108 };
   }
@@ -1235,9 +1367,9 @@ const SB = {
   draw(c, t, S) {
     autumnForest(c, t, 300, { dusk: t > S.tDead });
     for (let k = 0; k < 2; k++) {
-      const x = 214 + k * 40, pose = t < S.tDizzy ? 'walk' : t < S.tDead ? 'dizzy' : 'dead';
+      const x = 210 + k * 50, pose = t < S.tDizzy ? 'walk' : t < S.tDead ? 'dizzy' : 'dead';
       const wob = pose === 'dizzy' ? Math.sin(t * 9 + k) * 3 : 0;
-      blit(c, dogSpr(pose === 'walk' ? 0 : t, pose, k), x + wob, 148, 13, 17, { s: 1.4 });
+      blit(c, dogSpr(pose === 'walk' ? 0 : t, pose, k), x + wob, 148, 18, 23, { s: 1.2 });
       if (pose === 'dizzy') for (let i = 0; i < 6; i++) { const a = t * 6 + i; P(c, x + 6 + Math.cos(a) * 8, 118 + Math.sin(a) * 3, i & 1 ? '#f8f8f8' : '#f8d860'); }
       if (pose === 'dead') for (let i = 0; i < 4; i++) { const u = fr(t * 0.6 + i / 4 + k * 0.3); E(c, x + 18 + i * 2, 140 - u * 6, 1.5 + u * 2, 1.5 + u * 2, DA('#ffffff', 0.9 * (1 - u))); }
     }
@@ -1400,14 +1532,15 @@ const SM = {
     if (t < S.tDark) {
       hallway(c, { door: '#1c1c24', door2: '#2c2c34' });
       if (t > S.tBurst) { const u = t - S.tBurst; for (let i = 0; i < 10; i++) R(c, 20 + i * 4 + u * 40 * Math.cos(i), 90 + u * 60 * Math.sin(i * 2), 5, 3, '#5c3c24');
-        for (let k = 0; k < 2; k++) { const run = t < S.tJump, x = run ? 40 + (Math.sin(u * 3 + k * 3) + 1) * 80 + k * 20 : lerp(160, 210, sg(t, S.tJump, S.tJump + 0.6)); blit(c, dogSpr(t, 'run', k), x, 150 - (run ? Math.abs(Math.sin(u * 8 + k)) * 8 : 30 * sg(t, S.tJump, S.tJump + 0.6)), 13, 17, { s: 2, flip: run && Math.cos(u * 3 + k * 3) < 0 }); } }
+        for (let k = 0; k < 2; k++) { const run = t < S.tJump, x = run ? 40 + (Math.sin(u * 3 + k * 3) + 1) * 80 + k * 20 : lerp(160, 210, sg(t, S.tJump, S.tJump + 0.6)); blit(c, dogSpr(t, 'run', k), x, 150 - (run ? Math.abs(Math.sin(u * 8 + k)) * 8 : 30 * sg(t, S.tJump, S.tJump + 0.6)), 18, 23, { s: 1.6, flip: run && Math.cos(u * 3 + k * 3) < 0 }); } }
       drawGents(c, 70, 160, 1.7, { per: g => ({ noHat: true, noCoat: true, cream: true, shock: true, k: 'm' + g }) });
       return { z: 1, fx: 160, fy: 110, sx: t > S.tBurst && t < S.tBurst + 0.4 ? Math.round(Math.sin(t * 60) * 3) : 0 };
     }
     // darkness; the cry; the room fades away into grass
     const v = ss(sg(t, S.tVanish, S.tVanish + 2));
     R(c, 0, 0, W, H, '#050405');
-    if (v < 1) { const words = ['にゃあお', 'くゎあ', 'ごろごろ']; words.forEach((s, i) => { const tt = S.tDark + 1.2 + i * 1.1; if (t > tt) { c.globalAlpha = 1 - v; TX(c, s, 60 + i * 80 + Math.sin(t * 30 + i) * 2, 60 + i * 20, '#f8f8f8', 24, null); c.globalAlpha = 1; } }); }
+    if (v < 1) { c.save(); c.globalAlpha = 1 - v; E(c, 160, 96, 70, 60, DA('#f86c1c', 0.08)); blit(c, bossFace({ lick: (Math.floor(t * 3) & 1) === 1 }), 160, 100, 24, 24, { s: 3.2 }); c.restore(); }
+    if (v < 1) { const words = ['にゃあお', 'くゎあ', 'ごろごろ']; words.forEach((s, i) => { const tt = S.tDark + 1.2 + i * 1.1; if (t > tt) { c.globalAlpha = 1 - v; TX(c, s, [20, 220, 120][i] + Math.sin(t * 30 + i) * 2, [30, 60, 150][i], '#f8f8f8', 24, '#000000'); c.globalAlpha = 1; } }); }
     if (v > 0) { c.save(); c.globalAlpha = v; autumnForest(c, t, 700, { dusk: true }); c.restore(); }
     return { z: 1, fx: 160, fy: 100 };
   }
@@ -1420,9 +1553,9 @@ const SN = {
     autumnForest(c, t, 700, { dusk: true, wind: t < 6 });
     // clothes on the branches and among the roots
     R(c, 52, 46, 14, 20, GENT[0].coat); R(c, 238, 52, 14, 20, GENT[1].coat); R(c, 120, 140, 10, 4, '#2c2c2c'); R(c, 270, 142, 8, 5, '#5c3c24'); P(c, 200, 146, '#f8d860');
-    blit(c, dogSpr(t, 'walk', 0), 220, 150, 13, 17, { s: 1.4 }); blit(c, dogSpr(t, 'walk', 1), 250, 152, 13, 17, { s: 1.4 });
+    blit(c, dogSpr(t, "walk", 0), 214, 150, 18, 23, { s: 1.2 }); blit(c, dogSpr(t, "walk", 1), 262, 152, 18, 23, { s: 1.2 });
     drawGents(c, 160, 150, 1.6, { per: g => ({ noHat: true, noCoat: true, dx: t < S.tHunter ? Math.round(Math.sin(t * 30 + g)) : 0, arm: t > S.tHunter + 1 && g === 0 ? 'up' : null, k: 'n' + g }) });
-    if (t > S.tHunter) { const x = lerp(-20, 90, ss(sg(t, S.tHunter, S.tHunter + 3))); blit(c, personSpr({ id: 'hunter', coat: '#8c7c4c', coat2: '#6c5c34', pants: '#4c4030', skin: '#c89060', hair: '#2c1c14', hat: 'fedora', hatCol: '#c8a860' }, { f: Math.floor(t * 7) & 3, weapon: 'rifle', id: 'hu' }), x, 150, PER_AX, PER_AY, { s: 1.6 }); }
+    if (t > S.tHunter) { const x = lerp(-20, 90, ss(sg(t, S.tHunter, S.tHunter + 3))); blit(c, suitFig({ id: 'hu', coat: '#8c7c4c', coat2: '#6c5c34', pants: '#5c4c34', boots: '#2c2014', hair: '#2c1c14', hat: 'bowler', hatCol: '#c8a860', moustache: true }, { f: Math.floor(t * 7) & 3, arm: 'rifle', k: 'h' }), x, 150, FIG_AX2, FIG_AY2, { s: 1.12 }); }
     susuki(c, t, 166, t < 6, 16, 2);
     return { z: 1.04, fx: 150, fy: 106 };
   }
@@ -1442,6 +1575,20 @@ const SO = {
   }
 };
 /* ---- shorts: SS2 is the door with the eyes (reuses SK without the opening sign) ---- */
+
+/* ================= 文庫 #002 注文の多い料理店: close-up cuts on the key lines ================= */
+const inLine = (S, t, id) => { const l = ln(S, id); return l && t > l.t0 - 0.2 && t < l.se + 0.3; };
+function withCuts(sc, cuts) { const base = sc.draw; sc.draw = function (c, t, S) { for (const [id, fn] of cuts) if (inLine(S, t, id)) return fn(c, t, S); return base.call(this, c, t, S); }; return sc; }
+const forestBg = ['#2c1c14', '#a8642c'], hallBg = ['#2c241c', '#8c7c64'], darkBg = ['#05040a', '#1c1c2c'];
+withCuts(SA, [['A1', (c, t) => closeUp(c, t, gentFace(0, { blink: blinkOf(t, 3) }), { bg: forestBg, glow: '#f8c060' })]]);
+withCuts(SC, [['A3', (c, t) => closeUp(c, t, gentFace(0, { blink: blinkOf(t, 5) }), { bg: ['#1c1424', '#5c4c6c'], glow: '#c8a8c8' })]]);
+withCuts(SH, [['A6', (c, t) => closeUp(c, t, gentFace(0, { cream: true, blink: blinkOf(t, 7) }), { bg: hallBg, glow: '#fff8e0' })]]);
+withCuts(SJ, [['B7', (c, t) => closeUp(c, t, gentFace(1, { cream: true, scared: true }), { bg: ['#1c0408', '#7c1c1c'], glow: '#f84040', lines: '#f8c0c0', after: (c2, tt) => redVignette(c2, 0.35) })]]);
+withCuts(SK, [['C3', (c, t) => closeUp(c, t, bossFace({ lick: (Math.floor(t * 2) & 1) === 1, blink: blinkOf(t, 9) }), { bg: darkBg, glow: '#f86c1c', after: (c2, tt) => {
+  // napkin on the chest, knife and fork in the hands
+  PF(c2, [128, 176, 192, 176, 200, 210, 120, 210], '#f8f8f4'); L(c2, 100, 210, 108, 150, '#d8dce4', 3); for (let k = 0; k < 3; k++) L(c2, 216 + k * 3, 150, 216 + k * 3, 162, '#d8dce4'); L(c2, 219, 162, 214, 210, '#d8dce4', 3);
+} })]]);
+withCuts(SN, [['H1', (c, t) => closeUp(c, t, hunterFace({ blink: blinkOf(t, 11) }), { bg: forestBg, glow: '#f8e0a0' })]]);
 
 /* ================= ドット語り. branding: logo, intro scene, title, video frames ================= */
 const BR = { bg: '#0c2418', bg2: '#123222', bg3: '#1c4430', cream: '#f4ecd8', orange: '#f49a1c', dark: '#06140c', paper: '#ecdcb4', paper2: '#d4bc8c', ink: '#2c2018' };

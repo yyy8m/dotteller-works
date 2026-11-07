@@ -8,31 +8,32 @@ const GENT = [
   { id: 'gA', coat: '#a8302c', coat2: '#7c1c1c', pants: '#2c2c3c', skin: '#f0c8a8', hair: '#5c3c24', hat: 'hunt', hatCol: '#2c2c3c', hatCol2: '#3c3c4c' },
   { id: 'gB', coat: '#b84030', coat2: '#8c2420', pants: '#3c3428', skin: '#f4d0b0', hair: '#2c1c14', hat: 'hunt', hatCol: '#5c4c34', hatCol2: '#6c5c44' },
 ];
-/* g: 0/1, o: { f, arm, weapon, noHat, noCoat, cream } */
+/* g: 0/1, o: { f, arm, weapon, noHat, noCoat, cream, shock, flip, dx, dy } */
+const GENT2 = [
+  { id: 'gA', coat: '#a8302c', coat2: '#7c1c1c', pants: '#e8dcc0', boots: '#3c2418', hair: '#5c3c24', hat: 'hunt', hatCol: '#3c3c4c', moustache: true },
+  { id: 'gB', coat: '#b84c2c', coat2: '#8c2c1c', pants: '#d8ccb0', boots: '#2c1c14', hair: '#2c1c14', hat: 'hunt', hatCol: '#5c4c34', glasses: true },
+];
 function gentSpr(g, o = {}) {
-  const st = Object.assign({}, GENT[g]);
-  if (o.noHat) st.hat = null;
-  if (o.noCoat) { st.coat = '#e8e0d0'; st.coat2 = '#c8c0b0'; }
-  if (o.cream) st.skin = '#fcfaf2';
-  return personSpr(st, { f: o.f == null ? -1 : o.f, arm: o.arm, weapon: o.weapon, shock: o.shock, id: 'g' + g + (o.k || '') });
+  const arm = o.weapon === 'rifle' && !o.arm ? 'rifle' : o.arm === 'fwd' ? 'reach' : o.arm;
+  return suitFig(GENT2[g], { f: o.f, arm, expr: o.expr || (o.shock ? 'shock' : 'normal'), blink: o.blink, noHat: o.noHat, noCoat: o.noCoat, cream: o.cream, k: o.k });
 }
 function drawGents(c, x, y, s, o = {}) { // the pair, B a little behind A
   for (const g of [1, 0]) {
-    const oo = Object.assign({}, o, typeof o.per === 'function' ? o.per(g) : {}), dx = g ? -22 * s : 0;
-    blit(c, gentSpr(g, oo), x + dx + (oo.dx || 0), y + (oo.dy || 0), PER_AX, PER_AY, { s, flip: oo.flip });
-    if (g === 1 && !o.noGlasses) { const gx = x + dx + (oo.flip ? -2 : 2) * s, gy = y - 34 * s + (oo.dy || 0); R(c, gx - s, gy, 3 * s, s, '#1c1c1c'); }
+    const oo = Object.assign({}, o, typeof o.per === 'function' ? o.per(g) : {}), dx = g ? -24 * s : 0;
+    blit(c, gentSpr(g, oo), x + dx + (oo.dx || 0), y + (oo.dy || 0), FIG_AX2, FIG_AY2, { s: s * 0.7, flip: oo.flip });
   }
 }
 /* white dog "like a polar bear", 24x16, facing right; pose: walk / dizzy / dead / run */
-function dogSpr(t, pose = 'walk', k = 0) {
-  return SPR('dog' + k, 26, 18, c => {
-    const f = Math.floor(t * 8 + k) & 3, sw = pose === 'walk' || pose === 'run' ? [0, 2, 0, -2][f] : 0;
-    if (pose === 'dead') { E(c, 12, 13, 10, 4, '#f4f4f0'); E(c, 21, 12, 4, 3, '#f4f4f0'); for (let i = 0; i < 4; i++) L(c, 6 + i * 4, 15, 4 + i * 4, 17, '#e0e0d8'); P(c, 23, 11, C.k); return; }
-    E(c, 11, 9, 9, 5, '#f8f8f4'); E(c, 11, 10, 8, 3, '#e4e4dc');
-    E(c, 20, 6, 4.5, 4, '#f8f8f4'); E(c, 24, 7, 2, 1.5, '#e4e4dc'); P(c, 25, 7, C.k); R(c, 17, 2, 2, 2, '#e4e4dc');
-    P(c, 21, 5, pose === 'dizzy' ? '#8c8c94' : C.k);
-    for (const [lx, d] of [[5, sw], [9, -sw], [14, sw], [17, -sw]]) L(c, lx, 13, lx + d, 17, '#e8e8e0', 2);
-    L(c, 2, 8, 0, 5 + (f & 1), '#f0f0e8', 2);
+function dogSpr(t, pose = 'walk', k = 0) { // big white dog "like a polar bear", 36x24, facing right
+  return SPR('dog' + k + pose + (pose === 'walk' || pose === 'run' ? Math.floor(t * 8 + k) & 3 : 0), 36, 24, c => {
+    const f = Math.floor(t * 8 + k) & 3, sw = pose === 'walk' || pose === 'run' ? [0, 3, 0, -3][f] : 0, W1 = '#fbfbf6', W2 = '#e2e2da', W3 = '#c8c8c0';
+    if (pose === 'dead') { E(c, 16, 18, 14, 5, W1); E(c, 16, 21, 12, 2, W3); E(c, 30, 17, 5, 4, W1); E(c, 34, 18, 2, 1.5, W2); L(c, 29, 17, 31, 17, C.k); for (let i = 0; i < 4; i++) L(c, 6 + i * 6, 21, 4 + i * 6, 23, W3, 3); return; }
+    E(c, 15, 12, 13, 7, W1); E(c, 15, 15, 11, 4, W2); for (let i = 0; i < 6; i++) L(c, 6 + i * 4, 8, 7 + i * 4, 11, W2);
+    E(c, 28, 8, 6.5, 6, W1); E(c, 33, 10, 3, 2.5, W2); E(c, 35, 10, 1.4, 1.2, C.k); E(c, 25, 3, 2.2, 2.2, W2);
+    if (pose === 'dizzy') { L(c, 28, 6, 30, 8, '#5c5c64'); L(c, 30, 6, 28, 8, '#5c5c64'); } else R(c, 29, 6, 2, 2, C.k);
+    if (pose === 'run') { R(c, 31, 12, 4, 2, '#3c0c0c'); R(c, 32, 13, 2, 1, '#f8f8f8'); }
+    for (const [lx, d] of [[6, sw], [11, -sw], [20, sw], [25, -sw]]) { L(c, lx, 17, lx + d, 23, W2, 3); R(c, lx + d - 1, 22, 3, 2, W3); }
+    L(c, 2, 10, 0, 6 + (f & 1), W1, 3);
   });
 }
 /* faces for the dialog window (48x48) */
@@ -53,16 +54,32 @@ function gentFace(g, o = {}) {
     if (o.crumple) { for (const [x0, y0, x1, y1] of [[14, 14, 19, 16], [29, 16, 34, 14], [15, 25, 18, 28], [31, 28, 34, 25], [20, 12, 27, 13], [21, 33, 27, 33]]) L(c, x0, y0, x1, y1, sk2); for (const x0 of [19, 28]) { R(c, x0, ey + 3, 1, 6, '#88c8f8'); } }
   });
 }
-function nekoFace(o = {}) { // the wildcat's henchman: grey tabby, blue eyes
+function nekoFace(o = {}) { // the wildcat's henchman: grey tabby, cold blue eyes with slit pupils
   return SPR('nf' + (o.blink || 0) + (o.grin ? 'g' : ''), 48, 48, c => {
-    PF(c, [4, 48, 10, 38, 38, 38, 44, 48], '#e8e4dc'); PF(c, [18, 38, 24, 45, 30, 38], '#c82828');
-    PF(c, [8, 22, 10, 4, 20, 14], '#8c8c94'); PF(c, [40, 22, 38, 4, 28, 14], '#8c8c94'); PF(c, [11, 18, 12, 9, 17, 14], '#e8b0b0'); PF(c, [37, 18, 36, 9, 31, 14], '#e8b0b0');
-    E(c, 24, 25, 16, 13, '#9c9ca4'); E(c, 24, 30, 9, 7, '#d8d8dc');
-    for (const x0 of [14, 21, 28]) { L(c, x0, 13, x0 + 2, 18, '#6c6c74'); }
-    for (const x0 of [17, 31]) { if (o.blink === 2) { L(c, x0 - 3, 23, x0 + 3, 23, C.k); continue; } E(c, x0, 23, 3.5, 3.5, '#3c8cf0'); R(c, x0, 21, 1, 5, C.k); P(c, x0 - 2, 21, C.white); }
-    PF(c, [22, 28, 26, 28, 24, 30], '#e86c8c');
-    if (o.grin) { PF(c, [17, 31, 31, 31, 28, 35, 20, 35], '#3c0c10'); R(c, 20, 31, 2, 2, C.white); R(c, 26, 31, 2, 2, C.white); } else { L(c, 24, 30, 21, 33, '#4c4c54'); L(c, 24, 30, 27, 33, '#4c4c54'); }
-    for (const s of [-1, 1]) for (let k = 0; k < 3; k++) L(c, 24 + s * 9, 29 + k * 2, 24 + s * 20, 27 + k * 3, '#f4f4f4');
+    PF(c, [4, 48, 10, 39, 38, 39, 44, 48], '#3c3c44'); PF(c, [16, 39, 24, 46, 32, 39], '#f4f4f0'); R(c, 22, 40, 4, 3, '#c82828');
+    PF(c, [7, 24, 9, 2, 21, 13], '#5c5c64'); PF(c, [41, 24, 39, 2, 27, 13], '#5c5c64'); PF(c, [10, 19, 11, 8, 17, 14], '#c89090'); PF(c, [38, 19, 37, 8, 31, 14], '#c89090');
+    E(c, 24, 25, 16, 13.5, '#6c6c74'); E(c, 24, 31, 9, 6, '#e8e8ec');
+    for (const x0 of [12, 18, 24, 30, 36]) L(c, x0, 13, x0 + (x0 - 24) * 0.1, 19, '#3c3c44');
+    for (const x0 of [16, 32]) { if (o.blink === 2) { L(c, x0 - 4, 24, x0 + 4, 24, C.k); continue; } E(c, x0, 24, 4.5, 4, '#e8f0f8'); E(c, x0, 24, 3.5, 3.5, '#2c7cf0'); R(c, x0, 21, 1, 7, C.k); P(c, x0 - 2, 22, C.white); L(c, x0 - 5, 20, x0 + 4, 21, '#3c3c44'); }
+    PF(c, [22, 29, 26, 29, 24, 31], '#c86c8c');
+    if (o.grin) { PF(c, [17, 32, 31, 32, 28, 37, 20, 37], '#2c0408'); for (const x0 of [19, 27]) PF(c, [x0, 32, x0 + 2, 32, x0 + 1, 35], C.white); } else { L(c, 24, 31, 21, 34, '#3c3c44'); L(c, 24, 31, 27, 34, '#3c3c44'); }
+    for (const s2 of [-1, 1]) for (let k = 0; k < 4; k++) L(c, 24 + s2 * 8, 30 + k * 2, 24 + s2 * (21 + k), 26 + k * 4, '#f4f4f4');
+  });
+}
+/* the wildcat boss (山猫): shaggy dark fur, white muzzle, huge round orange eyes, bristling whiskers */
+function bossFace(o = {}) {
+  return SPR('bf' + (o.blink || 0) + (o.lick ? 'l' : ''), 48, 48, c => {
+    for (let i = 0; i < 18; i++) { const a = i / 18 * TAU; PF(c, [24 + Math.cos(a) * 15, 25 + Math.sin(a) * 13, 24 + Math.cos(a + 0.17) * 21, 25 + Math.sin(a + 0.17) * 18, 24 + Math.cos(a + 0.35) * 15, 25 + Math.sin(a + 0.35) * 13], '#2c2a2c'); }
+    PF(c, [5, 22, 8, -1, 20, 11], '#2c2a2c'); PF(c, [43, 22, 40, -1, 28, 11], '#2c2a2c'); PF(c, [9, 16, 9, 5, 16, 12], '#8c6c6c'); PF(c, [39, 16, 39, 5, 32, 12], '#8c6c6c');
+    L(c, 8, -1, 7, -4, '#2c2a2c'); L(c, 40, -1, 41, -4, '#2c2a2c');
+    E(c, 24, 25, 17, 15, '#3c3a3e'); for (let k = 0; k < 14; k++) L(c, 10 + k * 2, 10 + (k % 3), 9 + k * 2, 16, '#1c1a1c');
+    PF(c, [14, 26, 24, 18, 34, 26, 32, 38, 24, 42, 16, 38], '#ecebe6'); E(c, 24, 34, 9, 6, '#f8f8f4');
+    for (const x0 of [15, 33]) { if (o.blink === 2) { L(c, x0 - 6, 24, x0 + 6, 24, C.k); continue; }
+      E(c, x0, 24, 7, 7, '#1c1a1c'); E(c, x0, 24, 6, 6, '#fcf8f0'); E(c, x0, 24, 4.2, 4.2, '#e86c1c'); E(c, x0, 24, 3, 3, '#f8a03c'); E(c, x0, 24, 1.8, 1.8, C.k); P(c, x0 - 2, 22, C.white); P(c, x0 - 1, 22, C.white);
+      L(c, x0 - 6, 20, x0 + 5, 19, '#1c1a1c'); }
+    PF(c, [21, 30, 27, 30, 24, 33], '#3c2c2c');
+    if (o.lick) { PF(c, [19, 36, 29, 36, 27, 40, 21, 40], '#2c0408'); E(c, 26, 39, 3, 2, '#e86c8c'); } else { L(c, 24, 33, 20, 36, '#5c5c5c'); L(c, 24, 33, 28, 36, '#5c5c5c'); }
+    for (const s2 of [-1, 1]) for (let k = 0; k < 5; k++) L(c, 24 + s2 * 7, 32 + k, 24 + s2 * (23 + k % 2 * 2), 25 + k * 4 + (k & 1) * 2, '#f8f8f8');
   });
 }
 function hunterFace(o = {}) { // the professional hunter with a straw (mino) hat
@@ -75,6 +92,7 @@ function hunterFace(o = {}) { // the professional hunter with a straw (mino) hat
   });
 }
 const PORTRAITS = {
+  boss: p => withMouth('pmBo', bossFace({ blink: p.blink, lick: p.expr === 'grin' }), p, 23, 35),
   hige: p => withMouth('pmA', gentFace(0, { blink: p.blink, cream: p.expr === 'cream', crumple: p.expr === 'crumple', scared: p.expr === 'scared' }), p, 23, 29),
   megane: p => withMouth('pmB', gentFace(1, { blink: p.blink, cream: p.expr === 'cream', crumple: p.expr === 'crumple', scared: p.expr === 'scared' }), p, 23, 29),
   neko1: p => withMouth('pmN', nekoFace({ blink: p.blink, grin: p.expr === 'grin' }), p, 23, 31),

@@ -348,3 +348,45 @@ function closeUp(c, t, face, o = {}) {
   if (o.after) o.after(c, t);
   return { z: 1 + 0.03 * Math.sin(t * 0.5), fx: 160, fy: 104 };
 }
+
+/* ---- detailed figure in Western clothes (26x58, feet anchor 13,57): hunting jacket, trousers, boots ----
+   st: { id, coat, coat2, pants, boots, skin, hair, hat: 'hunt'|'bowler'|null, hatCol, moustache, glasses }
+   o:  { f, arm: null|'up'|'point'|'reach'|'rifle'|'cover', expr, blink, noHat, noCoat, cream, k } */
+function suitFig(st, o = {}) {
+  const f = o.f == null ? -1 : o.f, arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
+  return SPR('sf' + st.id + (o.k || '') + f + arm + ex + bl + (o.noHat ? 'h' : '') + (o.noCoat ? 'c' : '') + (o.cream ? 'w' : ''), 26, 58, c => {
+    const sw = f < 0 ? 0 : [0, 3, 0, -3][f & 3], bob = f < 0 ? 0 : (f & 1);
+    const coat = o.noCoat ? '#f0ece4' : st.coat, coat2 = o.noCoat ? '#d4cec4' : (st.coat2 || st.coat);
+    const sk = o.cream ? '#fcfaf2' : (st.skin || '#f0c8a8'), sk2 = o.cream ? '#e0dcd0' : '#c89c7c';
+    // legs & boots (barefoot when the shoes are taken)
+    L(c, 10, 36 - bob, 9 + sw, 53, st.pants, 4); L(c, 16, 36 - bob, 17 - sw, 53, st.pants, 4);
+    if (o.noCoat) { R(c, 7 + sw, 53, 5, 3, sk); R(c, 15 - sw, 53, 5, 3, sk); } else { R(c, 7 + sw, 47, 5, 9, st.boots || '#2c2420'); R(c, 15 - sw, 47, 5, 9, st.boots || '#2c2420'); }
+    // body
+    PF(c, [7, 20 - bob, 19, 20 - bob, 20, 38 - bob, 6, 38 - bob], coat); PF(c, [13, 20 - bob, 19, 20 - bob, 20, 38 - bob, 13, 38 - bob], coat2);
+    if (!o.noCoat) { R(c, 6, 31 - bob, 14, 2, '#3c2c1c'); R(c, 12, 31 - bob, 3, 2, '#d8b84c'); for (let y = 22; y < 30; y += 3) P(c, 13, y - bob, '#f8d860'); L(c, 10, 20 - bob, 13, 25 - bob, '#f4f0e8'); L(c, 16, 20 - bob, 13, 25 - bob, '#f4f0e8'); }
+    else { L(c, 13, 21 - bob, 13, 37 - bob, '#c8c0b4'); }
+    // arms
+    const arm1 = (ex1, ey1) => { L(c, 7, 22 - bob, ex1, ey1, coat, 3); E(c, ex1, ey1 + 1, 1.6, 1.6, sk); };
+    arm1(5 - sw * 0.5, 36 - bob);
+    if (arm === 'up') { L(c, 19, 22 - bob, 23, 8, coat2, 3); E(c, 23, 7, 1.6, 1.6, sk); }
+    else if (arm === 'point') { L(c, 19, 22 - bob, 25, 24 - bob, coat2, 3); E(c, 25, 24 - bob, 1.6, 1.6, sk); }
+    else if (arm === 'reach') { L(c, 19, 22 - bob, 24, 30 - bob, coat2, 3); E(c, 24, 31 - bob, 1.6, 1.6, sk); }
+    else if (arm === 'cover') { L(c, 19, 22 - bob, 15, 12, coat2, 3); E(c, 15, 11, 2, 2, sk); }
+    else { L(c, 19, 22 - bob, 21 + sw * 0.5, 36 - bob, coat2, 3); E(c, 21 + sw * 0.5, 37 - bob, 1.6, 1.6, sk); }
+    if (arm === 'rifle') { L(c, 3, 12 - bob, 22, 34 - bob, '#5c3c24', 2); L(c, 3, 12 - bob, 9, 19 - bob, '#3c3c44', 2); }
+    // head
+    const hx = 13, hy = 12 - bob;
+    R(c, hx - 2, hy + 5, 4, 3, sk2); E(c, hx, hy, 6, 7, sk2); E(c, hx - 0.4, hy - 0.4, 5.6, 6.6, sk);
+    PF(c, [hx - 6, hy, hx - 6, hy - 4, hx - 2, hy - 7, hx + 4, hy - 7, hx + 6, hy - 4, hx + 6, hy, hx + 4, hy - 3, hx - 4, hy - 3], st.hair || '#5c3c24');
+    if (!o.noHat && st.hat === 'hunt') { R(c, hx - 6, hy - 8, 12, 4, st.hatCol || '#4c4030'); R(c, hx - 7, hy - 5, 15, 2, st.hatCol || '#4c4030'); R(c, hx + 4, hy - 9, 2, 2, '#c8302c'); }
+    if (!o.noHat && st.hat === 'bowler') { E(c, hx, hy - 6, 6, 4, st.hatCol || '#2c2c2c'); R(c, hx - 8, hy - 4, 16, 2, st.hatCol || '#2c2c2c'); }
+    const ey = hy;
+    if (bl === 2) { L(c, hx - 3, ey, hx - 2, ey, '#2c1c14'); L(c, hx + 2, ey, hx + 3, ey, '#2c1c14'); }
+    else { R(c, hx - 3, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); R(c, hx + 2, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); }
+    if (st.glasses) { R(c, hx - 5, ey - 2, 5, 1, '#1c1c1c'); R(c, hx + 1, ey - 2, 5, 1, '#1c1c1c'); R(c, hx - 5, ey + 1, 5, 1, '#1c1c1c'); R(c, hx + 1, ey + 1, 5, 1, '#1c1c1c'); P(c, hx, ey - 1, '#1c1c1c'); }
+    if (ex === 'sad' || ex === 'cry' || ex === 'shock') { L(c, hx - 4, ey - 3, hx - 1, ey - 4, '#3c2c1c'); L(c, hx + 1, ey - 4, hx + 4, ey - 3, '#3c2c1c'); }
+    if (ex === 'cry') { R(c, hx - 3, ey + 1, 1, 4, '#88c8f8'); R(c, hx + 2, ey + 1, 1, 4, '#88c8f8'); }
+    if (st.moustache) PF(c, [hx - 4, ey + 3, hx, ey + 2, hx + 4, ey + 3, hx + 2, ey + 4, hx - 2, ey + 4], '#4c3020');
+    if (ex === 'shock') E(c, hx, ey + 5, 1.5, 1.6, '#5c1c1c'); else if (ex === 'smile') { L(c, hx - 2, ey + 4, hx, ey + 5, '#8c4c3c'); L(c, hx, ey + 5, hx + 2, ey + 4, '#8c4c3c'); } else R(c, hx - 1, ey + 5, 3, 1, '#8c4c3c');
+  });
+}
