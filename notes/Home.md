@@ -20,4 +20,4 @@ AI（Claude）は作業の前に必ずここを読み、作業の後に書き足
 - [[作業ログ/2026-11-06]]
 - [[作業ログ/2026-11-07]]
 
-関連: リポジトリの `docs/PRODUCTION.md`（制作手順）、`docs/SCHEDULE.md`（投稿予定）
+関連: `docs/TIKTOK.md`（TikTok）、リポジトリの `docs/PRODUCTION.md`（制作手順）、`docs/SCHEDULE.md`（投稿予定）
