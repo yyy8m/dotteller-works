@@ -3,7 +3,7 @@
 ■ ドットで描く、物語と記録。
 
 - 作品一覧（GitHub Pages）: https://yyy8m.github.io/dotteller-works/
-- YouTube: https://www.youtube.com/@dotgatari
+- YouTube: https://www.youtube.com/channel/UCP3MoaRk7izj1TXuMlbmUXw
 - TikTok: https://www.tiktok.com/@dotgatari
 - ブランド名などの設定: `engine/src/brand.js` の `BRAND`
 

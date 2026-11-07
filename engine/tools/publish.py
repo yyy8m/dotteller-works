@@ -25,7 +25,7 @@ required environment variables (set them as environment secrets, never in the re
                    https://www.googleapis.com/auth/youtube)
   BLOGGER_BLOG_ID   (default: 6071876282678666099)
 """
-import json, os, re, sys, urllib.error, urllib.parse, urllib.request
+import glob, json, os, re, sys, urllib.error, urllib.parse, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BLOG_ID = os.environ.get('BLOGGER_BLOG_ID', '6071876282678666099')
@@ -293,6 +293,20 @@ def audit(tok=None):
     return bad
 
 
+def blogsync():
+    """after the blog address changes (Blogger settings): read every post's new URL from the API,
+    save it in each work's published.json, then refresh all YouTube descriptions, blog posts, TikTok texts and pages"""
+    global WORK_DIR
+    tok = token('blogger')
+    for st_path in sorted(glob.glob(os.path.join(ROOT, 'works', '*', 'published.json'))):
+        work = os.path.dirname(st_path); state = load_state(work)
+        if not state.get('blog_post_id'): continue
+        res, _ = call('GET', f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/{state['blog_post_id']}", tok)
+        if res.get('url') and res['url'] != state.get('blog_url'):
+            print('blog url:', state.get('blog_url'), '->', res['url']); state['blog_url'] = res['url']; save_state(work, state)
+        WORK_DIR = work; link(work)
+    pages(tok)
+
 if __name__ == '__main__':
     work, what = sys.argv[1], sys.argv[2]
     if work != '-': WORK_DIR = os.path.abspath(work)
@@ -302,4 +316,4 @@ if __name__ == '__main__':
      'thumb': lambda: thumb(os.path.abspath(work), token('youtube')),
      'all': lambda: (youtube(os.path.abspath(work), token('youtube')), thumb(os.path.abspath(work), token('youtube')),
                      blog(os.path.abspath(work), token('blogger')), link(os.path.abspath(work)), audit()),
-     'audit': lambda: audit()}[what]()
+     'audit': lambda: audit(), 'blogsync': lambda: blogsync()}[what]()

@@ -12,7 +12,7 @@
 | 語り部 | 文庫＝記録の神、記録＝灯の神（変更なし） |
 | 記録の神の声 | 「やさしいおじいさん」に変更：`SPEAKERS['narrator'] = ('nitech_jp_atr503_m001.htsvoice', 0.55, 2.0, 0.88)`（約142Hz）。灯の神は低く暗いままでよい |
 | TikTok | https://www.tiktok.com/@dotgatari （投稿はオーナーが手動） |
-| YouTube | **https://www.youtube.com/@dotgatari** （ハンドル変更済み。旧 @dotteller の表記・リンクはすべてこれに差し替える） |
+| YouTube | **https://www.youtube.com/channel/UCP3MoaRk7izj1TXuMlbmUXw** （チャンネルIDのURL。名前・ハンドルを変えても切れない。今のハンドルは @dotteller で、11/17ごろ「ドット語り.」「@dotgatari」に変える予定。今の @dotgatari は使っていない別の空チャンネル） |
 | リポジトリ名 | dotteller-works のまま（変えると GitHub Pages のURLが変わるため） |
 | 対象 | 文庫＝全年齢。記録（Wikipedia）＝大人向け寄り。血はドットで表現してよいが、実在の被害者の損壊描写を長く見せない（年齢制限回避） |
 
