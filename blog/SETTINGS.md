@@ -60,6 +60,6 @@ TikTok ▶ @dotgatari
 レイアウト → サイドバーに「ラベル」ガジェットを追加すると、シリーズ別に一覧できます。
 
 ## 5. （任意）ブログのアドレス
-設定 → 基本 →「ブログのアドレス」で `somosomo-cho.blogspot.com` を変えられます。
+設定 → 基本 →「ブログのアドレス」で `dotgatari.blogspot.com` を変えられます。
 ただし変えると、今のアドレスで共有したリンク（記事URL・`works/*/published.json`）は開けなくなります。
 変えた場合は `blog/pages/about.html` 内のお問い合わせリンクも直して `publish.py - pages` を実行してください。

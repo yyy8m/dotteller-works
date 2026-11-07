@@ -12,14 +12,14 @@ TikTok アプリ → プロフィール → 「プロフィールを編集」で
 | ユーザー名 | dotgatari（設定済み） |
 | 自己紹介 | 下の4行 |
 | YouTube | 連携の欄はない。自己紹介に URL を書く |
-| ウェブサイト | https://somosomo-cho.blogspot.com （入れる欄が表示されないときは後回しでよい） |
+| ウェブサイト | https://dotgatari.blogspot.com （入れる欄が表示されないときは後回しでよい） |
 
 自己紹介（ちょうど80字。URL は押せない文字だが、打ち込めば見られる）：
 ```
 ドット絵で語る、名作と事件。
 毎日19時更新
 ▶本編 youtube.com/@dotteller
-▶ブログ somosomo-cho.blogspot.com
+▶ブログ dotgatari.blogspot.com
 ```
 - YouTube のハンドルは 11/17ごろ @dotteller → @dotgatari に変える予定。変えたら自己紹介の `@dotteller` を `@dotgatari` に直す。
 - ブログのアドレスを変えたら、`▶ブログ` の行も新しいアドレスに直す。

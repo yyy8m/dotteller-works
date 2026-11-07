@@ -301,7 +301,7 @@ def blogsync():
     for st_path in sorted(glob.glob(os.path.join(ROOT, 'works', '*', 'published.json'))):
         work = os.path.dirname(st_path); state = load_state(work)
         if not state.get('blog_post_id'): continue
-        res, _ = call('GET', f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/{state['blog_post_id']}", tok)
+        res, _ = call('GET', f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/{state['blog_post_id']}?view=ADMIN", tok)
         if res.get('url') and res['url'] != state.get('blog_url'):
             print('blog url:', state.get('blog_url'), '->', res['url']); state['blog_url'] = res['url']; save_state(work, state)
         WORK_DIR = work; link(work)
