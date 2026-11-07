@@ -30,6 +30,7 @@ whoami が失敗したら、その時点で止めてエラーを日本語でま�
   curl -sS -A "dotgatari-factcheck/1.0 (personal script)" -G https://ja.wikipedia.org/w/index.php --data-urlencode "title=記事名" -d action=raw -o article.wiki
   ```
   記事にない話（日付・地名・人数・セリフ）は入れない。英語版にしかない話も入れない。確証のない話は「〜と言われています」。表現の決まりは `docs/SCHEDULE.md` の「作り方の決まり」。
+- 文庫は著作権の切れた作品だけにする。作者の没年が1967年以前で、作品ページに「著作権存続」の印がないこと。
 - 文庫の原作は青空文庫から取得して全文を読み、`works/<id>/source_aozora.txt` に保存する（Shift_JIS の XHTML。`main_text` の部分からルビを除いて取り出す）。
   ```bash
   curl -sS -o src.html https://www.aozora.gr.jp/cards/<作家番号>/files/<ファイル名>.html
