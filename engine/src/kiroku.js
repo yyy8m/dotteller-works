@@ -276,3 +276,75 @@ function lawFace(id, o = {}) {
     L(c, 24, 21, 23, 26, sk2); R(c, 20, 29, 8, 1, '#7c3c34'); if (o.mustache) R(c, 19, 27, 10, 2, '#4c3424');
   }, null));
 }
+
+/* ---- detailed robed figure (26x58, feet anchor 13,57) for the literature series ----
+   st: { id, robe, robe2, trim, sash, skin, skin2, hair, hat: 'bun'|'cap'|'crown'|null, hatCol, beard, old, female }
+   o:  { f (walk frame -1..3), pose: 'stand'|'sit'|'bow'|'kneel', arm: null|'up'|'point'|'clasp'|'reach'|'staff', expr: 'normal'|'shock'|'sad'|'cry'|'smile'|'angry', blink, k } */
+const FIG_AX2 = 13, FIG_AY2 = 57;
+function robeFig(st, o = {}) {
+  const f = o.f == null ? -1 : o.f, pose = o.pose || 'stand', arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
+  return SPR('rf' + st.id + (o.k || '') + f + pose + arm + ex + bl, 26, 58, c => {
+    const R2 = st.robe2 || st.robe, sk = st.skin || '#f0c8a0', sk2 = st.skin2 || '#c8946c';
+    const sw = f < 0 ? 0 : [0, 2, 0, -2][f & 3], bob = f < 0 ? 0 : (f & 1);
+    const top = pose === 'sit' ? 18 : pose === 'kneel' ? 16 : 0, bow = pose === 'bow' ? 1 : 0;
+    const hx = 13, hy = 11 + top + bow * 10 - bob;
+    // body
+    if (pose === 'sit' || pose === 'kneel') {
+      PF(c, [6, 22 + top, 20, 22 + top, 25, 56, 1, 56], st.robe); PF(c, [13, 22 + top, 20, 22 + top, 25, 56, 13, 56], R2); R(c, 1, 53, 24, 3, st.trim || R2);
+    } else {
+      R(c, 8 + sw, 54, 4, 3, '#2c2420'); R(c, 14 - sw, 54, 4, 3, '#2c2420');
+      PF(c, [7, 20 + bow * 8 - bob, 19, 20 + bow * 8 - bob, 22 + sw * 0.5, 55, 4 + sw * 0.5, 55], st.robe);
+      PF(c, [13, 20 + bow * 8 - bob, 19, 20 + bow * 8 - bob, 22 + sw * 0.5, 55, 13, 55], R2);
+      R(c, 4 + sw * 0.5, 51, 18, 3, st.trim || R2); L(c, 13, 32, 13 + sw * 0.3, 52, DA('#000000', 0.25));
+    }
+    const by = 20 + top + bow * 8 - bob;
+    R(c, 7, by + 10, 12, 3, st.sash || '#1c1c24'); L(c, 15, by + 13, 16, by + 22, st.sash || '#1c1c24', 2);
+    L(c, 10, by, 13, by + 6, st.trim || '#f4f0e8', 2); L(c, 16, by, 13, by + 6, st.trim || '#f4f0e8', 2); // crossed collar
+    // sleeves / arms (wide sleeves)
+    const sl = (sx, sy, ex2, ey2, hand = true) => { PF(c, [sx - 2, sy, sx + 3, sy, ex2 + 3, ey2, ex2 - 3, ey2 + 2], st.robe); L(c, ex2 - 3, ey2 + 2, ex2 + 3, ey2, st.trim || R2, 2); if (hand) E(c, ex2, ey2 + 2, 1.6, 1.6, sk); };
+    const ls = [7, by + 1], rs = [19, by + 1];
+    if (arm === 'clasp' || pose === 'bow' || pose === 'kneel') { sl(ls[0], ls[1], 11, by + 11); sl(rs[0], rs[1], 15, by + 11); E(c, 13, by + 13, 2.5, 2, sk); }
+    else {
+      sl(ls[0], ls[1], 5 - sw * 0.4, by + 16);
+      if (arm === 'up') sl(rs[0], rs[1], 23, by - 10);
+      else if (arm === 'point') sl(rs[0], rs[1], 25, by + 3);
+      else if (arm === 'reach') sl(rs[0], rs[1], 24, by + 9);
+      else if (arm === 'staff') { sl(rs[0], rs[1], 21, by + 12); L(c, 22, by - 8, 22, 56, '#7c5434', 2); E(c, 22, by - 9, 2, 2, '#9c6c44'); }
+      else sl(rs[0], rs[1], 21 + sw * 0.4, by + 16);
+    }
+    // head
+    R(c, hx - 2, hy + 5, 4, 4, sk2);
+    E(c, hx, hy, 6, 7, sk2); E(c, hx - 0.4, hy - 0.4, 5.6, 6.6, sk);
+    // hair / hat
+    if (st.old) { PF(c, [hx - 6, hy - 1, hx - 5, hy - 6, hx, hy - 8, hx + 5, hy - 6, hx + 6, hy - 1, hx + 4, hy - 4, hx - 4, hy - 4], '#f4f4f0'); }
+    else PF(c, [hx - 6, hy + 1, hx - 6, hy - 5, hx, hy - 8, hx + 6, hy - 5, hx + 6, hy + 1, hx + 4, hy - 3, hx - 4, hy - 3], st.hair || '#1c1c24');
+    if (st.hat === 'bun') { E(c, hx, hy - 9, 2.6, 2.4, st.hair || '#1c1c24'); R(c, hx - 1, hy - 7, 3, 1, st.hatCol || '#c8302c'); }
+    if (st.hat === 'cap') { R(c, hx - 4, hy - 10, 8, 4, st.hatCol || '#1c1c24'); R(c, hx - 5, hy - 7, 10, 1, st.hatCol || '#1c1c24'); }
+    if (st.female) { E(c, hx, hy - 8, 4, 2.6, st.hair); R(c, hx + 3, hy - 9, 3, 1, '#d8c890'); L(c, hx - 6, hy, hx - 6, hy + 6, st.hair, 2); L(c, hx + 6, hy, hx + 6, hy + 6, st.hair, 2); }
+    // face
+    const ey = hy;
+    if (bl === 2 || ex === 'cry') { L(c, hx - 3, ey, hx - 2, ey, '#2c1c14'); L(c, hx + 2, ey, hx + 3, ey, '#2c1c14'); }
+    else if (st.squint) { R(c, hx - 3, ey - 1, 2, 2, C.k); L(c, hx + 1, ey, hx + 3, ey, '#2c1c14'); }
+    else { R(c, hx - 3, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); R(c, hx + 2, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); }
+    if (ex === 'angry') { L(c, hx - 4, ey - 3, hx - 1, ey - 2, '#2c1c14'); L(c, hx + 1, ey - 2, hx + 4, ey - 3, '#2c1c14'); }
+    else if (ex === 'sad' || ex === 'cry') { L(c, hx - 4, ey - 2, hx - 1, ey - 3, '#2c1c14'); L(c, hx + 1, ey - 3, hx + 4, ey - 2, '#2c1c14'); }
+    else if (st.old) { L(c, hx - 4, ey - 3, hx - 1, ey - 3, '#f4f4f0'); L(c, hx + 1, ey - 3, hx + 4, ey - 3, '#f4f4f0'); }
+    if (ex === 'cry') { R(c, hx - 3, ey + 1, 1, 4, '#88c8f8'); R(c, hx + 2, ey + 1, 1, 4, '#88c8f8'); }
+    if (st.beard) { PF(c, [hx - 4, ey + 3, hx + 4, ey + 3, hx + 3, ey + 12, hx, ey + 16, hx - 3, ey + 12], '#f4f4f0'); R(c, hx - 1, ey + 3, 3, 1, '#8c5c4c'); }
+    else if (ex === 'shock') E(c, hx, ey + 4, 1.4, 1.6, '#5c1c1c');
+    else if (ex === 'smile') { L(c, hx - 2, ey + 3, hx, ey + 4, '#8c4c3c'); L(c, hx, ey + 4, hx + 2, ey + 3, '#8c4c3c'); }
+    else R(c, hx - 1, ey + 4, 3, 1, '#8c4c3c');
+    if (!st.beard && !st.female) P(c, hx, ey + 2, sk2);
+  });
+}
+/* portrait close-up cut: a big face (48x48 portrait) over a soft background */
+function closeUp(c, t, face, o = {}) {
+  const bg = o.bg || ['#1c0c08', '#5c2c14'];
+  VG(c, 0, 0, W, H, [bg[0], bg[1], bg[0]]);
+  if (o.glow) { E(c, 160, 104, 110, 90, DA(o.glow, 0.12)); E(c, 160, 104, 80, 70, DA(o.glow, 0.12)); }
+  if (o.lines) for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + t * 0.2; L(c, 160 + Math.cos(a) * 90, 104 + Math.sin(a) * 90, 160 + Math.cos(a) * 200, 104 + Math.sin(a) * 200, DA(o.lines, 0.35)); }
+  const br = Math.round(Math.sin(t * 2.2) * 1);
+  blit(c, face, 160, 110 + br, 24, 24, { s: o.s || 3.5 });
+  if (o.after) o.after(c, t);
+  return { z: 1 + 0.03 * Math.sin(t * 0.5), fx: 160, fy: 104 };
+}

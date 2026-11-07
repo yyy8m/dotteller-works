@@ -6,14 +6,17 @@ const TOSHI = { id: 'to', coat: '#3c7c8c', coat2: '#2c5c6c', pants: '#2c3c4c', d
 const TOSHI_RICH = { id: 'tr', coat: '#d8a838', coat2: '#a87c1c', pants: '#7c2c2c', dress: '#c8302c', skin: '#f0c8a0', hair: '#1c1c24' };
 const OLD = { id: 'ol', coat: '#b8b4a8', coat2: '#8c887c', pants: '#6c6860', dress: '#a8a498', skin: '#e0b894', hair: '#f4f4f0' };
 function toshi(c, x, y, s, o = {}) {
-  blit(c, personSpr(o.rich ? TOSHI_RICH : TOSHI, { f: o.f == null ? -1 : o.f, arm: o.arm, shock: o.shock, id: 'ts' + (o.k || '') }), x, y, PER_AX, PER_AY, { s, flip: o.flip });
-  E(c, x + (o.flip ? -1 : 1) * 0.5 * s, y - 39 * s, 2 * s, 1.6 * s, '#1c1c24'); // top-knot
+  const st = o.rich ? { id: 'tsR', robe: '#c8302c', robe2: '#9c1c1c', trim: '#f8d050', sash: '#f8d050', hair: '#1c1c24', hat: 'bun', hatCol: '#f8d050' }
+                    : { id: 'tsN', robe: '#3c7c8c', robe2: '#2c5c6c', trim: '#c8d8d0', sash: '#1c2c34', hair: '#1c1c24', hat: 'bun', hatCol: '#c8302c' };
+  const expr = o.expr || (o.shock ? 'shock' : 'normal');
+  blit(c, robeFig(st, { f: o.f, pose: o.pose, arm: o.arm === 'dig' ? 'reach' : o.arm === 'fwd' ? 'reach' : o.arm, expr, blink: o.blink, k: o.k }), x, y, FIG_AX2, FIG_AY2, { s: s * 0.72, flip: o.flip });
 }
 function oldMan(c, x, y, s, o = {}) {
   const a = o.a == null ? 1 : o.a; if (a <= 0) return;
-  const spr = personSpr(OLD, { f: o.f == null ? -1 : o.f, arm: o.arm, id: 'om' + (o.k || '') });
-  blit(c, a < 1 ? ditherFade(spr, a, 'omf') : spr, x, y, PER_AX, PER_AY, { s, flip: o.flip });
-  if (a >= 1) { const sx = x + (o.flip ? -7 : 7) * s; L(c, sx, y - 26 * s, sx + (o.flip ? -1 : 1) * s, y, '#6c4c2c', Math.max(1, s)); R(c, x - 3 * s, y - 31 * s, 6 * s, 3 * s, '#f4f4f0'); }
+  const st = { id: 'omK', robe: '#a8a498', robe2: '#8c887c', trim: '#e8e4d8', sash: '#5c4c3c', old: true, beard: true, squint: true, hat: 'cap', hatCol: '#1c1c24' };
+  const spr = robeFig(st, { f: o.f, arm: o.arm === 'fwd' ? 'point' : (o.arm || 'staff'), expr: o.expr, blink: o.blink, k: o.k });
+  blit(c, a < 1 ? ditherFade(spr, a, 'omf' + (o.k || '')) : spr, x, y, FIG_AX2, FIG_AY2, { s: s * 0.72, flip: o.flip });
+  if (o.glow) E(c, x, y - 30 * s * 0.72, 22, 30, DA('#f8f0c0', 0.12 * a));
 }
 /* faces for the dialog window (48x48) */
 function toshiFace(o = {}) {
@@ -82,39 +85,71 @@ function sunsetSky(c, t, o = {}) {
 /* the west gate of Luoyang: city wall + a two-storey gate tower */
 function westGate(c, t, o = {}) {
   sunsetSky(c, t, o);
-  R(c, 0, 76, W, 74, '#8c6c54'); for (let y = 80; y < 150; y += 8) for (let x = ((y / 8) & 1) * 10; x < W; x += 20) R(c, x, y, 19, 7, '#9c7c60');
-  R(c, 0, 72, W, 6, '#5c4434');
-  const gx = 160; R(c, gx - 36, 92, 72, 58, '#1c140c'); E(c, gx, 92, 36, 18, '#1c140c');
-  PF(c, [gx - 70, 64, gx, 38, gx + 70, 64], '#3c2c34'); R(c, gx - 56, 62, 112, 14, '#a82c24'); for (let x = gx - 52; x < gx + 54; x += 14) R(c, x, 62, 3, 14, '#5c1c14');
-  PF(c, [gx - 52, 44, gx, 24, gx + 52, 44], '#3c2c34'); R(c, gx - 38, 42, 76, 8, '#a82c24');
-  R(c, 0, 150, W, H - 150, '#b8946c'); for (let i = 0; i < 30; i++) R(c, (i * 47) % W, 152 + (i * 13 % 80), 6, 1, '#a8845c');
-  if (!o.empty) for (let i = 0; i < 9; i++) { // people and carts flowing by
-    const x = mod(i * 47 + t * (i & 1 ? 14 : -10), 380) - 30, col = ['#c84c3c', '#3c6c9c', '#d8b84c', '#6c9c4c', '#8c5ca8'][i % 5];
-    blit(c, personSpr({ id: 'cr' + i, coat: col, coat2: col, pants: '#3c3c44', dress: col, skin: '#f0c8a0', hair: '#1c1c24' }, { f: Math.floor(t * 6 + i) & 3, id: 'cw' + i }), x, 148 + (i % 3), PER_AX, PER_AY, { flip: !(i & 1) });
+  if (!o.night) { const sy = 92; E(c, 60, sy, 34, 34, DA('#f8d080', 0.35)); E(c, 60, sy, 20, 20, '#f8c060'); E(c, 60, sy, 14, 14, '#fce8a0'); }
+  // far city roofs
+  for (let i = 0; i < 9; i++) { const x = i * 40 - 10, h = 10 + (i * 7 % 12); PF(c, [x, 78, x + 10, 78 - h, x + 30, 78 - h, x + 40, 78], o.night ? '#2c2034' : '#8c5c5c'); R(c, x + 6, 78 - h + 2, 28, 2, o.night ? '#1c1424' : '#6c3c44'); }
+  // wall with crenellations
+  R(c, 0, 76, W, 74, '#8c6c54'); for (let y = 80; y < 150; y += 8) for (let x = ((y / 8) & 1) * 10; x < W; x += 20) { R(c, x, y, 19, 7, '#9c7c60'); R(c, x, y, 19, 1, '#a88c6c'); }
+  for (let x = 0; x < W; x += 16) R(c, x, 68, 10, 8, '#7c5c44'); R(c, 0, 74, W, 3, '#5c4434');
+  const gx = 160;
+  R(c, gx - 40, 88, 80, 62, '#5c4434'); R(c, gx - 34, 94, 68, 56, '#140c08'); E(c, gx, 94, 34, 16, '#140c08');
+  for (let k = 0; k < 2; k++) { const dx = k ? 34 : -34; R(c, gx + dx - 2, 96, 4, 54, '#3c2414'); for (let y = 100; y < 150; y += 8) E(c, gx + dx * 0.6, y, 1.5, 1.5, '#c8a040'); }
+  // two-storey gate tower with red pillars and upturned eaves
+  R(c, gx - 58, 54, 116, 16, '#a82c24'); for (let x = gx - 54; x < gx + 56; x += 12) R(c, x, 54, 3, 16, '#5c1c14'); R(c, gx - 60, 68, 120, 3, '#d8a838');
+  PF(c, [gx - 76, 58, gx - 66, 50, gx - 50, 42, gx + 50, 42, gx + 66, 50, gx + 76, 58, gx + 60, 54, gx - 60, 54], '#2c2430'); L(c, gx - 76, 58, gx - 50, 42, '#4c4054'); L(c, gx + 76, 58, gx + 50, 42, '#4c4054');
+  R(c, gx - 40, 30, 80, 12, '#a82c24'); for (let x = gx - 36; x < gx + 38; x += 10) R(c, x, 30, 2, 12, '#5c1c14');
+  PF(c, [gx - 56, 32, gx - 48, 26, gx - 34, 18, gx + 34, 18, gx + 48, 26, gx + 56, 32, gx + 42, 30, gx - 42, 30], '#2c2430'); R(c, gx - 4, 12, 8, 6, '#2c2430'); E(c, gx, 11, 2, 2, '#d8a838');
+  R(c, gx - 14, 44, 28, 9, '#1c140c'); R(c, gx - 13, 45, 26, 7, '#3c2c1c'); TX(c, '西門', gx - 13, 44, '#f8d050', 8, null);
+  // lanterns
+  for (const lx of [gx - 50, gx + 50]) { L(c, lx, 71, lx, 76, '#1c1c1c'); E(c, lx, 81, 4, 5, o.night ? '#f86030' : '#e84c2c'); R(c, lx - 3, 76, 6, 1, '#1c1c1c'); if (o.night) E(c, lx, 81, 10, 10, DA('#f8a040', 0.25)); }
+  // willow
+  { const wx = 286; R(c, wx - 2, 96, 5, 54, '#4c3424'); for (let k = 0; k < 9; k++) { const sx = wx - 20 + k * 5, sw2 = Math.sin(t * 1.2 + k) * 2; L(c, sx, 92 + (k % 3) * 2, sx + sw2, 132 + (k % 4) * 4, o.night ? '#2c4c34' : '#6c9c48'); } E(c, wx, 92, 24, 10, o.night ? '#2c4c34' : '#7cac54'); }
+  R(c, 0, 150, W, H - 150, o.night ? '#5c4c44' : '#b8946c'); for (let i = 0; i < 30; i++) R(c, (i * 47) % W, 152 + (i * 13 % 80), 6, 1, o.night ? '#4c3c34' : '#a8845c');
+  if (!o.empty) for (let i = 0; i < 10; i++) { // people, carts and a white horse flowing by (kept behind the main characters)
+    const dir = i & 1 ? 1 : -1, x = mod(i * 41 + t * (i & 1 ? 12 : 9) * dir, 380) - 30; if (o.clear && x > o.clear[0] && x < o.clear[1]) continue; const _u = 0, col = ['#c84c3c', '#3c6c9c', '#d8b84c', '#6c9c4c', '#8c5ca8'][i % 5];
+    if (i === 4) { // a white horse with coloured reins
+      const hx2 = x; E(c, hx2, 136, 12, 6, '#f4f4f0'); E(c, hx2 + dir * 12, 128, 4, 5, '#f4f4f0'); for (const lx of [-8, -4, 5, 9]) L(c, hx2 + lx, 140, hx2 + lx + Math.sin(t * 8 + lx) * 1.5, 150, '#e0e0d8', 2); L(c, hx2 + dir * 12, 128, hx2 - dir * 2, 132, '#e83c8c'); continue; }
+    blit(c, robeFig({ id: 'cw' + i, robe: col, robe2: col, trim: '#f4f0e8', sash: '#2c2c34', hair: '#1c1c24', hat: i % 3 ? 'bun' : 'cap', female: i % 4 === 1 }, { f: Math.floor(t * 6 + i) & 3, k: 'c' }), x, 146 - (i % 3), FIG_AX2, FIG_AY2, { s: 0.7, flip: dir < 0 });
   }
-  if (o.dusk) { c.fillStyle = DA('#f8a040', 0.12); c.fillRect(0, 0, W, H); }
+  if (o.night && o.bats !== false) for (let i = 0; i < 3; i++) { const x = mod(i * 90 + t * 20, 360) - 20, y = 24 + i * 9 + Math.sin(t * 4 + i) * 4, w2 = Math.sin(t * 16 + i) > 0 ? 4 : 1; PF(c, [x - 6, y - w2, x, y + 1, x + 6, y - w2, x, y - 1], '#1c1424'); }
+  if (o.dusk) { c.fillStyle = DA('#f8a040', 0.1); c.fillRect(0, 0, W, H); }
+  if (o.shadows !== false && !o.night) c.fillStyle = 'rgba(0,0,0,0)';
 }
 function goldPile(c, x, y, n, t) { for (let i = 0; i < n; i++) { const a = hash(i) * Math.PI, r = Math.sqrt(i / n) * 26; const px = x + Math.cos(a) * r * 1.4, py = y - Math.sin(a) * r * 0.7; R(c, px, py, 4, 3, i % 3 ? '#f8d050' : '#c89c28'); if ((Math.floor(t * 4) + i) % 23 === 0) P(c, px + 1, py, C.white); } }
 function mountainsFar(c, t, ox, y, cols) { for (let k = 0; k < 3; k++) for (let i = 0; i < 10; i++) { const x = mod(i * 70 + k * 23 - ox * (0.3 + k * 0.3), 560) - 80, h = 40 + (i * 17 % 30) + k * 10; PF(c, [x - 50, y + k * 18, x, y - h + k * 18, x + 50, y + k * 18], cols[k]); } }
 function bigDipper(c, t, x, y, s) { const pts = [[0, 0], [14, 4], [26, 4], [36, 10], [40, 22], [56, 24], [58, 10]]; pts.forEach(([a, b], i) => { const tw = 0.7 + 0.3 * Math.sin(t * 3 + i); E(c, x + a * s, y + b * s, 3 * s * tw, 3 * s * tw, DA('#f8f0c0', 0.25)); E(c, x + a * s, y + b * s, 1.2 * s, 1.2 * s, '#ffffff'); }); }
 function cliffRock(c, t) {
-  VG(c, 0, 0, W, 150, ['#05060f', '#0c1028', '#1c2040']);
-  for (let i = 0; i < 40; i++) P(c, (i * 71) % W, (i * 37) % 120, (Math.floor(t * 2) + i) % 5 ? '#c8c8d8' : '#5c5c7c');
-  bigDipper(c, t, 40, 20, 1.6);
-  PF(c, [220, 150, 236, 40, 260, 20, 320, 10, 320, 150], '#1c1c2c'); // the cliff behind
-  L(c, 262, 30, 236, 18, '#3c2c20', 3); for (let k = 0; k < 4; k++) E(c, 232 - k * 10 + Math.sin(t * 1.4 + k) * 2, 16 + (k & 1) * 6, 12, 5, '#1c3c2c'); // the twisted pine
-  R(c, 0, 132, W, 20, '#3c3c4c'); PF(c, [0, 132, 40, 124, 200, 122, 260, 128, 320, 126, 320, 140, 0, 140], '#4c4c5c'); // the flat rock
-  R(c, 0, 150, W, H - 150, '#0c0c18');
+  VG(c, 0, 0, W, 150, ['#03040c', '#0a0e24', '#1a1e3c']);
+  for (let i = 0; i < 60; i++) { const tw = (Math.floor(t * 2) + i) % 7; P(c, (i * 71 + 13) % W, (i * 37 + 5) % 118, tw ? '#c8c8e0' : '#5c5c80'); }
+  bigDipper(c, t, 26, 16, 1.7);
+  for (let i = 0; i < 6; i++) { const x = i * 60 - 20; PF(c, [x, 132, x + 30, 92 - (i * 13 % 26), x + 60, 132], '#141830'); }
+  PF(c, [216, 150, 230, 60, 246, 30, 270, 14, 320, 6, 320, 150], '#1a1a2a'); for (let k = 0; k < 8; k++) L(c, 236 + k * 9, 40 + k * 6, 240 + k * 9, 140, '#24243a');
+  // the twisted pine on the cliff
+  const sw = Math.sin(t * 1.6) * 2; L(c, 268, 22, 250, 14, '#3c2c20', 4); L(c, 250, 14, 226 + sw, 20, '#3c2c20', 3); L(c, 236, 17, 230 + sw, 6, '#3c2c20', 2);
+  for (const [px, py, r] of [[226, 18, 14], [240, 8, 10], [254, 12, 11], [222, 6, 9]]) { E(c, px + sw, py, r, r * 0.45, '#1c3c2c'); E(c, px + sw, py - 2, r * 0.8, r * 0.3, '#2c5c40'); }
+  // the flat rock
+  PF(c, [0, 136, 30, 126, 120, 122, 210, 124, 270, 128, 320, 126, 320, 150, 0, 150], '#4c4c64'); PF(c, [0, 136, 30, 126, 120, 122, 210, 124, 270, 128, 320, 126, 320, 130, 0, 140], '#6c6c88');
+  for (let i = 0; i < 12; i++) L(c, 10 + i * 26, 130 + (i % 3) * 3, 22 + i * 26, 132 + (i % 3) * 3, '#3c3c54');
+  R(c, 0, 150, W, H - 150, '#06060e'); for (let i = 0; i < 6; i++) E(c, 30 + i * 56, 170 + (i % 2) * 6, 40, 6, DA('#3c3c64', 0.4));
 }
 /* a thin horse with a human face (the parents, reborn as beasts) */
 function horseSpr(t, who, o = {}) {
-  return SPR('hs' + who + (o.down ? 'd' : ''), 52, 34, c => {
-    const body = who ? '#8c7c6c' : '#7c6c5c';
-    if (o.down) { E(c, 24, 26, 18, 6, body); for (let i = 0; i < 4; i++) L(c, 10 + i * 9, 30, 6 + i * 9, 33, body, 2); E(c, 44, 24, 6, 6, '#e8c8a8'); R(c, 40, 18, 9, 4, who ? '#3c3038' : '#2c2c2c'); P(c, 43, 24, C.k); P(c, 46, 24, C.k); if (o.tear) R(c, 44, 26, 1, 4, '#c81818'); return; }
-    E(c, 22, 16, 16, 7, body); for (let x of [10, 16, 28, 34]) L(c, x, 20, x - 1 + Math.sin(t * 2 + x) * 0.5, 32, body, 2);
-    L(c, 6, 13, 2, 22, '#5c4c3c', 2); L(c, 36, 12, 42, 4, body, 4);
-    E(c, 44, 8, 6, 6, '#e8c8a8'); R(c, 40, 1, 9, 4, who ? '#3c3038' : '#2c2c2c'); P(c, 42, 8, C.k); P(c, 46, 8, C.k); R(c, 43, 11, 3, 1, '#8c4c4c');
-    for (let i = 0; i < 4; i++) L(c, 12 + i * 5, 10, 13 + i * 5, 20, DA('#3c2c20', 0.5)); // ribs
-    if (o.tear) { R(c, 42, 9, 1, 4, '#c81818'); R(c, 46, 9, 1, 4, '#c81818'); }
+  return SPR('hs' + who + (o.down ? 'd' : '') + (o.tear ? 't' : ''), 60, 40, c => {
+    const body = who ? '#9c8c78' : '#8c7c68', dark = who ? '#6c5c4c' : '#5c4c3c', face = who ? '#ecd0b8' : '#e0b894', hair = who ? '#3c3038' : '#2c2c2c';
+    if (o.down) {
+      E(c, 26, 30, 20, 7, body); E(c, 26, 33, 18, 4, dark); for (let i = 0; i < 5; i++) L(c, 14 + i * 6, 25, 15 + i * 6, 33, DA('#2c1c14', 0.6));
+      for (let i = 0; i < 4; i++) L(c, 10 + i * 10, 35, 4 + i * 10, 38, body, 3); L(c, 6, 28, 0, 34, dark, 2);
+      L(c, 44, 30, 50, 28, body, 6); E(c, 52, 29, 7, 7, face); PF(c, [45, 24, 52, 20, 59, 24, 56, 25, 48, 25], hair);
+      L(c, 49, 29, 51, 29, C.k); L(c, 54, 29, 56, 29, C.k); R(c, 51, 33, 3, 1, '#8c4c4c');
+      if (o.tear) { R(c, 50, 30, 1, 5, '#c81818'); R(c, 55, 30, 1, 5, '#c81818'); }
+      for (let i = 0; i < 3; i++) R(c, 18 + i * 9, 26, 3, 1, '#c81818');
+      return;
+    }
+    E(c, 26, 18, 17, 8, body); E(c, 26, 21, 15, 4, dark); for (let i = 0; i < 5; i++) L(c, 18 + i * 4, 12, 19 + i * 4, 22, DA('#2c1c14', 0.55));
+    for (const [lx, ph] of [[13, 0], [19, 1], [33, 2], [39, 3]]) { const sw = Math.sin(t * 2 + ph) * 0.6; L(c, lx, 24, lx + sw, 31, body, 3); L(c, lx + sw, 31, lx + sw, 38, dark, 2); R(c, lx - 1 + sw, 38, 3, 1, '#1c1414'); }
+    L(c, 9, 16, 3, 26, '#4c3c2c', 2); L(c, 40, 14, 46, 6, body, 6); for (let k = 0; k < 4; k++) L(c, 40 + k * 2, 12 - k * 2, 37 + k * 2, 10 - k * 2, hair);
+    E(c, 50, 8, 7, 7, face); PF(c, [43, 3, 50, -1, 57, 3, 54, 4, 46, 4], hair);
+    L(c, 47, 8, 49, 8, C.k); L(c, 52, 8, 54, 8, C.k); R(c, 49, 12, 3, 1, '#8c4c4c');
+    if (o.tear) { R(c, 48, 9, 1, 5, '#c81818'); R(c, 53, 9, 1, 5, '#c81818'); }
   });
 }
