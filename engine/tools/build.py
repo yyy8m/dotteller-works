@@ -17,7 +17,7 @@ rd = lambda p: open(p, encoding='utf-8').read()
 # brand settings live in one place: engine/src/brand.js (const BRAND = {...})
 BRAND = dict(re.findall(r"(\w+): '([^']*)'", re.search(r'const BRAND = \{(.*?)\};', rd(os.path.join(ENGINE, 'brand.js'))).group(1)))
 
-parts = [rd(os.path.join(ENGINE, f)) for f in ['core.js', 'chars.js', 'env.js'] + (['kiroku.js'] if W['series'] == 'kiroku' else [])]
+parts = [rd(os.path.join(ENGINE, f)) for f in ['core.js', 'chars.js', 'env.js'] + (['kiroku.js'] if W['series'] == 'kiroku' or W.get('kit') == 'kiroku' else [])]
 parts += [rd(p) for p in sorted(glob.glob(os.path.join(work, 'scenes*.js')))]
 parts += [rd(os.path.join(ENGINE, 'brand.js')), rd(os.path.join(ENGINE, 'audio.js')), rd(os.path.join(work, 'story.js')), rd(os.path.join(ENGINE, 'main.js'))]
 js = 'const WORK = ' + json.dumps(W, ensure_ascii=False) + ';\nconst SHORT = ' + ('true' if SHORT else 'false') + ';\n' + '\n'.join(parts)
