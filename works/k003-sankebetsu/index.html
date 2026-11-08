@@ -1349,19 +1349,31 @@ function bearSpr(pose = 'walk', f = 0, o = {}) {
     R(c, 18, 15, 3, 2, BEAR.eye); R(c, 29, 15, 3, 2, BEAR.eye); PF(c, [20, 27, 30, 27, 28, 31, 22, 31], '#3c0808'); for (const x0 of [21, 28]) PF(c, [x0, 27, x0 + 1, 27, x0 + 0.5, 30], '#f0e8d8');
   });
   if (pose === 'down') return SPR(key, 84, 34, c => { E(c, 40, 22, 34, 11, BEAR.f1); E(c, 38, 19, 30, 8, BEAR.f2); E(c, 72, 24, 11, 9, BEAR.f1); E(c, 80, 27, 5, 4, BEAR.snout); L(c, 70, 22, 74, 22, BEAR.f0); for (let i = 0; i < 4; i++) L(c, 16 + i * 16, 30, 12 + i * 16, 33, BEAR.f1, 4); });
+  // side view (faces right), 84x56, anchor at the feet (42, 55): high shoulder hump, round head with two round ears,
+  // short thick muzzle, thick legs with pale claws — so it never reads as a rat or a dog
   return SPR(key, 84, 56, c => {
-    const sw = pose === 'lunge' ? 0 : [0, 4, 0, -4][f & 3], up = pose === 'lunge' ? -6 : 0, bob = f & 1;
-    // legs (far side darker)
-    for (const [lx, d, col] of [[22, -sw, BEAR.f0], [60, sw, BEAR.f0]]) { L(c, lx, 34 + bob, lx + d, 52, col, 7); }
-    // body with the shoulder hump
-    E(c, 40, 30 + bob + up * 0.3, 32, 17, BEAR.f1); E(c, 52, 20 + bob + up * 0.6, 14, 10, BEAR.f1); E(c, 38, 26 + bob, 26, 11, BEAR.f2); E(c, 50, 17 + bob + up * 0.6, 9, 5, BEAR.f3);
-    for (let i = 0; i < 26; i++) { const x = 12 + (i * 11 % 56), y = 18 + (i * 7 % 22) + bob; L(c, x, y, x - 2, y + 4, BEAR.f0); }
-    for (const [lx, d] of [[18, sw], [56, -sw]]) { L(c, lx, 36 + bob, lx + d, 52, BEAR.f1, 8); for (let k = 0; k < 3; k++) L(c, lx + d - 3 + k * 3, 53, lx + d - 2 + k * 3 + 2, 55, '#d8d0c0'); }
-    // head
-    const hx = 72, hy = 28 + bob + up;
-    E(c, hx, hy, 11, 10, BEAR.f1); E(c, hx - 1, hy - 2, 9, 7, BEAR.f2); E(c, hx - 6, hy - 10, 3.5, 3.5, BEAR.f1); E(c, hx + 9, hy + 3, 6, 4.5, BEAR.snout); E(c, hx + 14, hy + 2, 2, 1.6, BEAR.f0);
-    R(c, hx + 1, hy - 3, 2, 2, o.eyes ? BEAR.eye : '#0c0806'); if (o.eyes) P(c, hx + 1, hy - 3, '#f8c0a0');
-    if (pose === 'lunge') { PF(c, [hx + 6, hy + 5, hx + 16, hy + 5, hx + 14, hy + 10, hx + 7, hy + 9], '#3c0808'); for (const x0 of [hx + 8, hx + 13]) PF(c, [x0, hy + 5, x0 + 1, hy + 5, x0 + 0.5, hy + 8], '#f0e8d8'); }
+    const lunge = pose === 'lunge', sw = lunge ? 0 : [0, 4, 0, -4][f & 3], bob = lunge ? 0 : (f & 1);
+    const claws = (x, y, dir = 1) => { E(c, x + 4, y - 1, 6, 2.5, BEAR.f1); for (let k = 0; k < 3; k++) L(c, x + 4 + k * 2.5, y, x + 6 + k * 2.5, y + 2, '#d8d0c0'); };
+    // far legs (darker)
+    L(c, 20, 34 + bob, 20 - sw, 52, BEAR.f0, 9); claws(16 - sw, 53);
+    if (!lunge) { L(c, 58, 32 + bob, 58 + sw, 52, BEAR.f0, 9); claws(54 + sw, 53); }
+    // body: low rump, big shoulder hump rising above the head line
+    E(c, 34, 32 + bob, 26, 15, BEAR.f1); E(c, 54, 26 + bob, 17, 17, BEAR.f1); E(c, 52, 15 + bob, 13, 9, BEAR.f1);
+    E(c, 34, 28 + bob, 20, 9, BEAR.f2); E(c, 53, 16 + bob, 8, 4, BEAR.f2); E(c, 54, 14 + bob, 4, 2, BEAR.f3); E(c, 12, 26 + bob, 4, 3, BEAR.f2); // back light, hump light, tail
+    for (let i = 0; i < 30; i++) { const x = 12 + (i * 11 % 56), y = 16 + (i * 7 % 26) + bob; L(c, x, y, x - 2, y + 4, BEAR.f0); } // shaggy fur
+    for (let x = 16; x < 64; x += 4) L(c, x, 45 + bob, x - 1, 48 + bob, BEAR.f0); // belly fringe
+    // near legs: thick, long claws
+    L(c, 26, 36 + bob, 26 + sw, 52, BEAR.f1, 10); L(c, 24, 38 + bob, 24 + sw, 50, BEAR.f2, 3); claws(22 + sw, 53);
+    if (lunge) { L(c, 58, 30, 76, 40, BEAR.f1, 10); L(c, 58, 28, 75, 37, BEAR.f2, 3); E(c, 78, 41, 4, 4, BEAR.f1); for (let k = 0; k < 4; k++) L(c, 80, 38 + k * 2, 84, 39 + k * 2, '#e8e0d0'); // a forepaw swiping forward, claws out
+      L(c, 56, 34, 60, 52, BEAR.f0, 9); claws(56, 53); }
+    else { L(c, 62, 34 + bob, 62 - sw, 52, BEAR.f1, 10); L(c, 60, 36 + bob, 60 - sw, 50, BEAR.f2, 3); claws(58 - sw, 53); }
+    // head: big and round, sitting low and forward of the hump
+    const hx = 70, hy = (lunge ? 22 : 30) + bob;
+    E(c, hx - 4, hy - 9, 4, 4, BEAR.f1); E(c, hx + 3, hy - 10, 4, 4, BEAR.f1); E(c, hx - 4, hy - 9, 1.8, 1.8, BEAR.snout); E(c, hx + 3, hy - 10, 1.8, 1.8, BEAR.snout); // two round ears
+    E(c, hx, hy, 10, 9, BEAR.f1); E(c, hx - 1, hy - 2, 8, 6, BEAR.f2); for (let k = 0; k < 6; k++) L(c, hx - 9 + k * 2, hy + 6, hx - 10 + k * 2, hy + 9, BEAR.f1); // cheek ruff
+    E(c, hx + 8, hy + 3, 5.5, 4.5, BEAR.snout); E(c, hx + 8, hy + 1, 4, 2.5, BEAR.f3); E(c, hx + 12, hy + 1, 2.2, 2, '#0c0806'); P(c, hx + 11, hy, '#5c5c64'); // short thick muzzle, nose
+    R(c, hx + 1, hy - 3, 2, 2, o.eyes ? BEAR.eye : '#0c0806'); if (o.eyes) P(c, hx + 1, hy - 3, '#f8c0a0'); L(c, hx - 1, hy - 5, hx + 3, hy - 4, BEAR.f0);
+    if (lunge) { PF(c, [hx + 4, hy + 5, hx + 14, hy + 4, hx + 12, hy + 12, hx + 5, hy + 10], '#3c0808'); E(c, hx + 9, hy + 9, 2.5, 1.2, '#8c2c2c'); for (const x0 of [hx + 6, hx + 11]) { PF(c, [x0, hy + 5, x0 + 1.5, hy + 5, x0 + 0.7, hy + 8], '#f0e8d8'); PF(c, [x0, hy + 11, x0 + 1.5, hy + 11, x0 + 0.7, hy + 8.5], '#f0e8d8'); } }
   });
 }
 /* the bear's face (48x48) — horror close-up, thumbnail */
