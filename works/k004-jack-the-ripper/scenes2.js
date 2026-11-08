@@ -179,8 +179,8 @@ const RL = {
     if (t < S.tRep) { eastEnd(c, t, {}); c.fillStyle = DA('#04040a', 0.5); c.fillRect(0, 0, W, H); const x = lerp(160, 360, sg(t, 1, S.tRep)); jack(c, x, 150, 1.3, { f: Math.floor(t * 4) & 3, eyes: true }); glow(c, 160, 150, 120, 30, '#8c94a8', 0.25); return { z: 1.06, fx: 180, fy: 110 }; }
     R(c, 0, 0, W, H, '#1c140c'); glow(c, 160, 80, 130, 80, '#f8d080', 0.25);
     letterSheet(c, 70, 16, 180, 130, t, { k: sg(t, S.tRep, S.tRep + 5) * 0.75, head: 'REPORT  1894' });
-    if (t > S.tRep + 3) for (let i = 0; i < 5; i++) { R(c, 92 + i * 30, 112, 20, 20, '#8c1c1c'); TX(c, String(i + 1), 98 + i * 30, 113, '#f8e8d8', 16, null); }
-    return { z: 1.06, fx: 160, fy: 80 };
+    if (t > S.tRep + 3) for (let i = 0; i < 5; i++) { R(c, 92 + i * 30, 104, 20, 20, '#8c1c1c'); TX(c, String(i + 1), 98 + i * 30, 105, '#f8e8d8', 16, null); }
+    return { z: 1.06, fx: 160, fy: 100 }; // the five boxes stay above the dialog window
   }
 };
 /* ---- RM: 100+ suspects, none confirmed; records lost in the Blitz; DNA inconclusive ---- */

@@ -51,5 +51,8 @@ KP.sfx = (S, ev) => { ev(S.tCand, 'toll'); ev(S.tEnd, 'end'); };
 SS2.sfx = (S, ev) => { ev(0.3, 'sting'); ev(2, 'thunder'); };
 KP.bgmTrack = (S, tr) => { tr.fin = 3; };
 KP.ending = true;
-KK.wideDY = 8; KF.wideDY = 20;
+KK.wideDY = 8; KF.wideDY = 36;
+// people standing or sitting on the ground (y 150-165) must stay above the dialog window
+KB.wideDY = 40; KC.wideDY = 40; KE.wideDY = (t, S) => (t > S.tBurst && t < S.tOut ? 6 : 40); // people fleeing up onto the beams (top) after the bear bursts in
+ KH.wideDY = 44; KI.wideDY = 44;
 function TITLE_DECO(c, t) { for (let i = 0; i < 5; i++) fir(c, 230 + i * 18, 228, 40 + (i % 2) * 10, 'night', Math.sin(t + i)); snowfall(c, t, 20, 51, 3, 8, '#c8d0e0'); }

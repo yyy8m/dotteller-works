@@ -99,12 +99,12 @@ const KE = {
     else { PF(c, [40, 140, 96, 128, 104, 140, 48, 148], '#8c7c64'); }
     if (!hit) for (let i = 0; i < 6; i++) pioneer(c, PIONEER[i % 4], 30 + i * 22 + (i > 2 ? 150 : 0), 148, 1.3, { pose: 'kneel', expr: 'sad', k: 'n' });
     else {
-      for (let i = 0; i < 4; i++) { const x = 30 + i * 70; R(c, 0, 22, W, 6, '#1c140c'); blit(c, robeFig(PIONEER[i], { arm: 'up', expr: 'shock', k: 'beam' }), x, 60, FIG_AX2, FIG_AY2, { s: 0.85 }); R(c, 0, 58, W, 5, '#1c140c'); }
+      for (let i = 0; i < 4; i++) { const x = 30 + i * 70; R(c, 0, 34, W, 6, '#1c140c'); blit(c, robeFig(PIONEER[i], { arm: 'up', expr: 'shock', k: 'beam' }), x, 74, FIG_AX2, FIG_AY2, { s: 0.85 }); R(c, 0, 72, W, 5, '#1c140c'); }
       blit(c, bearSpr('lunge', 0, { eyes: true }), 230, 146, 42, 55, { s: 1.4, flip: true });
       for (let i = 0; i < 12; i++) R(c, 230 + Math.cos(i) * 40 * k, 70 + Math.sin(i * 2) * 30 * k + k * k * 60, 4, 3, '#5c4c3c');
     }
     capPlate(c, t, 0.4, ['12月10日 夜']);
-    return { z: hit ? 1.12 : 1.04, fx: hit ? 200 : 160, fy: 104, sx: hit && t < S.tBurst + 0.5 ? Math.round(Math.sin(t * 60) * 3) : 0 };
+    return { z: hit ? 1.0 : 1.04, fx: 160, fy: hit ? 120 : 104, sx: hit && t < S.tBurst + 0.5 ? Math.round(Math.sin(t * 60) * 3) : 0 };
   }
 };
 /* ---- KF: the Myokei house — the window bursts; darkness ---- */

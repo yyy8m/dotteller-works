@@ -57,5 +57,9 @@ function TITLE_DECO(c, t) {
 }
 const HOOK = ['子どもの人気者のピエロ', '家の床下には――'];
 /* widescreen: how far the picture is shifted up above the dialog window (default 24) */
-GA.wideDY = 0; GG.wideDY = 0;
+// the crawl space (y 102-158) must stay above the dialog window: pan the wide frame down when it is shown
+GA.wideDY = (t, S) => lerp(0, 56, ss(sg(t, S.tDown, S.tDown + 2.2)));
+GG.wideDY = (t, S) => (t >= S.tFill && t < S.tRiver ? 56 : 0);
+GF.wideDY = (t, S) => (t >= S.tBury ? 56 : 24);
+GH.wideDY = 56; SS1.wideDY = (t, S) => lerp(0, 56, ss(sg(t, S.tDown, S.tDown + 1.4)));
 GK.tallFit = true;

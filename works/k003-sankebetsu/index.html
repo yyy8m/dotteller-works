@@ -835,7 +835,9 @@ function nightSky(c, t, h = 140, cols = [K.night0, K.night1, K.night2, K.night3]
   VG(c, 0, 0, W, h, cols);
   for (let i = 0; i < 46; i++) { const x = hash(i * 13) * W, y = hash(i * 7 + 3) * h * 0.7, tw = (Math.floor(t * 3 + i * 1.7) % 7) === 0; P(c, x, y, tw ? K.snow2 : (i % 5 ? K.snow3 : K.snow1)); }
 }
-function moon(c, x, y, r, t) { E(c, x, y, r + 6, r + 6, DA(K.snow1, 0.12)); E(c, x, y, r + 2, r + 2, DA(K.snow1, 0.25)); E(c, x, y, r, r, '#e8ecf0'); E(c, x + 2, y - 1, r * 0.3, r * 0.25, '#c8d0dc'); E(c, x - r * 0.4, y + r * 0.3, r * 0.2, r * 0.18, '#d0d6e0'); }
+/* y of a sky object: pushed down by the wide frame's top crop so it is never cut */
+function skyY(y) { return y + (window.__dy || 0); }
+function moon(c, x, y, r, t) { y = skyY(y); E(c, x, y, r + 6, r + 6, DA(K.snow1, 0.12)); E(c, x, y, r + 2, r + 2, DA(K.snow1, 0.25)); E(c, x, y, r, r, '#e8ecf0'); E(c, x + 2, y - 1, r * 0.3, r * 0.25, '#c8d0dc'); E(c, x - r * 0.4, y + r * 0.3, r * 0.2, r * 0.18, '#d0d6e0'); }
 function snowfall(c, t, n = 60, seed = 1, wind = 8, sp = 18, col = K.snow0) {
   for (let i = 0; i < n; i++) {
     const v = sp * (0.6 + hash(seed + i * 3) * 0.8), y = mod(hash(seed + i) * 260 + t * v, 260) - 10;
@@ -1214,6 +1216,93 @@ function suitFig(st, o = {}) {
   });
 }
 
+/* ---- modern figure (1950s-80s clothes): 36x58 (body in the left 26 px, room for the arm), anchor at the feet (FIG_AX2, FIG_AY2), 3/4 view facing right (use flip)
+   st: { id, top: 'shirt'|'jacket'|'tee'|'uniform'|'dress'|'sweater', coat, coat2, shirt, tie, pants, shoes, skin, hair,
+         hairStyle: 'short'|'long'|'curly'|'side'|'bald', moustache, glasses, heavy, kid, hat: 'police'|'fedora'|'cap', hatCol, plaid, badge }
+   o:  { f (walk frame, -1 = stand), arm: 'up'|'fwd'|'stab'|'dig'|'wave'|'point'|'hold', weapon: 'bottle'|'knife'|'shovel'|'flash', expr|shock, blink, k } ---- */
+function shadeCol(col, k) { const [r, g, b] = hex(col), f = v => Math.max(0, Math.min(255, Math.round(v * k))).toString(16).padStart(2, '0'); return '#' + f(r) + f(g) + f(b); }
+function modFig(st, o = {}) {
+  const f = o.f == null ? -1 : o.f, arm = o.arm || null, ex = o.shock ? 'shock' : (o.expr || 'normal'), bl = o.blink || 0, wp = o.weapon || null;
+  return SPR('mf' + st.id + (o.k || '') + f + arm + ex + bl + wp, 36, 58, c => {
+    const kid = !!st.kid, hv = !!st.heavy, sw = f < 0 ? 0 : [0, 3, 0, -3][f & 3] * (kid ? 0.7 : 1), bob = f < 0 ? 0 : (f & 1);
+    const hy = (kid ? 29 : 11) - bob, shY = (kid ? 37 : 21) - bob, waY = (kid ? 47 : 37) - bob, hr = kid ? 5 : 6, bw = kid ? 5 : (hv ? 9 : 6);
+    const sk = st.skin || '#f0c8a8', sk2 = shadeCol(sk, 0.78), sk3 = shadeCol(sk, 0.6);
+    const top = st.top || 'shirt', coat = st.coat || '#4c5c7c', coat2 = st.coat2 || shadeCol(coat, 0.72), pants = st.pants || '#3c3c44', pants2 = shadeCol(pants, 0.72);
+    const shoes = st.shoes || '#2c241c', cx = 13;
+    // legs (dress: bare shins under the hem)
+    const legTop = top === 'dress' ? waY + 8 : waY;
+    const legC = top === 'dress' ? sk : pants, legC2 = top === 'dress' ? sk2 : pants2;
+    L(c, cx - 3, legTop, cx - 3 + sw, 54, legC2, kid ? 3 : 4); L(c, cx + 2, legTop, cx + 2 - sw, 54, legC, kid ? 3 : 4);
+    if (top !== 'dress') { L(c, cx + 3, waY + 2, cx + 3 - sw, 52, shadeCol(pants, 1.15)); } // crease highlight
+    for (const [x0, s] of [[cx - 5 + sw, 1], [cx + 1 - sw, 0]]) { R(c, x0, 54, 6, 3, s ? shadeCol(shoes, 0.8) : shoes); R(c, x0 + 3, 54, 3, 1, shadeCol(shoes, 1.6)); }
+    // body
+    const tl = cx - bw, tr = cx + bw;
+    if (top === 'dress') {
+      PF(c, [tl + 1, shY, tr - 1, shY, tr + 3, waY + 9, tl - 3, waY + 9], coat); PF(c, [cx + 1, shY, tr - 1, shY, tr + 3, waY + 9, cx + 1, waY + 9], coat2);
+      R(c, tl, waY - 2, bw * 2, 2, coat2); for (let y = shY + 4; y < waY + 8; y += 5) P(c, cx - 2 + ((y >> 2) & 1) * 3, y, shadeCol(coat, 1.25));
+      R(c, cx - 2, shY, 5, 2, st.shirt || '#f4f0e8');
+    } else {
+      PF(c, [tl, shY, tr, shY, tr + (hv ? 1 : 0), waY + 1, tl - (hv ? 1 : 0), waY + 1], top === 'jacket' ? (st.shirt || '#e8e4dc') : coat);
+      if (hv) { E(c, cx + 2, waY - 6, bw + 1.5, 8, top === 'jacket' ? (st.shirt || '#e8e4dc') : coat); E(c, cx + 5, waY - 5, 4.5, 6.5, top === 'jacket' ? shadeCol(st.shirt || '#e8e4dc', 0.85) : coat2); }
+      if (top === 'jacket') { // open jacket over a shirt and tie
+        PF(c, [tl, shY, cx - 2, shY, cx - 1, waY + 2, tl - (hv ? 1 : 0), waY + 2], coat); PF(c, [cx + 2, shY, tr, shY, tr + (hv ? 1 : 0), waY + 2, cx + 3, waY + 2], coat2);
+        L(c, cx - 2, shY, cx, shY + 6, shadeCol(coat, 1.25)); L(c, cx + 2, shY, cx + 1, shY + 6, shadeCol(coat2, 1.25));
+        if (st.tie) { PF(c, [cx - 1, shY + 1, cx + 1, shY + 1, cx + 2, waY - 4, cx, waY - 2, cx - 2, waY - 4], st.tie); R(c, cx - 1, shY + 1, 3, 2, shadeCol(st.tie, 0.75)); }
+      } else {
+        PF(c, [cx + 2, shY, tr, shY, tr + (hv ? 1 : 0), waY + 1, cx + 2, waY + 1], coat2);
+        if (st.plaid) { for (let y = shY + 2; y < waY; y += 4) R(c, tl, y, bw * 2, 1, shadeCol(coat, 0.6)); for (let x = tl + 2; x < tr; x += 4) R(c, x, shY, 1, waY - shY, shadeCol(coat, 0.75)); }
+        if (top === 'shirt' || top === 'uniform') { PF(c, [cx - 4, shY, cx, shY + 4, cx + 4, shY, cx + 4, shY - 1, cx - 4, shY - 1], top === 'uniform' ? coat2 : shadeCol(coat, 1.3)); for (let y = shY + 5; y < waY - 1; y += 4) P(c, cx, y, shadeCol(coat, 1.45)); }
+        if (top === 'sweater') { R(c, cx - 3, shY, 7, 2, shadeCol(coat, 0.7)); for (let y = shY + 3; y < waY; y += 3) R(c, tl + 1, y, bw * 2 - 2, 1, shadeCol(coat, 0.88)); R(c, tl, waY - 1, bw * 2, 2, shadeCol(coat, 0.7)); }
+        if (top === 'tee') R(c, cx - 2, shY, 5, 2, sk);
+        if (top === 'uniform') { R(c, cx - 5, shY + 4, 3, 3, shadeCol(coat, 0.7)); P(c, cx + 3, shY + 4, '#f0d060'); R(c, cx + 3, shY + 5, 2, 2, '#d8b040'); P(c, cx - 5, shY + 1, '#d8b040'); }
+      }
+      if (st.badge && top !== 'uniform') P(c, cx + 3, shY + 4, '#f0d060');
+      if (top !== 'dress') { R(c, tl - (hv ? 1 : 0), waY, bw * 2 + (hv ? 2 : 0), 2, top === 'uniform' ? '#1c1c1c' : '#3c2c1c'); R(c, cx - 1, waY, 3, 2, '#c8b060'); if (top === 'uniform') R(c, tr - 2, waY + 1, 3, 6, '#1c1c1c'); }
+    }
+    // arms: back arm hangs, front arm per pose
+    const sleeve = top === 'tee' ? sk : coat, sleeve2 = top === 'tee' ? sk2 : coat2, aw = kid ? 2 : 3;
+    L(c, tl + 1, shY + 1, tl - 1 - sw * 0.5, waY - 1, sleeve, aw); E(c, tl - 1 - sw * 0.5, waY, 1.6, 1.6, sk2);
+    const sx0 = tr - 1, sy0 = shY + 1, A = { up: [tr + 3, shY - 12], fwd: [tr + 8, shY + 7], stab: [tr + 4, shY - 13], dig: [tr + 5, waY + 4], wave: [tr + 5, shY - 9], point: [tr + 10, shY + 2], hold: [tr + 5, shY + 9] }[arm] || [tr + 1 + sw * 0.5, waY];
+    if (arm === 'wave' || arm === 'up' || arm === 'stab') { L(c, sx0, sy0, tr + 4, shY - 3, sleeve2, aw); L(c, tr + 4, shY - 3, A[0], A[1], sleeve2, aw); }
+    else L(c, sx0, sy0, A[0], A[1], sleeve2, aw);
+    E(c, A[0], A[1], 1.8, 1.8, sk); P(c, A[0] - 1, A[1] - 1, shadeCol(sk, 1.1));
+    const [hx2, hy2] = A;
+    if (wp === 'bottle') { R(c, hx2 - 1, hy2 - 7, 3, 7, '#2c5c2c'); R(c, hx2, hy2 - 9, 1, 2, '#2c5c2c'); P(c, hx2 - 1, hy2 - 6, '#5c9c5c'); }
+    if (wp === 'knife') { if (arm === 'stab' || arm === 'up') { R(c, hx2 - 1, hy2, 2, 3, '#3c2418'); L(c, hx2, hy2 - 1, hx2, hy2 - 8, '#e8ecf4', 2); P(c, hx2 + 1, hy2 - 7, '#ffffff'); } else { R(c, hx2 - 2, hy2 - 1, 3, 2, '#3c2418'); L(c, hx2 + 1, hy2 - 1, hx2 + 7, hy2 - 2, '#e8ecf4', 2); P(c, hx2 + 6, hy2 - 2, '#ffffff'); } }
+    if (wp === 'shovel') { L(c, hx2 - 8, hy2 - 14, hx2 + 2, hy2 + 10, '#7c5c3c', 2); PF(c, [hx2, hy2 + 9, hx2 + 6, hy2 + 9, hx2 + 5, hy2 + 15, hx2 + 1, hy2 + 15], '#9c9ca4'); }
+    if (wp === 'flash') { R(c, hx2 - 1, hy2 - 2, 6, 3, '#2c2c34'); R(c, hx2 + 5, hy2 - 3, 2, 5, '#f8f0c0'); }
+    // head
+    R(c, cx - 2, hy + hr - 1, 5, 4, sk2);
+    if (hv) E(c, cx, hy + hr - 1, hr - 1, 2.5, sk2); // double chin
+    const hw = hr + (hv ? 1.5 : 0); E(c, cx, hy, hw, hr + 1, sk3); E(c, cx - 0.4, hy - 0.3, hw - 0.4, hr + 0.5, sk); E(c, cx + hw - 2, hy + 1, 1.5, hr - 1, sk2); if (hv) E(c, cx, hy + 4, hw - 1, 2.5, sk);
+    P(c, cx + hr, hy + 1, sk2); // ear
+    const hc = st.hair || '#3c2818', hc2 = shadeCol(hc, 1.35), hs = st.hairStyle || 'short';
+    if (hs !== 'bald') {
+      PF(c, [cx - hr, hy, cx - hr, hy - 4, cx - 2, hy - hr - 1, cx + 4, hy - hr - 1, cx + hr, hy - 4, cx + hr, hy - 1, cx + 3, hy - 4, cx - 3, hy - 3], hc);
+      if (hs === 'long') { R(c, cx - hr - 1, hy - 3, 3, hr + 7, hc); R(c, cx + hr - 2, hy - 2, 3, hr + 6, hc); }
+      if (hs === 'curly') for (let i = 0; i < 6; i++) E(c, cx - hr + 1 + i * 2.2, hy - hr + (i & 1), 2, 2, i & 1 ? hc2 : hc);
+      if (hs === 'side') L(c, cx - 3, hy - hr, cx + 4, hy - 3, hc2);
+      L(c, cx - 2, hy - hr, cx + 2, hy - hr, hc2);
+    } else { L(c, cx - hr + 1, hy - 1, cx - hr + 1, hy + 2, hc); }
+    if (st.hat === 'police') { R(c, cx - hr - 1, hy - hr - 2, hr * 2 + 2, 5, st.hatCol || '#1c2c4c'); R(c, cx - hr + 1, hy - hr + 3, hr * 2 + 2, 2, '#141414'); P(c, cx, hy - hr, '#f0d060'); R(c, cx - hr - 1, hy - hr - 2, hr * 2 + 2, 1, shadeCol(st.hatCol || '#1c2c4c', 1.4)); }
+    if (st.hat === 'fedora') { R(c, cx - hr - 3, hy - 4, hr * 2 + 6, 2, st.hatCol || '#3c3428'); PF(c, [cx - hr + 1, hy - 4, cx - hr + 2, hy - hr - 4, cx + hr - 2, hy - hr - 4, cx + hr - 1, hy - 4], st.hatCol || '#3c3428'); R(c, cx - hr + 1, hy - 6, hr * 2 - 2, 1, '#1c1814'); }
+    if (st.hat === 'cap') { E(c, cx, hy - hr + 1, hr, 3, st.hatCol || '#c82828'); R(c, cx + 1, hy - hr + 2, hr + 3, 2, shadeCol(st.hatCol || '#c82828', 0.7)); }
+    // face
+    const ey = hy;
+    if (bl === 2) { L(c, cx - 3, ey, cx - 2, ey, '#2c1c14'); L(c, cx + 2, ey, cx + 3, ey, '#2c1c14'); }
+    else { R(c, cx - 3, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); R(c, cx + 2, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); if (ex === 'shock') { P(c, cx - 3, ey - 1, '#ffffff'); P(c, cx + 2, ey - 1, '#ffffff'); } }
+    L(c, cx - 4, ey - 3, cx - 2, ey - 3, shadeCol(hc, 0.9)); L(c, cx + 1, ey - 3, cx + 3, ey - 3, shadeCol(hc, 0.9));
+    if (ex === 'sad' || ex === 'shock') { L(c, cx - 4, ey - 3, cx - 1, ey - 4, '#3c2c1c'); L(c, cx + 1, ey - 4, cx + 4, ey - 3, '#3c2c1c'); }
+    if (st.glasses) { R(c, cx - 5, ey - 2, 5, 4, '#1c1c1c'); R(c, cx + 1, ey - 2, 5, 4, '#1c1c1c'); R(c, cx - 4, ey - 1, 3, 2, '#a8c0d0'); R(c, cx + 2, ey - 1, 3, 2, '#a8c0d0'); }
+    P(c, cx + 1, ey + 2, sk3); // nose
+    if (st.moustache) R(c, cx - 2, ey + 3, 6, 2, shadeCol(hc, 0.9));
+    if (ex === 'shock') E(c, cx, ey + 5, 1.5, 1.6, '#5c1c1c');
+    else if (ex === 'smile') { L(c, cx - 2, ey + 4, cx, ey + 5, '#8c4c3c'); L(c, cx, ey + 5, cx + 2, ey + 4, '#8c4c3c'); }
+    else R(c, cx - 1, ey + 4 + (st.moustache ? 1 : 0), 3, 1, '#8c4c3c');
+    if (kid || st.top === 'dress') { P(c, cx - 4, ey + 2, '#e8a090'); P(c, cx + 4, ey + 2, '#e8a090'); }
+  });
+}
+
 /* soft round glow with real alpha (no dither dots) */
 function glow(c, x, y, rx, ry, col, a = 0.3) {
   if (a <= 0 || rx <= 0 || ry <= 0) return; const [r, g, b] = hex(col);
@@ -1311,7 +1400,7 @@ const PORTRAITS = {
 function winterSky(c, t, mood = 'day', ox = 0) {
   const sky = mood === 'night' ? ['#04060e', '#0a1226', '#16223c'] : mood === 'dusk' ? ['#2c2a4c', '#6c4c64', '#c8806c'] : ['#8ca8c8', '#b8cce0', '#e0e8f0'];
   VG(c, 0, 0, W, 120, sky);
-  if (mood === 'night') { for (let i = 0; i < 40; i++) P(c, hash(i * 13) * W, hash(i * 7 + 3) * 80, (Math.floor(t * 3 + i) % 6) ? '#8c9cbc' : '#e8f0ff'); glow(c, 262, 26, 22, 22, '#dce8ff', 0.35); E(c, 262, 26, 7, 7, '#f0f4ff'); }
+  if (mood === 'night') { for (let i = 0; i < 40; i++) P(c, hash(i * 13) * W, hash(i * 7 + 3) * 80, (Math.floor(t * 3 + i) % 6) ? '#8c9cbc' : '#e8f0ff'); const my = skyY(26); glow(c, 262, my, 22, 22, '#dce8ff', 0.35); E(c, 262, my, 7, 7, '#f0f4ff'); }
   const far = mood === 'night' ? ['#1c2638', '#2c3a50'] : mood === 'dusk' ? ['#4c3c5c', '#6c5c74'] : ['#8c9cb4', '#c8d4e4'];
   for (let i = 0; i < 9; i++) { const x = mod(i * 58 - ox * 0.1, 470) - 60, h = 34 + (i * 19 % 26); PF(c, [x - 60, 112, x, 112 - h, x + 60, 112], far[0]); PF(c, [x - 10, 112 - h + 8, x, 112 - h, x + 12, 112 - h + 10], far[1]); }
 }
@@ -1456,12 +1545,12 @@ const KE = {
     else { PF(c, [40, 140, 96, 128, 104, 140, 48, 148], '#8c7c64'); }
     if (!hit) for (let i = 0; i < 6; i++) pioneer(c, PIONEER[i % 4], 30 + i * 22 + (i > 2 ? 150 : 0), 148, 1.3, { pose: 'kneel', expr: 'sad', k: 'n' });
     else {
-      for (let i = 0; i < 4; i++) { const x = 30 + i * 70; R(c, 0, 22, W, 6, '#1c140c'); blit(c, robeFig(PIONEER[i], { arm: 'up', expr: 'shock', k: 'beam' }), x, 60, FIG_AX2, FIG_AY2, { s: 0.85 }); R(c, 0, 58, W, 5, '#1c140c'); }
+      for (let i = 0; i < 4; i++) { const x = 30 + i * 70; R(c, 0, 34, W, 6, '#1c140c'); blit(c, robeFig(PIONEER[i], { arm: 'up', expr: 'shock', k: 'beam' }), x, 74, FIG_AX2, FIG_AY2, { s: 0.85 }); R(c, 0, 72, W, 5, '#1c140c'); }
       blit(c, bearSpr('lunge', 0, { eyes: true }), 230, 146, 42, 55, { s: 1.4, flip: true });
       for (let i = 0; i < 12; i++) R(c, 230 + Math.cos(i) * 40 * k, 70 + Math.sin(i * 2) * 30 * k + k * k * 60, 4, 3, '#5c4c3c');
     }
     capPlate(c, t, 0.4, ['12月10日 夜']);
-    return { z: hit ? 1.12 : 1.04, fx: hit ? 200 : 160, fy: 104, sx: hit && t < S.tBurst + 0.5 ? Math.round(Math.sin(t * 60) * 3) : 0 };
+    return { z: hit ? 1.0 : 1.04, fx: 160, fy: hit ? 120 : 104, sx: hit && t < S.tBurst + 0.5 ? Math.round(Math.sin(t * 60) * 3) : 0 };
   }
 };
 /* ---- KF: the Myokei house — the window bursts; darkness ---- */
@@ -1808,13 +1897,16 @@ function composeFrame(mode, T) {
   if (!FRAME[mode]) FRAME[mode] = mk(wide ? 640 : 360, wide ? 360 : 640);
   const [fc, f] = FRAME[mode], t = Math.max(0, T); f.imageSmoothingEnabled = false;
   window.__uiCollect = []; window.__wide = wide;
+  // the wide frame shows scene rows dy..dy+180; sky objects (moon) use skyY() so they stay inside the visible top
+  const S0 = wide && T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, wd0 = S0 ? S0.sc.wideDY : null;
+  window.__dy = !wide ? 0 : wd0 == null ? WIDE_DY : Math.round(typeof wd0 === 'function' ? wd0(T - S0.start, S0) : wd0);
   if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); } else render(T, true);
-  const ui = window.__uiCollect || []; window.__uiCollect = null; window.__wide = false;
+  const ui = window.__uiCollect || []; window.__uiCollect = null; window.__wide = false; window.__dy = 0;
   const st = T >= 0 ? subtitleState(T) : null;
   if (wide) {
     // the scene is shifted up a little so that what stands on the ground stays above the dialog window;
     // captions and year cards are drawn again at their usual place (top) so the shift never cuts them
-    const S = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, dy = S && S.sc.wideDY != null ? S.sc.wideDY : WIDE_DY;
+    const S = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, wd = S ? S.sc.wideDY : null, dy = wd == null ? WIDE_DY : Math.round(typeof wd === 'function' ? wd(T - S.start, S) : wd); // wideDY may change within a scene: (t, S) => dy
     f.drawImage(cv, 0, dy, W, 180, 0, 0, 640, 360);
     f.save(); f.scale(2, 2);
     for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], u[4]); else if (u[0] === 'big') bigCap(f, u[1], u[2], u[3], u[4], u[5]); else yearCard(f, u[3], u[4], u[1], u[2]); }
@@ -2109,7 +2201,10 @@ KP.sfx = (S, ev) => { ev(S.tCand, 'toll'); ev(S.tEnd, 'end'); };
 SS2.sfx = (S, ev) => { ev(0.3, 'sting'); ev(2, 'thunder'); };
 KP.bgmTrack = (S, tr) => { tr.fin = 3; };
 KP.ending = true;
-KK.wideDY = 8; KF.wideDY = 20;
+KK.wideDY = 8; KF.wideDY = 36;
+// people standing or sitting on the ground (y 150-165) must stay above the dialog window
+KB.wideDY = 40; KC.wideDY = 40; KE.wideDY = (t, S) => (t > S.tBurst && t < S.tOut ? 6 : 40); // people fleeing up onto the beams (top) after the bear bursts in
+ KH.wideDY = 44; KI.wideDY = 44;
 function TITLE_DECO(c, t) { for (let i = 0; i < 5; i++) fir(c, 230 + i * 18, 228, 40 + (i % 2) * 10, 'night', Math.sin(t + i)); snowfall(c, t, 20, 51, 3, 8, '#c8d0e0'); }
 
 /* ================= timeline, dialog UI, transitions, main loop ================= */

@@ -61,7 +61,7 @@ function thumbBigFace(c, o, t = 0) {
 }
 
 /* ---- vertical thumbnail for Shorts: 180x320 (x6 = 1080x1920) built from the same options as the big-face thumbnail ---- */
-const TTW = 180, TTH = 320;
+const TTW = 180, TTH = 320, TT_SAFE = 34;
 function drawThumbTall(t = 0) {
   window.__thumbOpt = null; drawThumb(t); const o = window.__thumbOpt;
   const [tc, c] = mk(TTW, TTH);
@@ -69,18 +69,19 @@ function drawThumbTall(t = 0) {
   const bg = o.bg || ['#050203', '#3c060a'];
   let g = c.createLinearGradient(0, 0, 0, TTH); g.addColorStop(0, bg[0]); g.addColorStop(1, bg[1]); c.fillStyle = g; c.fillRect(0, 0, TTW, TTH);
   // the face, big, in the lower half
-  const f = o.face, s = 3.4, fw = f.width * s, fh = f.height * s, fx = TTW / 2, fy = TTH - fh / 2 + 4;
+    // TV / some apps crop a vertical thumbnail to about 2:3: keep everything inside the band TT_SAFE..TTH-TT_SAFE
+  const f = o.face, s = 3.0, fw = f.width * s, fh = f.height * s, fx = TTW / 2, fy = TTH - TT_SAFE - fh / 2 + 6;
   g = c.createRadialGradient(fx, fy - fh * 0.1, fw * 0.12, fx, fy - fh * 0.1, fw * 0.62); g.addColorStop(0, o.rim || '#e02020'); g.addColorStop(1, 'rgba(0,0,0,0)');
   c.save(); c.globalAlpha = o.rimA || 0.55; c.fillStyle = g; c.fillRect(0, 0, TTW, TTH); c.restore();
   blit(c, f, fx, fy, f.width / 2, f.height / 2, { s });
   for (const [ex, ey] of (o.eyes || [])) { const gx = fx - fw / 2 + ex * s, gy = fy - fh / 2 + ey * s; g = c.createRadialGradient(gx, gy, 0, gx, gy, s * 3); g.addColorStop(0, 'rgba(255,60,60,0.8)'); g.addColorStop(1, 'rgba(255,0,0,0)'); c.fillStyle = g; c.fillRect(gx - s * 3, gy - s * 3, s * 6, s * 6); }
   // darken the top so the words stand out
-  g = c.createLinearGradient(0, 0, 0, 170); g.addColorStop(0, 'rgba(0,0,0,0.75)'); g.addColorStop(0.7, 'rgba(0,0,0,0.4)'); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0, 0, TTW, 170);
+  g = c.createLinearGradient(0, 0, 0, 190); g.addColorStop(0, 'rgba(0,0,0,0.75)'); g.addColorStop(0.7, 'rgba(0,0,0,0.4)'); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0, 0, TTW, 190);
   // title, centred, each line as big as fits
-  const tl = o.title || [WORK.title]; let y = 14;
-  tl.forEach(line => { const sz = thumbFit(line, 164, 48); thumbText(c, line, TTW / 2 - thumbW(line, sz) / 2, y, sz, o.tcol || C.white, '#000000', 3, '#5c0c10'); y += sz + 8; });
+  const tl = o.title || [WORK.title]; let y = TT_SAFE + 4;
+  tl.forEach(line => { const sz = thumbFit(line, 164, 42); thumbText(c, line, TTW / 2 - thumbW(line, sz) / 2, y, sz, o.tcol || C.white, '#000000', 3, '#5c0c10'); y += sz + 6; });
   if (o.hook) { const sz = thumbFit(o.hook, 160, 24), hw = thumbW(o.hook, sz), hx = TTW / 2 - hw / 2 - 5; R(c, hx, y + 2, hw + 10, sz + 8, o.hbg || '#b01010'); thumbText(c, o.hook, hx + 5, y + 6, sz, o.hcol || '#ffffff', '#000000', 2); }
   const lbl = SERIES[WORK.series].name + '#' + WORK.no, lw = thumbW(lbl, 16);
-  R(c, TTW - lw - 12, TTH - 22, lw + 10, 20, 'rgba(0,0,0,0.6)'); TX(c, lbl, TTW - lw - 7, TTH - 20, BR.cream, 16, null);
+  R(c, TTW - lw - 12, TTH - TT_SAFE - 22, lw + 10, 20, 'rgba(0,0,0,0.6)'); TX(c, lbl, TTW - lw - 7, TTH - TT_SAFE - 20, BR.cream, 16, null);
   return tc;
 }

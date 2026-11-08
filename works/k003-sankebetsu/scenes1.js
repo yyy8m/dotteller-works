@@ -87,7 +87,7 @@ const PORTRAITS = {
 function winterSky(c, t, mood = 'day', ox = 0) {
   const sky = mood === 'night' ? ['#04060e', '#0a1226', '#16223c'] : mood === 'dusk' ? ['#2c2a4c', '#6c4c64', '#c8806c'] : ['#8ca8c8', '#b8cce0', '#e0e8f0'];
   VG(c, 0, 0, W, 120, sky);
-  if (mood === 'night') { for (let i = 0; i < 40; i++) P(c, hash(i * 13) * W, hash(i * 7 + 3) * 80, (Math.floor(t * 3 + i) % 6) ? '#8c9cbc' : '#e8f0ff'); glow(c, 262, 26, 22, 22, '#dce8ff', 0.35); E(c, 262, 26, 7, 7, '#f0f4ff'); }
+  if (mood === 'night') { for (let i = 0; i < 40; i++) P(c, hash(i * 13) * W, hash(i * 7 + 3) * 80, (Math.floor(t * 3 + i) % 6) ? '#8c9cbc' : '#e8f0ff'); const my = skyY(26); glow(c, 262, my, 22, 22, '#dce8ff', 0.35); E(c, 262, my, 7, 7, '#f0f4ff'); }
   const far = mood === 'night' ? ['#1c2638', '#2c3a50'] : mood === 'dusk' ? ['#4c3c5c', '#6c5c74'] : ['#8c9cb4', '#c8d4e4'];
   for (let i = 0; i < 9; i++) { const x = mod(i * 58 - ox * 0.1, 470) - 60, h = 34 + (i * 19 % 26); PF(c, [x - 60, 112, x, 112 - h, x + 60, 112], far[0]); PF(c, [x - 10, 112 - h + 8, x, 112 - h, x + 12, 112 - h + 10], far[1]); }
 }

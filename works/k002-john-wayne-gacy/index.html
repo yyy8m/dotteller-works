@@ -835,7 +835,9 @@ function nightSky(c, t, h = 140, cols = [K.night0, K.night1, K.night2, K.night3]
   VG(c, 0, 0, W, h, cols);
   for (let i = 0; i < 46; i++) { const x = hash(i * 13) * W, y = hash(i * 7 + 3) * h * 0.7, tw = (Math.floor(t * 3 + i * 1.7) % 7) === 0; P(c, x, y, tw ? K.snow2 : (i % 5 ? K.snow3 : K.snow1)); }
 }
-function moon(c, x, y, r, t) { E(c, x, y, r + 6, r + 6, DA(K.snow1, 0.12)); E(c, x, y, r + 2, r + 2, DA(K.snow1, 0.25)); E(c, x, y, r, r, '#e8ecf0'); E(c, x + 2, y - 1, r * 0.3, r * 0.25, '#c8d0dc'); E(c, x - r * 0.4, y + r * 0.3, r * 0.2, r * 0.18, '#d0d6e0'); }
+/* y of a sky object: pushed down by the wide frame's top crop so it is never cut */
+function skyY(y) { return y + (window.__dy || 0); }
+function moon(c, x, y, r, t) { y = skyY(y); E(c, x, y, r + 6, r + 6, DA(K.snow1, 0.12)); E(c, x, y, r + 2, r + 2, DA(K.snow1, 0.25)); E(c, x, y, r, r, '#e8ecf0'); E(c, x + 2, y - 1, r * 0.3, r * 0.25, '#c8d0dc'); E(c, x - r * 0.4, y + r * 0.3, r * 0.2, r * 0.18, '#d0d6e0'); }
 function snowfall(c, t, n = 60, seed = 1, wind = 8, sp = 18, col = K.snow0) {
   for (let i = 0; i < n; i++) {
     const v = sp * (0.6 + hash(seed + i * 3) * 0.8), y = mod(hash(seed + i) * 260 + t * v, 260) - 10;
@@ -1924,13 +1926,16 @@ function composeFrame(mode, T) {
   if (!FRAME[mode]) FRAME[mode] = mk(wide ? 640 : 360, wide ? 360 : 640);
   const [fc, f] = FRAME[mode], t = Math.max(0, T); f.imageSmoothingEnabled = false;
   window.__uiCollect = []; window.__wide = wide;
+  // the wide frame shows scene rows dy..dy+180; sky objects (moon) use skyY() so they stay inside the visible top
+  const S0 = wide && T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, wd0 = S0 ? S0.sc.wideDY : null;
+  window.__dy = !wide ? 0 : wd0 == null ? WIDE_DY : Math.round(typeof wd0 === 'function' ? wd0(T - S0.start, S0) : wd0);
   if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); } else render(T, true);
-  const ui = window.__uiCollect || []; window.__uiCollect = null; window.__wide = false;
+  const ui = window.__uiCollect || []; window.__uiCollect = null; window.__wide = false; window.__dy = 0;
   const st = T >= 0 ? subtitleState(T) : null;
   if (wide) {
     // the scene is shifted up a little so that what stands on the ground stays above the dialog window;
     // captions and year cards are drawn again at their usual place (top) so the shift never cuts them
-    const S = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, dy = S && S.sc.wideDY != null ? S.sc.wideDY : WIDE_DY;
+    const S = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, wd = S ? S.sc.wideDY : null, dy = wd == null ? WIDE_DY : Math.round(typeof wd === 'function' ? wd(T - S.start, S) : wd); // wideDY may change within a scene: (t, S) => dy
     f.drawImage(cv, 0, dy, W, 180, 0, 0, 640, 360);
     f.save(); f.scale(2, 2);
     for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], u[4]); else if (u[0] === 'big') bigCap(f, u[1], u[2], u[3], u[4], u[5]); else yearCard(f, u[3], u[4], u[1], u[2]); }
@@ -2231,7 +2236,11 @@ function TITLE_DECO(c, t) {
 }
 const HOOK = ['子どもの人気者のピエロ', '家の床下には――'];
 /* widescreen: how far the picture is shifted up above the dialog window (default 24) */
-GA.wideDY = 0; GG.wideDY = 0;
+// the crawl space (y 102-158) must stay above the dialog window: pan the wide frame down when it is shown
+GA.wideDY = (t, S) => lerp(0, 56, ss(sg(t, S.tDown, S.tDown + 2.2)));
+GG.wideDY = (t, S) => (t >= S.tFill && t < S.tRiver ? 56 : 0);
+GF.wideDY = (t, S) => (t >= S.tBury ? 56 : 24);
+GH.wideDY = 56; SS1.wideDY = (t, S) => lerp(0, 56, ss(sg(t, S.tDown, S.tDown + 1.4)));
 GK.tallFit = true;
 
 /* ================= timeline, dialog UI, transitions, main loop ================= */

@@ -1777,13 +1777,16 @@ function composeFrame(mode, T) {
   if (!FRAME[mode]) FRAME[mode] = mk(wide ? 640 : 360, wide ? 360 : 640);
   const [fc, f] = FRAME[mode], t = Math.max(0, T); f.imageSmoothingEnabled = false;
   window.__uiCollect = []; window.__wide = wide;
+  // the wide frame shows scene rows dy..dy+180; sky objects (moon) use skyY() so they stay inside the visible top
+  const S0 = wide && T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, wd0 = S0 ? S0.sc.wideDY : null;
+  window.__dy = !wide ? 0 : wd0 == null ? WIDE_DY : Math.round(typeof wd0 === 'function' ? wd0(T - S0.start, S0) : wd0);
   if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); } else render(T, true);
-  const ui = window.__uiCollect || []; window.__uiCollect = null; window.__wide = false;
+  const ui = window.__uiCollect || []; window.__uiCollect = null; window.__wide = false; window.__dy = 0;
   const st = T >= 0 ? subtitleState(T) : null;
   if (wide) {
     // the scene is shifted up a little so that what stands on the ground stays above the dialog window;
     // captions and year cards are drawn again at their usual place (top) so the shift never cuts them
-    const S = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, dy = S && S.sc.wideDY != null ? S.sc.wideDY : WIDE_DY;
+    const S = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, wd = S ? S.sc.wideDY : null, dy = wd == null ? WIDE_DY : Math.round(typeof wd === 'function' ? wd(T - S.start, S) : wd); // wideDY may change within a scene: (t, S) => dy
     f.drawImage(cv, 0, dy, W, 180, 0, 0, 640, 360);
     f.save(); f.scale(2, 2);
     for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], u[4]); else if (u[0] === 'big') bigCap(f, u[1], u[2], u[3], u[4], u[5]); else yearCard(f, u[3], u[4], u[1], u[2]); }
