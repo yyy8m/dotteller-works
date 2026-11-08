@@ -141,11 +141,20 @@ def theme_inline(content):
             '<style>' + css + '</style>\n')
 
 
-def publish_at(work):
-    """publish.json "publish_at" (e.g. "2026-11-09T19:00:00+09:00") if it is still in the future, else None"""
+SHORT_DELAY_H = 2
+
+
+def publish_at(work, kind='main'):
+    """publish.json "publish_at" (e.g. "2026-11-09T19:00:00+09:00") if it is still in the future, else None.
+    The Short goes out SHORT_DELAY_H hours after the main video (or at "short_publish_at"), so the owner can set
+    its related video to the main video in YouTube Studio before the Short is public."""
     import datetime
-    v = json.load(open(os.path.join(work, 'publish.json'), encoding='utf-8')).get('publish_at')
+    pj = json.load(open(os.path.join(work, 'publish.json'), encoding='utf-8'))
+    v = pj.get('publish_at')
     if not v: return None
+    if kind == 'short':
+        if pj.get('short_publish_at'): v = pj['short_publish_at']
+        else: v = (datetime.datetime.fromisoformat(v) + datetime.timedelta(hours=SHORT_DELAY_H)).isoformat()
     d = datetime.datetime.fromisoformat(v)
     return d if d > datetime.datetime.now(datetime.timezone.utc) else None
 
@@ -193,7 +202,7 @@ def youtube(work, tok):
         path = os.path.join(work, v['video'])
         meta = {'snippet': {'title': v['title'], 'description': fill(v['description'], links(state)), 'tags': v['tags'], 'categoryId': '1', 'defaultLanguage': 'ja', 'defaultAudioLanguage': 'ja'},
                 'status': {'privacyStatus': 'public', 'selfDeclaredMadeForKids': False, 'embeddable': True}}
-        when = publish_at(work)
+        when = publish_at(work, v['kind'])
         if when:  # scheduled: upload as private, YouTube makes it public at publishAt
             import datetime
             meta['status'].update(privacyStatus='private', publishAt=when.astimezone(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))
