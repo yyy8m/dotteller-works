@@ -3,33 +3,32 @@ const EXPR = {};
 ['L0', 'L1', 'L2', 'L4', 'L6', 'L7', 'L8', 'L9', 'L12', 'L16', 'L17', 'L18', 'L19', 'L22', 'L23', 'L24', 'L25', 'L27', 'S1', 'S2'].forEach(id => EXPR[id] = [[0, 'normal']]);
 ['L3', 'L5', 'L10', 'L11', 'L13', 'L14', 'L15', 'L20', 'L21', 'L26'].forEach(id => EXPR[id] = [[0, 'sad']]);
 EXPR.L1 = [[0, 'normal'], [4, 'sad']]; EXPR.L10 = [[0, 'normal'], [3, 'sad']]; EXPR.L19 = [[0, 'normal'], [2, 'surp']];
-['D1', 'D2', 'G1', 'G2', 'P1', 'K1', 'L3c', 'L24b'].forEach(id => EXPR[id] = [[0, 'normal']]); ['L3b', 'L21b'].forEach(id => EXPR[id] = [[0, 'sad']]);
+['D1', 'D2', 'G1', 'G2', 'P0', 'P1', 'K1', 'L3c', 'L24b', 'L11b', 'L19b'].forEach(id => EXPR[id] = [[0, 'normal']]); ['L3b', 'L21b'].forEach(id => EXPR[id] = [[0, 'sad']]);
 const SPEAKERS_EXTRA = { gacy: { name: 'ジョン・ゲイシー', bg: ['#141c2c', '#24304c'] }, pogo: { name: 'ピエロのポゴ', bg: ['#3c1414', '#5c2424'] },
   stanley: { name: '父 スタンリー', bg: ['#2c2014', '#4c3824'] }, kozen: { name: '警部補', bg: ['#1c2030', '#2c3448'] } };
 const PLAN_FULL = [
-  { sc: S0, pre: 1.0, items: ['L0'], tr: 'fromBlack', td: 1.0 },
-  { sc: GA, pre: 0.8, items: ['L1'], tr: 'dither', td: 1.0 },
+  { sc: GA, pre: 0.6, items: ['P0', 0.6, 'L1'], tr: 'fromBlack', td: 1.0 },
+  { sc: S0, pre: 0.8, items: ['L0'], tr: 'white', td: 1.0 },
   { sc: GB, pre: 1.0, items: ['L2', 0.3, 'D1', 0.5, 'L3', 0.4, 'L3b', 0.2, 'D2', 0.6, 'L3c', 0.3, 'G1'], tr: 'dither', td: 1.2 },
   { sc: GC, pre: 0.8, items: ['L4', 0.6, 'L5'], tr: 'dither', td: 1.0 },
   { sc: GD, pre: 0.8, items: ['L6', 0.5, 'L7'], tr: 'dither', td: 1.2 },
   { sc: GE, pre: 0.8, items: ['L8', 0.3, 'P1', 0.5, 'L9'], tr: 'blinds', td: 1.0 },
-  { sc: GF, pre: 1.2, items: ['L10', 0.6, 'L11'], tr: 'white', td: 1.0 },
+  { sc: GF, pre: 1.2, items: ['L10', 0.6, 'L11', 1.2, 'L11b'], tr: 'white', td: 1.0 },
   { sc: GG, pre: 0.8, items: ['L12', 0.5, 'L13', 0.6, 'L14'], tr: 'dither', td: 1.0 },
   { sc: GH, pre: 0.6, items: ['L15'], tr: 'dither', td: 1.0 },
   { sc: GI, pre: 1.0, items: ['L16', 0.5, 'L17', 0.3, 'K1'], tr: 'dither', td: 1.2 },
   { sc: GJ, pre: 0.6, items: ['L18'], tr: 'blinds', td: 0.8 },
   { sc: GX, pre: 0, items: [], tr: 'dither', td: 0.3 },
-  { sc: GK, pre: 0.8, items: ['L19', 0.6, 'L20', 0.6, 'L21'], tr: 'white', td: 1.0 },
+  { sc: GK, pre: 0.8, items: ['L19', 1.0, 'L19b', 0.8, 'L20', 1.0, 'L21'], tr: 'white', td: 1.0 },
   { sc: GL, pre: 0.8, items: ['L21b', 0.3, 'G2', 0.8, 'L22', 0.5, 'L23'], tr: 'dither', td: 1.2 },
-  { sc: GM, pre: 1.0, items: ['L24', 0.5, 'L24b'], tr: 'dither', td: 1.0 },
-  { sc: GN, pre: 1.2, items: ['L25', 0.8, 'L26', 1.0, 'L27'], tr: 'iris', td: 1.4 },
+  { sc: GM, pre: 1.0, items: ['L24', 1.0, 'L24b'], tr: 'dither', td: 1.0 },
+  { sc: GN, pre: 1.2, items: ['L25', 1.2, 'L26', 1.2, 'L27'], tr: 'iris', td: 1.4 },
 ];
 const PLAN_SHORT = [
-  { sc: SS1, pre: 0.4, items: ['S1'], tr: 'fromBlack', td: 0.4 },
-  { sc: GE, pre: 0.3, items: ['P1'], tr: 'white', td: 0.5 },
-  { sc: GG, pre: 0.3, items: ['L13'], tr: 'blinds', td: 0.6 },
-  { sc: GK, pre: 0.3, items: ['L19', 0.3, 'L20'], tr: 'white', td: 0.6 },
-  { sc: SS2, pre: 0.4, items: ['S2'], tr: 'dither', td: 0.6 },
+  { sc: SS1, pre: 0.3, items: ['S1'], tr: 'fromBlack', td: 0.3 },
+  { sc: GI, pre: 0.3, items: ['L17', 0.2, 'K1'], tr: 'dither', td: 0.4 },
+  { sc: GK, pre: 0.3, items: ['L20'], tr: 'white', td: 0.5 },
+  { sc: SS2, pre: 0.3, items: ['S2'], tr: 'dither', td: 0.5 },
 ];
 const PLAN = SHORT ? PLAN_SHORT : PLAN_FULL;
 GA.sfx = (S, ev) => { ev(S.tDown, 'sting'); ev(S.tDown + 1.4, 'heart'); };
