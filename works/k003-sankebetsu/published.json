@@ -1,6 +1,13 @@
 {
- "youtube_main": "https://youtu.be/5Je3R8tiAHM",
- "youtube_short": "https://youtu.be/i4S2_L5I-j4",
  "blog_post_id": "7909670215812076358",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-003-sankebetsu.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-003-sankebetsu.html",
+ "replaced": [
+  {
+   "youtube_main": "https://youtu.be/5Je3R8tiAHM",
+   "youtube_short": "https://youtu.be/i4S2_L5I-j4",
+   "note": "脚本・演出の書き直し前の版（2026-11-08 コールドオープン版に差し替え・削除）"
+  }
+ ],
+ "youtube_main": "https://youtu.be/6MYucEiPLOw",
+ "youtube_short": "https://youtu.be/u50rERlC7lU"
 }

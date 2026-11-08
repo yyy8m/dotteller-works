@@ -1,6 +1,13 @@
 {
- "youtube_main": "https://youtu.be/LmwmQRu8GKc",
- "youtube_short": "https://youtu.be/PR8yX6bvGMU",
  "blog_post_id": "4890238480137618431",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-004-jack-ripper.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-004-jack-ripper.html",
+ "replaced": [
+  {
+   "youtube_main": "https://youtu.be/LmwmQRu8GKc",
+   "youtube_short": "https://youtu.be/PR8yX6bvGMU",
+   "note": "脚本・演出の書き直し前の版（2026-11-08 コールドオープン版に差し替え・削除）"
+  }
+ ],
+ "youtube_main": "https://youtu.be/Lmagso5hvmc",
+ "youtube_short": "https://youtu.be/9pCPcdwDgLg"
 }
