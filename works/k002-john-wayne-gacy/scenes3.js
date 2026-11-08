@@ -24,8 +24,8 @@ const GI = {
     for (const wx of [72, 186]) { R(c, wx, 84, 62, 44, K.win0); for (let s = 0; s < 3; s++) R(c, wx + 4, 92 + s * 12, 54, 2, '#c8a860'); }
     R(c, 146, 86, 28, 54, '#3c2c24'); R(c, 149, 89, 22, 30, K.win1);
     snowGround(c, 140, 0, 100);
-    if (t > S.tGacy) { nightSky(c, t, 130, [K.night0, K.night1, K.night2]); snowGround(c, 136, 0, 104); ranchHouse(c, 110, 140, t, { snow: true, lit: true, wall: '#8c8070', wall2: '#7c7064', roof: '#3c3430' }); blit(c, personSpr(COP, { f: -1, id: 'cv', shock: t > S.tGacy + 1.5 }), 160, 146, PER_AX, PER_AY, { s: 1.3 }); for (let k = 0; k < 8; k++) { const u = fr(t * 0.4 + k / 8), x = 120 + k * 12 + Math.sin(t + k) * 4; PL(c, [x, 120 - u * 50, x + 3, 114 - u * 50, x - 2, 108 - u * 50], DA('#a8b46c', 0.6 * (1 - u))); } capPlate(c, t, S.tGacy + 0.3, ['ゲイシーの家']); snowfall(c, t, 50, 33, 8, 12); return { z: 1.05, fx: 160, fy: 110 }; }
-    if (t > S.tOut) { const u = t - S.tOut, x = 160 + u * 18, a = 1 - sg(t, S.tGone + 1.5, S.tGone + 3); for (let i = 0; i < u * 3 && i < 30; i++) R(c, 162 + i * 6, 150 + (i & 1) * 2, 3, 1, K.snow3); if (a > 0) c.drawImage(ditherFade(personSpr(BOY, { f: Math.floor(t * 7) & 3 }), a, 'boyf'), Math.round(x - PER_AX - 1), Math.round(152 - PER_AY - 1)); }
+    if (t > S.tGacy) { nightSky(c, t, 130, [K.night0, K.night1, K.night2]); snowGround(c, 136, 0, 104); ranchHouse(c, 110, 140, t, { snow: true, lit: true, wall: '#8c8070', wall2: '#7c7064', roof: '#3c3430' }); blit(c, gFig(COP2, { f: -1, id: 'cv', shock: t > S.tGacy + 1.5 }), 160, 146, FIG_AX2, FIG_AY2); for (let k = 0; k < 8; k++) { const u = fr(t * 0.4 + k / 8), x = 120 + k * 12 + Math.sin(t + k) * 4; PL(c, [x, 120 - u * 50, x + 3, 114 - u * 50, x - 2, 108 - u * 50], DA('#a8b46c', 0.6 * (1 - u))); } capPlate(c, t, S.tGacy + 0.3, ['ゲイシーの家']); snowfall(c, t, 50, 33, 8, 12); return { z: 1.05, fx: 160, fy: 110 }; }
+    if (t > S.tOut) { const u = t - S.tOut, x = 160 + u * 18, a = 1 - sg(t, S.tGone + 1.5, S.tGone + 3); for (let i = 0; i < u * 3 && i < 30; i++) R(c, 162 + i * 6, 150 + (i & 1) * 2, 3, 1, K.snow3); if (a > 0) c.drawImage(ditherFade(gFig(BOY, { f: Math.floor(t * 7) & 3 }), a, 'boyf'), Math.round(x - FIG_AX2 - 1), Math.round(152 - FIG_AY2 - 1)); }
     snowfall(c, t, 60, 31, 10, 14);
     capPlate(c, t, 0.5, ['1978年12月', 'イリノイ州 デス・プレーンズ']);
     return { z: 1 + 0.06 * ss(t / S.dur), fx: 190, fy: 110 };
@@ -43,7 +43,7 @@ const GJ = {
       return { z: 1.04, fx: 160, fy: 120, sy: Math.round(Math.sin(t * 25)) };
     }
     R(c, 0, 0, W, H, '#1c1814'); roomBg(c, { wall: '#4c4038', wall2: '#443830', floor: '#2c241c', fy: 150, lamp: [160, 20] });
-    R(c, 100, 120, 120, 8, '#5c3c28'); blit(c, personSpr(GACY, { f: -1, id: 'gcf' }), 136, 150, PER_AX, PER_AY, { s: 1.4 }); blit(c, personSpr(DET, { f: -1, id: 'lw' }), 190, 150, PER_AX, PER_AY, { s: 1.4, flip: true });
+    R(c, 100, 120, 120, 8, '#5c3c28'); blit(c, gFig(GACY, { f: -1, id: 'gcf' }), 136, 150, FIG_AX2, FIG_AY2); blit(c, gFig(DET2, { f: -1, id: 'lw' }), 190, 150, FIG_AX2, FIG_AY2, { s: 1, flip: true });
     for (let i = 0; i < 3; i++) { const u = fr(t * 0.3 + i / 3); E(c, 150 + u * 10, 90 - u * 40, 3 + u * 6, 2 + u * 3, DA('#c8c8c8', 0.5 * (1 - u))); } // cigarette smoke
     return { z: 1.06, fx: 160, fy: 110 };
   }
@@ -56,7 +56,7 @@ const GK = {
     if (t < S.tCount) {
       const n = Math.round(lerp(0, 29, sg(t, 1, S.tCount)));
       crossSection(c, t, n, { lit: true, blood: true });
-      for (let i = 0; i < 3; i++) { const x = 60 + i * 90 + Math.sin(t + i) * 8; blit(c, personSpr(COP, { f: -1, weapon: 'shovel', arm: (Math.floor(t * 2 + i) & 1) ? 'dig' : 'fwd', id: 'cd' + i + ((Math.floor(t * 2 + i) & 1)) }), x, 152, PER_AX, PER_AY, { s: 0.9 }); beam(c, x + 6, 132, 0.6 + Math.sin(t + i) * 0.3, 40, 0.2, 0.4); }
+      for (let i = 0; i < 3; i++) { const x = 60 + i * 90 + Math.sin(t + i) * 8; blit(c, gFig(COP2, { f: -1, weapon: 'shovel', arm: (Math.floor(t * 2 + i) & 1) ? 'dig' : 'fwd', id: 'cd' + i + ((Math.floor(t * 2 + i) & 1)) }), x, 152, FIG_AX2, FIG_AY2, { s: 0.8 }); beam(c, x + 6, 132, 0.6 + Math.sin(t + i) * 0.3, 40, 0.2, 0.4); }
       darkness(c, 160, 130, 170, 0.5);
       yearFlash(c, t, 0.2, 1978, 216, 4, '12月');
       return { z: 1.08, fx: 160, fy: 120 };
@@ -80,15 +80,15 @@ const GL = {
       const hit = t > S.tGavel && t < S.tGavel + 0.25; blit(c, cached('gavel', () => SPR(null, 22, 8, x => { R(x, 0, 0, 10, 8, '#6c4428'); R(x, 10, 3, 12, 2, '#8c5c38'); })), 200, 66, 20, 4, { rot: hit ? 0.2 : -0.9 }); R(c, 186, 70, 20, 4, '#4c2c1c');
       if (hit) for (let i = 0; i < 6; i++) L(c, 192, 70, 192 + Math.cos(i) * 14, 70 - Math.abs(Math.sin(i)) * 10, C.white);
       if (t > S.tJack) { const k = ss(sg(t, S.tJack, S.tJack + 2.5)), dk = t < S.tTrial ? 1 : 1 - ss(sg(t, S.tTrial, S.tTrial + 0.6)); c.fillStyle = DA('#000000', 0.55 * dk); c.fillRect(0, 0, W, H);
-        if (dk > 0) for (let i = 0; i < 4; i++) { const ox = (i - 1.5) * 34 * k, sh = personSpr(GACY, { f: -1, id: 'gj' + i }); c.globalAlpha = 0.35 * dk; blit(c, sh, 120 + ox, 156, PER_AX, PER_AY, { flip: i < 2, s: 1.4 }); c.globalAlpha = 1; }
+        if (dk > 0) for (let i = 0; i < 4; i++) { const ox = (i - 1.5) * 34 * k, sh = gFig(GACY, { f: -1, id: 'gj' + i }); c.globalAlpha = 0.35 * dk; blit(c, sh, 120 + ox, 156, FIG_AX2, FIG_AY2, { flip: i < 2, s: 1 }); c.globalAlpha = 1; }
         if (dk > 0 && k > 0.6) { c.globalAlpha = dk; for (let i = 0; i < 4; i++) TX(c, 'JACK', 120 + (i - 1.5) * 34 - 16, 64, K.red0, 16, '#000000'); c.globalAlpha = 1; } }
-      blit(c, personSpr(GACY, { f: -1, id: 'gt' }), 120, 156, PER_AX, PER_AY, { flip: true, s: 1.4 });
+      blit(c, gFig(GACY, { f: -1, id: 'gt' }), 120, 156, FIG_AX2, FIG_AY2, { flip: true, s: 1 });
       for (let i = 0; i < 5; i++) { const x = 20 + i * 64; E(c, x, 190, 12, 12, '#0c0806'); R(c, x - 14, 196, 28, 44, '#0c0806'); }
       if (t > S.tTrial) yearFlash(c, t, S.tTrial + 0.2, 1980, 14, 10, t > S.tGavel ? '死刑判決' : ''); return { z: 1.05, fx: 160, fy: 80, sy: hit ? 2 : 0 }; }
     // the cell, clown paintings on the wall
     R(c, 0, 0, W, H, '#4c4c54'); for (let y = 0; y < H; y += 10) R(c, 0, y, W, 1, '#44444c'); R(c, 0, 150, W, 90, '#3c3c44');
     [[30, 30], [130, 24], [230, 34]].forEach(([x, y], i) => { R(c, x - 4, y - 4, 68, 76, '#5c3c24'); R(c, x, y, 60, 68, ['#3c6cb8', '#c83c3c', '#48a048'][i]); bigFace(c, pogoFace({ expr: i === 1 ? 'creepy' : 'smile' }), x + 30, y + 34, 1, 1, 'pp' + i); });
-    blit(c, personSpr(GACY, { f: -1, arm: 'fwd', id: 'gpt' }), 150, 156, PER_AX, PER_AY, { s: 1.4 }); R(c, 166, 120, 2, 14, '#8c5c30');
+    blit(c, gFig(GACY, { f: -1, arm: 'fwd', id: 'gpt' }), 150, 156, FIG_AX2, FIG_AY2); R(c, 166, 120, 2, 14, '#8c5c30');
     for (let i = 0; i < 9; i++) R(c, 10 + i * 36, 0, 5, 150, '#2c2c34');
     return { z: 1.04, fx: 160, fy: 100 };
   }
@@ -143,7 +143,7 @@ const SS1 = {
   draw(c, t, S) {
     if (t < S.tDown) { VG(c, 0, 0, W, H, ['#06040a', '#140812', '#06040a']); bigFace(c, pogoFace({ blink: blinkOf(t, 12) }), 160, 90, 2, Math.min(1, t / 0.5), 'sp1');
       [[60, '#e83c3c', '#a01c1c'], [270, '#3c8cd8', '#1c5c9c']].forEach(([x, a, b], i) => balloon(c, x, 60 + Math.sin(t * 1.4 + i) * 3, a, b, t, i)); return { z: 1, fx: 160, fy: 100 }; }
-    const k = ss(sg(t, S.tDown, S.tDown + 1.4)); crossSection(c, t, 24, { blood: true }); blit(c, clownSpr(t), 150, 90, 12, 43, { s: 1.2 });
+    const k = ss(sg(t, S.tDown, S.tDown + 1.4)); crossSection(c, t, 24, { blood: true }); blit(c, clownSpr(t), 150, 91, CLOWN_AX, CLOWN_AY);
     if (k < 1) { c.fillStyle = '#000000'; c.fillRect(0, 102 + 60 * k, W, 140); }
     return { z: 1 + 0.3 * (1 - k), fx: 150, fy: lerp(70, 120, k) };
   }

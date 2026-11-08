@@ -1214,6 +1214,93 @@ function suitFig(st, o = {}) {
   });
 }
 
+/* ---- modern figure (1950s-80s clothes): 36x58 (body in the left 26 px, room for the arm), anchor at the feet (FIG_AX2, FIG_AY2), 3/4 view facing right (use flip)
+   st: { id, top: 'shirt'|'jacket'|'tee'|'uniform'|'dress'|'sweater', coat, coat2, shirt, tie, pants, shoes, skin, hair,
+         hairStyle: 'short'|'long'|'curly'|'side'|'bald', moustache, glasses, heavy, kid, hat: 'police'|'fedora'|'cap', hatCol, plaid, badge }
+   o:  { f (walk frame, -1 = stand), arm: 'up'|'fwd'|'stab'|'dig'|'wave'|'point'|'hold', weapon: 'bottle'|'knife'|'shovel'|'flash', expr|shock, blink, k } ---- */
+function shadeCol(col, k) { const [r, g, b] = hex(col), f = v => Math.max(0, Math.min(255, Math.round(v * k))).toString(16).padStart(2, '0'); return '#' + f(r) + f(g) + f(b); }
+function modFig(st, o = {}) {
+  const f = o.f == null ? -1 : o.f, arm = o.arm || null, ex = o.shock ? 'shock' : (o.expr || 'normal'), bl = o.blink || 0, wp = o.weapon || null;
+  return SPR('mf' + st.id + (o.k || '') + f + arm + ex + bl + wp, 36, 58, c => {
+    const kid = !!st.kid, hv = !!st.heavy, sw = f < 0 ? 0 : [0, 3, 0, -3][f & 3] * (kid ? 0.7 : 1), bob = f < 0 ? 0 : (f & 1);
+    const hy = (kid ? 29 : 11) - bob, shY = (kid ? 37 : 21) - bob, waY = (kid ? 47 : 37) - bob, hr = kid ? 5 : 6, bw = kid ? 5 : (hv ? 9 : 6);
+    const sk = st.skin || '#f0c8a8', sk2 = shadeCol(sk, 0.78), sk3 = shadeCol(sk, 0.6);
+    const top = st.top || 'shirt', coat = st.coat || '#4c5c7c', coat2 = st.coat2 || shadeCol(coat, 0.72), pants = st.pants || '#3c3c44', pants2 = shadeCol(pants, 0.72);
+    const shoes = st.shoes || '#2c241c', cx = 13;
+    // legs (dress: bare shins under the hem)
+    const legTop = top === 'dress' ? waY + 8 : waY;
+    const legC = top === 'dress' ? sk : pants, legC2 = top === 'dress' ? sk2 : pants2;
+    L(c, cx - 3, legTop, cx - 3 + sw, 54, legC2, kid ? 3 : 4); L(c, cx + 2, legTop, cx + 2 - sw, 54, legC, kid ? 3 : 4);
+    if (top !== 'dress') { L(c, cx + 3, waY + 2, cx + 3 - sw, 52, shadeCol(pants, 1.15)); } // crease highlight
+    for (const [x0, s] of [[cx - 5 + sw, 1], [cx + 1 - sw, 0]]) { R(c, x0, 54, 6, 3, s ? shadeCol(shoes, 0.8) : shoes); R(c, x0 + 3, 54, 3, 1, shadeCol(shoes, 1.6)); }
+    // body
+    const tl = cx - bw, tr = cx + bw;
+    if (top === 'dress') {
+      PF(c, [tl + 1, shY, tr - 1, shY, tr + 3, waY + 9, tl - 3, waY + 9], coat); PF(c, [cx + 1, shY, tr - 1, shY, tr + 3, waY + 9, cx + 1, waY + 9], coat2);
+      R(c, tl, waY - 2, bw * 2, 2, coat2); for (let y = shY + 4; y < waY + 8; y += 5) P(c, cx - 2 + ((y >> 2) & 1) * 3, y, shadeCol(coat, 1.25));
+      R(c, cx - 2, shY, 5, 2, st.shirt || '#f4f0e8');
+    } else {
+      PF(c, [tl, shY, tr, shY, tr + (hv ? 1 : 0), waY + 1, tl - (hv ? 1 : 0), waY + 1], top === 'jacket' ? (st.shirt || '#e8e4dc') : coat);
+      if (hv) { E(c, cx + 2, waY - 6, bw + 1.5, 8, top === 'jacket' ? (st.shirt || '#e8e4dc') : coat); E(c, cx + 5, waY - 5, 4.5, 6.5, top === 'jacket' ? shadeCol(st.shirt || '#e8e4dc', 0.85) : coat2); }
+      if (top === 'jacket') { // open jacket over a shirt and tie
+        PF(c, [tl, shY, cx - 2, shY, cx - 1, waY + 2, tl - (hv ? 1 : 0), waY + 2], coat); PF(c, [cx + 2, shY, tr, shY, tr + (hv ? 1 : 0), waY + 2, cx + 3, waY + 2], coat2);
+        L(c, cx - 2, shY, cx, shY + 6, shadeCol(coat, 1.25)); L(c, cx + 2, shY, cx + 1, shY + 6, shadeCol(coat2, 1.25));
+        if (st.tie) { PF(c, [cx - 1, shY + 1, cx + 1, shY + 1, cx + 2, waY - 4, cx, waY - 2, cx - 2, waY - 4], st.tie); R(c, cx - 1, shY + 1, 3, 2, shadeCol(st.tie, 0.75)); }
+      } else {
+        PF(c, [cx + 2, shY, tr, shY, tr + (hv ? 1 : 0), waY + 1, cx + 2, waY + 1], coat2);
+        if (st.plaid) { for (let y = shY + 2; y < waY; y += 4) R(c, tl, y, bw * 2, 1, shadeCol(coat, 0.6)); for (let x = tl + 2; x < tr; x += 4) R(c, x, shY, 1, waY - shY, shadeCol(coat, 0.75)); }
+        if (top === 'shirt' || top === 'uniform') { PF(c, [cx - 4, shY, cx, shY + 4, cx + 4, shY, cx + 4, shY - 1, cx - 4, shY - 1], top === 'uniform' ? coat2 : shadeCol(coat, 1.3)); for (let y = shY + 5; y < waY - 1; y += 4) P(c, cx, y, shadeCol(coat, 1.45)); }
+        if (top === 'sweater') { R(c, cx - 3, shY, 7, 2, shadeCol(coat, 0.7)); for (let y = shY + 3; y < waY; y += 3) R(c, tl + 1, y, bw * 2 - 2, 1, shadeCol(coat, 0.88)); R(c, tl, waY - 1, bw * 2, 2, shadeCol(coat, 0.7)); }
+        if (top === 'tee') R(c, cx - 2, shY, 5, 2, sk);
+        if (top === 'uniform') { R(c, cx - 5, shY + 4, 3, 3, shadeCol(coat, 0.7)); P(c, cx + 3, shY + 4, '#f0d060'); R(c, cx + 3, shY + 5, 2, 2, '#d8b040'); P(c, cx - 5, shY + 1, '#d8b040'); }
+      }
+      if (st.badge && top !== 'uniform') P(c, cx + 3, shY + 4, '#f0d060');
+      if (top !== 'dress') { R(c, tl - (hv ? 1 : 0), waY, bw * 2 + (hv ? 2 : 0), 2, top === 'uniform' ? '#1c1c1c' : '#3c2c1c'); R(c, cx - 1, waY, 3, 2, '#c8b060'); if (top === 'uniform') R(c, tr - 2, waY + 1, 3, 6, '#1c1c1c'); }
+    }
+    // arms: back arm hangs, front arm per pose
+    const sleeve = top === 'tee' ? sk : coat, sleeve2 = top === 'tee' ? sk2 : coat2, aw = kid ? 2 : 3;
+    L(c, tl + 1, shY + 1, tl - 1 - sw * 0.5, waY - 1, sleeve, aw); E(c, tl - 1 - sw * 0.5, waY, 1.6, 1.6, sk2);
+    const sx0 = tr - 1, sy0 = shY + 1, A = { up: [tr + 3, shY - 12], fwd: [tr + 8, shY + 7], stab: [tr + 4, shY - 13], dig: [tr + 5, waY + 4], wave: [tr + 5, shY - 9], point: [tr + 10, shY + 2], hold: [tr + 5, shY + 9] }[arm] || [tr + 1 + sw * 0.5, waY];
+    if (arm === 'wave' || arm === 'up' || arm === 'stab') { L(c, sx0, sy0, tr + 4, shY - 3, sleeve2, aw); L(c, tr + 4, shY - 3, A[0], A[1], sleeve2, aw); }
+    else L(c, sx0, sy0, A[0], A[1], sleeve2, aw);
+    E(c, A[0], A[1], 1.8, 1.8, sk); P(c, A[0] - 1, A[1] - 1, shadeCol(sk, 1.1));
+    const [hx2, hy2] = A;
+    if (wp === 'bottle') { R(c, hx2 - 1, hy2 - 7, 3, 7, '#2c5c2c'); R(c, hx2, hy2 - 9, 1, 2, '#2c5c2c'); P(c, hx2 - 1, hy2 - 6, '#5c9c5c'); }
+    if (wp === 'knife') { if (arm === 'stab' || arm === 'up') { R(c, hx2 - 1, hy2, 2, 3, '#3c2418'); L(c, hx2, hy2 - 1, hx2, hy2 - 8, '#e8ecf4', 2); P(c, hx2 + 1, hy2 - 7, '#ffffff'); } else { R(c, hx2 - 2, hy2 - 1, 3, 2, '#3c2418'); L(c, hx2 + 1, hy2 - 1, hx2 + 7, hy2 - 2, '#e8ecf4', 2); P(c, hx2 + 6, hy2 - 2, '#ffffff'); } }
+    if (wp === 'shovel') { L(c, hx2 - 8, hy2 - 14, hx2 + 2, hy2 + 10, '#7c5c3c', 2); PF(c, [hx2, hy2 + 9, hx2 + 6, hy2 + 9, hx2 + 5, hy2 + 15, hx2 + 1, hy2 + 15], '#9c9ca4'); }
+    if (wp === 'flash') { R(c, hx2 - 1, hy2 - 2, 6, 3, '#2c2c34'); R(c, hx2 + 5, hy2 - 3, 2, 5, '#f8f0c0'); }
+    // head
+    R(c, cx - 2, hy + hr - 1, 5, 4, sk2);
+    if (hv) E(c, cx, hy + hr - 1, hr - 1, 2.5, sk2); // double chin
+    const hw = hr + (hv ? 1.5 : 0); E(c, cx, hy, hw, hr + 1, sk3); E(c, cx - 0.4, hy - 0.3, hw - 0.4, hr + 0.5, sk); E(c, cx + hw - 2, hy + 1, 1.5, hr - 1, sk2); if (hv) E(c, cx, hy + 4, hw - 1, 2.5, sk);
+    P(c, cx + hr, hy + 1, sk2); // ear
+    const hc = st.hair || '#3c2818', hc2 = shadeCol(hc, 1.35), hs = st.hairStyle || 'short';
+    if (hs !== 'bald') {
+      PF(c, [cx - hr, hy, cx - hr, hy - 4, cx - 2, hy - hr - 1, cx + 4, hy - hr - 1, cx + hr, hy - 4, cx + hr, hy - 1, cx + 3, hy - 4, cx - 3, hy - 3], hc);
+      if (hs === 'long') { R(c, cx - hr - 1, hy - 3, 3, hr + 7, hc); R(c, cx + hr - 2, hy - 2, 3, hr + 6, hc); }
+      if (hs === 'curly') for (let i = 0; i < 6; i++) E(c, cx - hr + 1 + i * 2.2, hy - hr + (i & 1), 2, 2, i & 1 ? hc2 : hc);
+      if (hs === 'side') L(c, cx - 3, hy - hr, cx + 4, hy - 3, hc2);
+      L(c, cx - 2, hy - hr, cx + 2, hy - hr, hc2);
+    } else { L(c, cx - hr + 1, hy - 1, cx - hr + 1, hy + 2, hc); }
+    if (st.hat === 'police') { R(c, cx - hr - 1, hy - hr - 2, hr * 2 + 2, 5, st.hatCol || '#1c2c4c'); R(c, cx - hr + 1, hy - hr + 3, hr * 2 + 2, 2, '#141414'); P(c, cx, hy - hr, '#f0d060'); R(c, cx - hr - 1, hy - hr - 2, hr * 2 + 2, 1, shadeCol(st.hatCol || '#1c2c4c', 1.4)); }
+    if (st.hat === 'fedora') { R(c, cx - hr - 3, hy - 4, hr * 2 + 6, 2, st.hatCol || '#3c3428'); PF(c, [cx - hr + 1, hy - 4, cx - hr + 2, hy - hr - 4, cx + hr - 2, hy - hr - 4, cx + hr - 1, hy - 4], st.hatCol || '#3c3428'); R(c, cx - hr + 1, hy - 6, hr * 2 - 2, 1, '#1c1814'); }
+    if (st.hat === 'cap') { E(c, cx, hy - hr + 1, hr, 3, st.hatCol || '#c82828'); R(c, cx + 1, hy - hr + 2, hr + 3, 2, shadeCol(st.hatCol || '#c82828', 0.7)); }
+    // face
+    const ey = hy;
+    if (bl === 2) { L(c, cx - 3, ey, cx - 2, ey, '#2c1c14'); L(c, cx + 2, ey, cx + 3, ey, '#2c1c14'); }
+    else { R(c, cx - 3, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); R(c, cx + 2, ey - 1, 2, ex === 'shock' ? 3 : 2, C.k); if (ex === 'shock') { P(c, cx - 3, ey - 1, '#ffffff'); P(c, cx + 2, ey - 1, '#ffffff'); } }
+    L(c, cx - 4, ey - 3, cx - 2, ey - 3, shadeCol(hc, 0.9)); L(c, cx + 1, ey - 3, cx + 3, ey - 3, shadeCol(hc, 0.9));
+    if (ex === 'sad' || ex === 'shock') { L(c, cx - 4, ey - 3, cx - 1, ey - 4, '#3c2c1c'); L(c, cx + 1, ey - 4, cx + 4, ey - 3, '#3c2c1c'); }
+    if (st.glasses) { R(c, cx - 5, ey - 2, 5, 4, '#1c1c1c'); R(c, cx + 1, ey - 2, 5, 4, '#1c1c1c'); R(c, cx - 4, ey - 1, 3, 2, '#a8c0d0'); R(c, cx + 2, ey - 1, 3, 2, '#a8c0d0'); }
+    P(c, cx + 1, ey + 2, sk3); // nose
+    if (st.moustache) R(c, cx - 2, ey + 3, 6, 2, shadeCol(hc, 0.9));
+    if (ex === 'shock') E(c, cx, ey + 5, 1.5, 1.6, '#5c1c1c');
+    else if (ex === 'smile') { L(c, cx - 2, ey + 4, cx, ey + 5, '#8c4c3c'); L(c, cx, ey + 5, cx + 2, ey + 4, '#8c4c3c'); }
+    else R(c, cx - 1, ey + 4 + (st.moustache ? 1 : 0), 3, 1, '#8c4c3c');
+    if (kid || st.top === 'dress') { P(c, cx - 4, ey + 2, '#e8a090'); P(c, cx + 4, ey + 2, '#e8a090'); }
+  });
+}
+
 /* soft round glow with real alpha (no dither dots) */
 function glow(c, x, y, rx, ry, col, a = 0.3) {
   if (a <= 0 || rx <= 0 || ry <= 0) return; const [r, g, b] = hex(col);
@@ -1223,8 +1310,9 @@ function glow(c, x, y, rx, ry, col, a = 0.3) {
 }
 
 /* ================= 記録 #002 ジョン・ゲイシー: cast & props ================= */
-const GACY = { id: 'gacy', coat: '#2c4c7c', coat2: '#1c3458', pants: '#3c3c40', skin: '#e8c0a0', hair: '#2c1c14' };
-const BOY = { id: 'boy', coat: '#8c3c2c', coat2: '#5c2418', pants: '#2c3c5c', skin: '#f0c8a8', hair: '#6c4c2c' };
+const GACY = { id: 'gacy', top: 'jacket', coat: '#2c4c7c', shirt: '#e8e4dc', tie: '#8c2c2c', pants: '#3c3c40', skin: '#e8c0a0', hair: '#2c1c14', heavy: true };
+const GACY_S = { id: 'gacys', top: 'shirt', coat: '#c8d8e8', pants: '#3c3c40', skin: '#e8c0a0', hair: '#2c1c14', heavy: true }; // shirt sleeves at home
+const BOY = { id: 'boy', top: 'jacket', coat: '#8c3c2c', shirt: '#e8e0d0', pants: '#2c3c5c', skin: '#f0c8a8', hair: '#6c4c2c', hairStyle: 'side' };
 /* Pogo the clown (portrait 48x48): white face, red nose, blue pointed eye marks, red mouth with pointed corners */
 function pogoFace(p = {}) {
   const ex = p.expr || 'smile', bl = p.blink || 0;
@@ -1266,16 +1354,33 @@ function gacyFace(p = {}) {
     L(c, 19, 30, 29, 30, '#7c3c34'); P(c, 18, 29, '#7c3c34'); P(c, 30, 29, '#7c3c34');
   });
 }
-/* small clown (front, 24x44) for the party scene */
-function clownSpr(t, f) {
-  return SPR('clownS', 24, 44, c => {
-    const sw = Math.sin(t * 6) * 2;
-    L(c, 9, 30, 8 - sw, 42, '#f4f4f4', 3); L(c, 15, 30, 16 + sw, 42, '#c82828', 3); R(c, 4 - sw, 41, 7, 3, '#c82828'); R(c, 13 + sw, 41, 7, 3, '#2c4cb8');
-    R(c, 6, 16, 12, 16, '#f4f4f4'); R(c, 12, 16, 6, 16, '#c82828'); for (const y of [19, 24, 29]) E(c, 12, y, 1.5, 1.5, '#2c4cb8');
-    L(c, 7, 18, 1, 10 + Math.round(sw), '#f4f4f4', 2); L(c, 17, 18, 23, 10 - Math.round(sw), '#c82828', 2);
-    for (let i = 0; i < 5; i++) E(c, 6 + i * 3, 15, 2, 1.5, '#d8d8e8');
-    E(c, 12, 9, 5, 6, '#fcfcfc'); E(c, 6, 8, 2.5, 3, '#e8582c'); E(c, 18, 8, 2.5, 3, '#e8582c'); PF(c, [9, 4, 12, -1, 15, 4], '#2c4cb8');
-    P(c, 10, 8, C.k); P(c, 14, 8, C.k); P(c, 12, 10, '#d81818'); L(c, 9, 12, 15, 12, '#d81818');
+/* Pogo the clown, full body (36x60, anchor 18,59): red & white suit, ruff collar, pompoms, big shoes, juggling arms */
+const CLOWN_AX = 18, CLOWN_AY = 59;
+function clownSpr(t, o = {}) {
+  const fr = o.still ? 0 : Math.floor(t * 6) & 3, ex = o.expr || 'smile';
+  return SPR('clownF' + fr + ex, 36, 60, c => {
+    const sw = [0, 1, 0, -1][fr], cx = 18;
+    // legs & big shoes
+    L(c, cx - 3, 42, cx - 4 - sw, 54, '#f4f4f4', 5); L(c, cx + 3, 42, cx + 4 + sw, 54, '#c82828', 5); L(c, cx + 4, 43, cx + 5 + sw, 53, '#a01c1c', 2);
+    E(c, cx - 7 - sw, 56, 6, 3, '#c82828'); E(c, cx - 8 - sw, 55, 3, 1, '#f86060'); E(c, cx + 8 + sw, 56, 6, 3, '#2c4cb8'); E(c, cx + 9 + sw, 55, 3, 1, '#6c8cf8');
+    // baggy suit split down the middle
+    PF(c, [cx - 9, 23, cx, 23, cx, 44, cx - 11, 44], '#f4f4f4'); PF(c, [cx, 23, cx + 9, 23, cx + 11, 44, cx, 44], '#c82828');
+    PF(c, [cx - 11, 44, cx - 9, 40, cx - 6, 44], '#d8d8e0'); PF(c, [cx + 11, 44, cx + 9, 40, cx + 6, 44], '#a01c1c'); L(c, cx + 6, 25, cx + 8, 43, '#a01c1c');
+    for (const y of [28, 34, 40]) { E(c, cx, y, 2, 2, '#2c4cb8'); P(c, cx - 1, y - 1, '#8cacf8'); }
+    // arms juggling
+    const a1 = [[cx - 13, 14], [cx - 14, 18], [cx - 13, 22], [cx - 12, 17]][fr], a2 = [[cx + 13, 22], [cx + 12, 17], [cx + 13, 14], [cx + 14, 18]][fr];
+    L(c, cx - 8, 25, a1[0], a1[1], '#f4f4f4', 4); E(c, a1[0], a1[1] - 1, 2.5, 2.5, '#fcfcfc');
+    L(c, cx + 8, 25, a2[0], a2[1], '#c82828', 4); E(c, a2[0], a2[1] - 1, 2.5, 2.5, '#fcfcfc');
+    // ruff collar
+    for (let i = 0; i < 7; i++) E(c, cx - 9 + i * 3, 22 + (i & 1), 2.5, 2, i & 1 ? '#f4f4f4' : '#d8d8e8');
+    // head: orange tufts, white face, blue cone hat
+    E(c, cx - 8, 12, 3.5, 4, '#e8582c'); E(c, cx + 8, 12, 3.5, 4, '#e8582c'); E(c, cx - 9, 15, 2.5, 2.5, '#c8401c'); E(c, cx + 9, 15, 2.5, 2.5, '#c8401c');
+    E(c, cx, 13, 7, 8, '#d8d8dc'); E(c, cx - 0.5, 12.5, 6.5, 7.5, '#fcfcfc');
+    PF(c, [cx - 6, 6, cx + 1, -2, cx + 6, 6], '#2c4cb8'); R(c, cx - 7, 5, 14, 2, '#1c348c'); E(c, cx + 1, -2, 2, 2, '#f8e070');
+    for (const x0 of [cx - 3, cx + 3]) { PF(c, [x0 - 2, 9, x0, 6, x0 + 2, 9], '#2c6cd8'); if (ex === 'creepy') { P(c, x0, 11, '#c81818'); } else R(c, x0 - 1, 10, 2, 2, C.k); }
+    E(c, cx, 14, 2, 2, '#d81818'); P(c, cx - 1, 13, '#f8a0a0');
+    if (ex === 'creepy') { PF(c, [cx - 6, 15, cx, 19, cx + 6, 15, cx + 4, 20, cx, 21, cx - 4, 20], '#d81818'); R(c, cx - 3, 18, 7, 1, '#3c0408'); }
+    else { PF(c, [cx - 5, 15, cx, 18, cx + 5, 15, cx + 3, 19, cx, 20, cx - 3, 19], '#d81818'); R(c, cx - 2, 18, 5, 1, '#5c0c0c'); }
   });
 }
 function ranchHouse(c, x, y, t, o = {}) { // single-storey 1970s house
@@ -1304,9 +1409,14 @@ const PORTRAITS = {
 const ln = (S, id) => S.lines.find(l => l.id === id);
 const at = (S, id, k = 0, def = 0) => { const l = ln(S, id); return l ? l.t0 + l.segs[Math.min(k, l.segs.length - 1)].a : def; };
 const lastSe = S => S.lines[S.lines.length - 1].se;
-const DAD = { id: 'dad', coat: '#5c4c3c', coat2: '#3c3028', pants: '#3c3430', skin: '#e0b090', hair: '#2c1c14' };
-const KID = { id: 'kidg', coat: '#5c7cac', coat2: '#3c5c8c', pants: '#3c3c44', skin: '#f0c8a8', hair: '#2c1c14' };
-const YOUTH = [{ id: 'y1', coat: '#8c5c3c', coat2: '#6c4428', pants: '#3c4c6c', skin: '#f0c8a8', hair: '#c89c5c' }, { id: 'y2', coat: '#4c6c4c', coat2: '#344c34', pants: '#2c2c3c', skin: '#e0b090', hair: '#3c2418' }, { id: 'y3', coat: '#7c2c2c', coat2: '#5c1c1c', pants: '#3c3c44', skin: '#e8c0a0', hair: '#5c3c24' }];
+const DAD = { id: 'dad', top: 'tee', coat: '#e8e4d8', pants: '#3c3430', skin: '#e0b090', hair: '#2c1c14', hairStyle: 'side', moustache: true };
+const KID = { id: 'kidg', top: 'shirt', coat: '#5c7cac', pants: '#3c3c44', skin: '#f0c8a8', hair: '#2c1c14', kid: true };
+const YOUTH = [{ id: 'y1', top: 'shirt', plaid: true, coat: '#8c5c3c', pants: '#3c4c6c', skin: '#f0c8a8', hair: '#c89c5c', hairStyle: 'long' }, { id: 'y2', top: 'sweater', coat: '#4c6c4c', pants: '#2c2c3c', skin: '#e0b090', hair: '#3c2418', hairStyle: 'curly' }, { id: 'y3', top: 'tee', coat: '#7c2c2c', pants: '#3c3c44', skin: '#e8c0a0', hair: '#5c3c24', hairStyle: 'side' }];
+const COP2 = { id: 'cop2', top: 'uniform', coat: '#2c3c5c', pants: '#1c2434', skin: '#e0b08c', hair: '#3c2818', hat: 'police', hatCol: '#1c2c4c' };
+const DET2 = { id: 'det2', top: 'jacket', coat: '#5c5048', shirt: '#d8d0c0', tie: '#3c2c2c', pants: '#2c2826', skin: '#e0b08c', hair: '#3c2818', hat: 'fedora', hatCol: '#2c2620', moustache: true };
+const KIDS = ['#d84c4c', '#4c8cd8', '#e8b83c', '#5cb05c'].map((col, i) => ({ id: 'kd' + i, top: i & 1 ? 'tee' : 'shirt', coat: col, pants: ['#3c3c5c', '#5c4c3c'][i & 1], skin: ['#f0c8a8', '#e0b090', '#f4d0b0', '#c89070'][i], hair: ['#6c4c2c', '#2c1c14', '#c89c5c', '#1c1410'][i], hairStyle: ['side', 'short', 'long', 'curly'][i], kid: true }));
+/* old personSpr call sites → modFig (36x58) at a matching size */
+const gFig = (st, p = {}) => modFig(st, { f: p.f, arm: p.arm === 'fwd' && p.weapon !== 'knife' && p.weapon !== 'bottle' ? 'hold' : p.arm, weapon: p.weapon, shock: p.shock, expr: p.expr, k: p.id });
 function bigFace(c, spr, cx, cy, s, a, id) { const [pc, px] = slot(id, spr.width * s, spr.height * s); px.imageSmoothingEnabled = false; px.clearRect(0, 0, pc.width, pc.height); px.drawImage(spr, 0, 0, spr.width * s, spr.height * s); c.drawImage(a < 1 ? ditherFade(pc, a, id + 'd') : pc, Math.round(cx - spr.width * s / 2), Math.round(cy - spr.height * s / 2)); }
 function copFace2() { return SPR('copF2', 32, 32, c => { R(c, 6, 26, 20, 6, K.cop1); E(c, 16, 15, 9, 10, '#e0b08c'); R(c, 6, 4, 20, 6, K.cop1); R(c, 4, 9, 24, 2, K.cop2); P(c, 16, 6, K.badge); for (const x0 of [11, 18]) { R(c, x0, 13, 4, 4, C.white); R(c, x0 + 1, 14, 2, 2, C.k); } L(c, 10, 11, 14, 10, '#7c5038'); L(c, 18, 10, 22, 11, '#7c5038'); E(c, 16, 22, 2.5, 3, '#401010'); }); }
 function yearFlash(c, t, t0, year, x = 216, y = 10, sub) { if (t > t0) { const k = eOut(sg(t, t0, t0 + 0.35)); if (k > 0) yearCard(c, x, lerp(-70, y, k), year, sub || ''); } }
@@ -1330,9 +1440,9 @@ const GA = {
     const k = ss(sg(t, S.tDown, S.tDown + 2.2));
     crossSection(c, t, k > 0 ? 24 : 0, { blood: true });
     // the clown entertaining in the living room above
-    blit(c, clownSpr(t), 150, 90 - Math.round(Math.abs(Math.sin(t * 4)) * 3), 12, 43, { s: 1.2 });
+    blit(c, clownSpr(t), 150, 91 - Math.round(Math.abs(Math.sin(t * 4)) * 3), CLOWN_AX, CLOWN_AY);
     for (let i = 0; i < 3; i++) { const a = t * 4 + i * 2.1; E(c, 150 + Math.cos(a) * 14, 32 + Math.sin(a) * 8, 2.5, 2.5, ['#d83838', '#f8d040', '#3c8cd8'][i]); }
-    for (let i = 0; i < 3; i++) blit(c, personSpr({ id: 'ka' + i, coat: ['#d84c4c', '#4c8cd8', '#e8b83c'][i], coat2: '#3c3c3c', pants: '#3c3c5c', skin: '#f0c8a8', hair: '#6c4c2c' }, { f: -1, id: 'ka' + i }), 70 + i * 26 + (i > 1 ? 120 : 0), 90, PER_AX, PER_AY, { s: 0.8 });
+    for (let i = 0; i < 3; i++) blit(c, gFig(KIDS[i], { f: -1, id: 'ka', expr: 'smile' }), 70 + i * 26 + (i > 1 ? 120 : 0), 91, FIG_AX2, FIG_AY2, { flip: i > 1 });
     if (k < 1) { c.fillStyle = '#000000'; c.fillRect(0, 102 + 60 * k, W, 60 - 60 * k + 80); }
     return { z: 1 + 0.4 * (1 - k), fx: 150, fy: lerp(70, 120, k) };
   }
@@ -1346,10 +1456,10 @@ const GB = {
     roomBg(c, { wall: '#6c5c4c', wall2: '#64544a', floor: '#4c3c30', fy: 140, window: [24, 30], lamp: [200, 22] });
     R(c, 160, 110, 70, 6, '#5c4430'); R(c, 166, 116, 4, 24, '#4c3424'); R(c, 222, 116, 4, 24, '#4c3424'); R(c, 180, 104, 4, 6, '#3c6c3c'); R(c, 188, 105, 4, 5, '#3c6c3c');
     const yell = t > S.tDad && (Math.floor(t * 3) & 1);
-    blit(c, personSpr(DAD, { f: -1, weapon: 'bottle', arm: yell ? 'up' : 'fwd', id: yell ? 'dy' : 'dn' }), 200, 140, PER_AX, PER_AY, { s: 1.6, flip: true });
-    if (t > S.tLeave) { const u = t - S.tLeave; blit(c, personSpr(GACY, { f: Math.floor(u * 8) & 3, id: 'gleave' }), 130 - Math.max(0, u - 3.5) * 22, 140, PER_AX, PER_AY, { s: 1.4, flip: true }); yearFlash(c, t, S.tLeave + 0.2, 1962); }
-    else blit(c, personSpr(KID, { f: -1, id: 'kg', shock: t > S.tDad }), 120, 140, PER_AX, PER_AY, { s: 1.0 });
-    if (t > S.tHeart && t < S.tLeave) { const u = t - S.tHeart, b = 1 + 0.25 * Math.max(0, Math.sin(u * 7)); E(c, 120, 112, 4 * b, 3.5 * b, K.red0); E(c, 118, 111, 1.5 * b, 1, '#f88888'); }
+    blit(c, gFig(DAD, { f: -1, weapon: 'bottle', arm: yell ? 'up' : 'fwd', id: yell ? 'dy' : 'dn' }), 200, 140, FIG_AX2, FIG_AY2, { s: 1, flip: true });
+    if (t > S.tLeave) { const u = t - S.tLeave; blit(c, gFig(GACY, { f: Math.floor(u * 8) & 3, id: 'gleave' }), 130 - Math.max(0, u - 3.5) * 22, 140, FIG_AX2, FIG_AY2, { s: 1, flip: true }); yearFlash(c, t, S.tLeave + 0.2, 1962); }
+    else blit(c, gFig(KID, { f: -1, id: 'kg', shock: t > S.tDad }), 120, 140, FIG_AX2, FIG_AY2, { s: 1.0 });
+    if (t > S.tHeart && t < S.tLeave) { const u = t - S.tHeart, b = 1 + 0.25 * Math.max(0, Math.sin(u * 7)); E(c, 120, 98, 4 * b, 3.5 * b, K.red0); E(c, 118, 97, 1.5 * b, 1, '#f88888'); }
     if (t < S.tLeave) { yearFlash(c, t, 0.2, 1942); capPlate(c, t, 0.5, ['1942年', 'イリノイ州 シカゴ']); }
     return { z: 1.04, fx: 160, fy: 110 };
   }
@@ -1365,14 +1475,14 @@ const GC = {
       R(c, 70, 60, 180, 70, '#f4ecd8'); R(c, 70, 60, 180, 8, '#c82828'); for (let x = 70; x < 250; x += 12) R(c, x, 60, 6, 8, '#f4ecd8');
       R(c, 96, 36, 128, 22, '#c82828'); TX(c, 'FRIED CHICKEN', 104, 39, '#fcfcfc', 16, null); R(c, 158, 58, 4, 4, '#5c5c64');
       for (const wx of [84, 196]) R(c, wx, 80, 40, 30, '#8cb4d8'); R(c, 146, 90, 28, 40, '#5c3c2c');
-      blit(c, personSpr(GACY, { f: -1, arm: (Math.floor(t * 2) & 1) ? 'up' : null, id: (Math.floor(t * 2) & 1) ? 'gu' : 'gn' }), 160, 150, PER_AX, PER_AY, { s: 1.3 });
-      for (let i = 0; i < 3; i++) blit(c, personSpr(YOUTH[i], { f: -1, id: 'yc' + i }), 214 + i * 22, 152, PER_AX, PER_AY, { flip: true });
+      blit(c, gFig(GACY, { f: -1, expr: 'smile', arm: (Math.floor(t * 2) & 1) ? 'wave' : null, id: (Math.floor(t * 2) & 1) ? 'gu' : 'gn' }), 160, 150, FIG_AX2, FIG_AY2);
+      for (let i = 0; i < 3; i++) blit(c, gFig(YOUTH[i], { f: -1, id: 'yc' + i }), 214 + i * 22, 152, FIG_AX2, FIG_AY2, { flip: true });
       capPlate(c, t, 0.5, ['1960年代', 'アイオワ州 ウォータールー']);
       return { z: 1.03, fx: 160, fy: 110 };
     }
     VG(c, 0, 0, W, H, ['#3c2a20', '#2c1e18', '#1c1410']); for (let x = 0; x < W; x += 24) R(c, x, 0, 2, 120, '#4c3628');
     R(c, 80, 60, 160, 60, '#5c3c28'); R(c, 80, 60, 160, 4, '#7c5438'); E(c, 160, 40, 9, 10, '#d8b090'); R(c, 148, 48, 24, 14, '#141010'); R(c, 152, 28, 16, 6, '#c8c8c8');
-    blit(c, personSpr(GACY, { f: -1, id: 'gct' }), 120, 156, PER_AX, PER_AY, { flip: true, s: 1.4 });
+    blit(c, gFig(GACY, { f: -1, id: 'gct' }), 120, 156, FIG_AX2, FIG_AY2, { flip: true, s: 1 });
     const u = t - S.tCourt; if (u > 1.4) { const bars = Math.min(12, Math.floor((u - 1.4) * 10)); for (let i = 0; i < bars; i++) R(c, 8 + i * 26, 0, 6, H, '#5c5c64'); }
     yearFlash(c, t, S.tCourt + 0.2, 1968, 14, 10, '懲役10年');
     return { z: 1.05, fx: 160, fy: 90 };
@@ -1391,10 +1501,10 @@ const GD = {
     const vx = 20; R(c, vx, 118, 70, 26, '#e8e4d8'); R(c, vx + 50, 112, 20, 10, '#e8e4d8'); R(c, vx + 54, 114, 14, 6, '#7c8ca8'); E(c, vx + 14, 144, 6, 6, '#141414'); E(c, vx + 56, 144, 6, 6, '#141414'); R(c, vx + 6, 124, 38, 14, '#2c4c7c'); TX(c, 'PDM', vx + 12, 123, '#f4f0e8', 16, null);
     if (t > S.tParty) { // a backyard party
       for (let i = 0; i < 16; i++) PF(c, [i * 20, 20, i * 20 + 20, 20, i * 20 + 10, 32], ['#d83838', '#f8d040', '#3c8cd8', '#48b048'][i % 4]); L(c, 0, 20, W, 20, C.white);
-      [[230, '#e8c0a0', '#7c3c4c'], [258, '#e0b090', '#4c5c8c'], [286, '#f0c8a8', '#5c7c4c']].forEach(([x, sk, col], i) => blit(c, personSpr({ id: 'nb' + i, coat: col, coat2: col, pants: '#3c3c44', skin: sk, hair: '#5c3c2c' }, { f: -1, arm: (Math.floor(t * 2) + i) & 1 ? 'up' : null, id: ((Math.floor(t * 2) + i) & 1) ? 'u' : '' }), x, 150, PER_AX, PER_AY, { flip: true }));
+      [[230, '#e8c0a0', '#7c3c4c'], [258, '#e0b090', '#4c5c8c'], [286, '#f0c8a8', '#5c7c4c']].forEach(([x, sk, col], i) => blit(c, gFig({ id: 'nb' + i, top: ['dress', 'shirt', 'sweater'][i], coat: col, pants: '#3c3c44', skin: sk, hair: ['#7c5c3c', '#3c2818', '#c89c5c'][i], hairStyle: ['curly', 'side', 'short'][i], glasses: i === 1 }, { f: -1, arm: (Math.floor(t * 2) + i) & 1 ? 'wave' : null, expr: 'smile', id: ((Math.floor(t * 2) + i) & 1) ? 'u' : '' }), x, 150, FIG_AX2, FIG_AY2, { flip: true }));
       E(c, 196, 132, 10, 4, '#3c3c3c'); for (let i = 0; i < 4; i++) { const u = fr(t * 0.5 + i / 4); E(c, 196 + Math.sin(u * 6 + i) * 3, 126 - u * 30, 3 + u * 4, 2 + u * 3, DA('#e8e8e8', 0.5 * (1 - u))); } // grill smoke
     }
-    blit(c, personSpr(GACY, { f: -1, arm: (Math.floor(t * 2) & 1) ? 'up' : 'fwd', id: (Math.floor(t * 2) & 1) ? 'gw' : 'gf' }), 196, 150, PER_AX, PER_AY, { s: 1.3 });
+    blit(c, gFig(GACY_S, { f: -1, expr: 'smile', arm: (Math.floor(t * 2) & 1) ? 'wave' : 'fwd', id: (Math.floor(t * 2) & 1) ? 'gw' : 'gf' }), 196, 150, FIG_AX2, FIG_AY2);
     yearFlash(c, t, 0.2, 1970, 216, 10, '釈放'); capPlate(c, t, 0.5, ['1970年代', 'シカゴ郊外の家']);
     return { z: 1.03, fx: 160, fy: 110 };
   }
@@ -1409,8 +1519,8 @@ const GE = {
       VG(c, 0, 0, W, 140, ['#5c88d0', '#8cb4e0', '#d8e4f0']); R(c, 0, 120, W, 120, '#6c9c48');
       for (let x = 0; x < W; x += 10) R(c, x, 100, 3, 22, '#e8e0d0'); R(c, 0, 104, W, 2, '#e8e0d0'); R(c, 0, 114, W, 2, '#e8e0d0');
       [[40, 50, '#e83c3c', '#a01c1c'], [64, 60, '#f8d040', '#b89020'], [262, 48, '#3c8cd8', '#1c5c9c'], [284, 62, '#e83c3c', '#a01c1c']].forEach(([x, y, a, b], i) => balloon(c, x, y + Math.sin(t * 1.4 + i) * 2, a, b, t, i));
-      [[70, '#d84c4c'], [100, '#4c8cd8'], [210, '#e8b83c'], [240, '#5cb05c']].forEach(([x, col], i) => blit(c, personSpr({ id: 'kp' + i, coat: col, coat2: col, pants: '#3c3c5c', skin: '#f0c8a8', hair: '#6c4c2c' }, { f: -1, arm: (Math.floor(t * 3 + i) & 1) ? 'up' : null, id: (Math.floor(t * 3 + i) & 1) ? 'u' : '' }), x, 156 - Math.round(Math.abs(Math.sin(t * 5 + i)) * 2), PER_AX, PER_AY, { s: 0.9, flip: x > 150 }));
-      blit(c, clownSpr(t), 156, 156 - Math.round(Math.abs(Math.sin(t * 4)) * 3), 12, 43, { s: 1.4 });
+      [[70, '#d84c4c'], [100, '#4c8cd8'], [210, '#e8b83c'], [240, '#5cb05c']].forEach(([x, col], i) => blit(c, gFig(KIDS[i], { f: -1, arm: (Math.floor(t * 3 + i) & 1) ? 'wave' : null, expr: 'smile', id: (Math.floor(t * 3 + i) & 1) ? 'u' : '' }), x, 157 - Math.round(Math.abs(Math.sin(t * 5 + i)) * 2), FIG_AX2, FIG_AY2, { flip: x > 150 }));
+      blit(c, clownSpr(t), 156, 157 - Math.round(Math.abs(Math.sin(t * 4)) * 3), CLOWN_AX, CLOWN_AY);
       for (let i = 0; i < 3; i++) { const a = t * 4 + i * 2.1; E(c, 156 + Math.cos(a) * 14, 74 + Math.sin(a) * 10, 3, 3, ['#d83838', '#f8d040', '#3c8cd8'][i]); }
       capPlate(c, t, 0.5, ['ピエロの「ポゴ」']);
       return { z: 1.04, fx: 160, fy: 110 };
@@ -1420,7 +1530,7 @@ const GE = {
     R(c, 0, 0, W, H, '#2c241c'); for (let y = 0; y < H; y += 6) R(c, 0, y, W, 1, '#342a20');
     const k = eOut(sg(u, 0, 0.6)); R(c, 70, lerp(-140, 24, k), 180, 130, '#f4f0e8'); const py = lerp(-132, 32, k);
     VG(c, 78, py, 164, 98, ['#8c98a8', '#c8ccd0']); R(c, 78, py + 70, 164, 28, '#6c6c74');
-    blit(c, personSpr(GACY, { f: -1, id: 'gph' }), 130, py + 96, PER_AX, PER_AY, { s: 1.8 }); blit(c, personSpr({ id: 'fl', coat: '#c8a4b8', coat2: '#a88498', pants: '#3c3c44', dress: '#c8a4b8', skin: '#ecc8b0', hair: '#7c5c3c' }, { f: -1, id: 'fl' }), 190, py + 96, PER_AX, PER_AY, { s: 1.8, flip: true });
+    blit(c, gFig(GACY, { f: -1, expr: 'smile', id: 'gph' }), 130, py + 96, FIG_AX2, FIG_AY2, { s: 1.25 }); blit(c, gFig({ id: 'fl', top: 'dress', coat: '#c8a4b8', skin: '#ecc8b0', hair: '#7c5c3c', hairStyle: 'curly', shoes: '#5c2c2c' }, { f: -1, expr: 'smile', id: 'fl' }), 190, py + 96, FIG_AX2, FIG_AY2, { s: 1.25, flip: true });
     const im = c.getImageData(70, Math.max(0, py), 180, 98), d = im.data; for (let i = 0; i < d.length; i += 4) { const g = d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11; d[i] = d[i + 1] = d[i + 2] = g; } c.putImageData(im, 70, Math.max(0, py));
     if (u < 0.15) flashScreen(c, 0.8);
     return { z: 1.03, fx: 160, fy: 90 };
@@ -1435,7 +1545,7 @@ const GF = {
     if (t < S.tHouse) { // the bus terminal at night
       nightSky(c, t, 140, [K.night0, K.night1, K.night2]); R(c, 0, 104, W, 40, '#2c3c24'); ranchHouse(c, 110, 142, t, { lit: true, wall: '#8c8070', wall2: '#7c7064', roof: '#3c3430' }); R(c, 0, 142, W, 98, '#3c3c40');
       const wx = lerp(40, 150, sg(t, 0.3, S.tHouse - 0.3));
-      blit(c, personSpr(GACY, { f: Math.floor(t * 6) & 3, id: 'gb' }), wx, 150, PER_AX, PER_AY, { s: 1.4 }); blit(c, personSpr(YOUTH[0], { f: Math.floor(t * 6 + 1) & 3, id: 'tm' }), wx - 24, 150, PER_AX, PER_AY, { s: 1.3 });
+      blit(c, gFig(GACY, { f: Math.floor(t * 6) & 3, id: 'gb' }), wx, 150, FIG_AX2, FIG_AY2); blit(c, gFig(YOUTH[0], { f: Math.floor(t * 6 + 1) & 3, id: 'tm' }), wx - 24, 150, FIG_AX2, FIG_AY2);
       yearFlash(c, t, 0.2, 1972); capPlate(c, t, 0.5, ['1972年1月', 'ゲイシーの家']);
       return { z: 1.04, fx: 160, fy: 100 };
     }
@@ -1444,11 +1554,11 @@ const GF = {
       roomBg(c, { wall: '#c8b890', wall2: '#bca880', floor: '#8c7c64', fy: 150, lamp: [100, 20] });
       R(c, 210, 90, 100, 60, '#e8e0d0'); R(c, 214, 84, 92, 8, '#a8a8b0');
       const yx = 170, gx = 120;
-      wallShadow(c, personSpr(GACY, { f: -1, arm: stab ? 'stab' : 'fwd', weapon: stab ? 'knife' : null, id: stab ? 'gk' : 'gk0' }), gx + 40, 150, 2.2, 'shg');
-      wallShadow(c, personSpr(YOUTH[0], { f: -1, arm: stab ? null : 'fwd', weapon: stab ? null : 'knife', id: stab ? 'ty' : 'tyk', shock: stab }), yx + 50, 150, 2.2, 'shy');
-      blit(c, personSpr(GACY, { f: -1, arm: stab ? 'stab' : 'fwd', weapon: stab ? 'knife' : null, id: stab ? 'gk2' : 'gk3', shock: !stab }), gx, 150, PER_AX, PER_AY, { s: 1.4 });
-      if (!stab) { blit(c, personSpr(YOUTH[0], { f: -1, arm: 'fwd', weapon: 'knife', id: 'ty2' }), yx, 150, PER_AX, PER_AY, { s: 1.3, flip: true }); R(c, 226, 82, 14, 6, '#e8d8a8'); R(c, 226, 80, 14, 2, '#c89c5c'); }
-      else { const fall = eOut(sg(v, 0.3, 0.8)); blit(c, personSpr(YOUTH[0], { f: -1, id: 'ty3', shock: true }), yx + fall * 6, 150 - fall * 4, PER_AX, PER_AY, { s: 1.3, flip: true, rot: fall * 1.5 });
+      wallShadow(c, gFig(GACY, { f: -1, arm: stab ? 'stab' : 'fwd', weapon: stab ? 'knife' : null, id: stab ? 'gk' : 'gk0' }), gx + 40, 150, 1.55, 'shg');
+      wallShadow(c, gFig(YOUTH[0], { f: -1, arm: stab ? null : 'fwd', weapon: stab ? null : 'knife', id: stab ? 'ty' : 'tyk', shock: stab }), yx + 50, 150, 1.55, 'shy');
+      blit(c, gFig(GACY, { f: -1, arm: stab ? 'stab' : 'fwd', weapon: stab ? 'knife' : null, id: stab ? 'gk2' : 'gk3', shock: !stab }), gx, 150, FIG_AX2, FIG_AY2);
+      if (!stab) { blit(c, gFig(YOUTH[0], { f: -1, arm: 'fwd', weapon: 'knife', id: 'ty2' }), yx, 150, FIG_AX2, FIG_AY2, { s: 1, flip: true }); R(c, 226, 82, 14, 6, '#e8d8a8'); R(c, 226, 80, 14, 2, '#c89c5c'); }
+      else { const fall = eOut(sg(v, 0.3, 0.8)); blit(c, gFig(YOUTH[0], { f: -1, id: 'ty3', shock: true }), yx + fall * 6, 150 - fall * 4, FIG_AX2, FIG_AY2, { s: 1, flip: true, rot: fall * 1.5 });
         bloodSplat(c, yx - 6, 110, 28, 5, Math.min(1, v * 4)); for (let i = 0; i < 4; i++) bloodDrip(c, 200 + i * 14, 60 + i * 9, 10 + i * 5, t, i); bloodPool(c, yx + 10, 154, Math.min(26, v * 10), 6);
         if (v < 0.15) flashScreen(c, 0.5, '#c81818'); }
       return { z: 1.06, fx: 150, fy: 110, sx: stab && v < 0.3 ? Math.round(Math.sin(t * 80) * 2) : 0 };
@@ -1471,11 +1581,11 @@ const GG = {
     S.short = !ln(S, 'L12'); if (S.short) S.tCuff = 0; },
   draw(c, t, S) {
     if (!S.short && t < S.tCuff) { // picking up young men with job offers
-      nightSky(c, t, 130, [K.night0, K.night1, K.night2]); R(c, 0, 130, W, 110, '#3c3c40'); for (let x = 0; x < W; x += 30) R(c, x - mod(t * 30, 30), 176, 14, 2, '#e8d070');
-      for (let i = 0; i < 5; i++) { R(c, i * 70, 40, 50, 90, '#2c2c34'); for (let k = 0; k < 6; k++) R(c, i * 70 + 6 + (k % 2) * 22, 50 + Math.floor(k / 2) * 24, 14, 12, (i + k) % 3 ? '#1c1c24' : K.win1); }
+      nightSky(c, t, 130, [K.night0, K.night1, K.night2]); c.save(); c.translate(0, -36); R(c, 0, 130, W, 146, '#3c3c40'); for (let x = 0; x < W; x += 30) R(c, x - mod(t * 30, 30), 176, 14, 2, '#e8d070');
+      for (let i = 0; i < 5; i++) { R(c, i * 70, 30, 50, 100, '#2c2c34'); for (let k = 0; k < 6; k++) R(c, i * 70 + 6 + (k % 2) * 22, 50 + Math.floor(k / 2) * 24, 14, 12, (i + k) % 3 ? '#1c1c24' : K.win1); }
       const cx = lerp(-80, 120, eOut(sg(t, 0.4, 2.4))); PF(c, [cx, 160, cx + 8, 148, cx + 24, 140, cx + 64, 140, cx + 78, 148, cx + 92, 150, cx + 94, 160], '#2c2c3c'); R(c, cx + 28, 142, 32, 6, '#5c6c8c'); E(c, cx + 18, 160, 6, 6, '#0c0c10'); E(c, cx + 76, 160, 6, 6, '#0c0c10');
-      blit(c, personSpr(YOUTH[1], { f: -1, id: 'yh' }), 236, 156, PER_AX, PER_AY, { s: 1.3, flip: true });
-      if (t > 3) speech(c, 'アルバイトしないか', 190, 70, 210);
+      blit(c, gFig(YOUTH[1], { f: -1, id: 'yh' }), 236, 146, FIG_AX2, FIG_AY2, { s: 1, flip: true });
+      c.restore(); if (t > 3) speech(c, 'アルバイトしないか', 140, 56, 170);
       yearFlash(c, t, 0.2, 1975);
       return { z: 1.03, fx: 160, fy: 110 };
     }
@@ -1486,13 +1596,13 @@ const GG = {
       if (t < S.tRope) {
         const sh = 1 + 0.15 * Math.sin(u * 3); E(c, 160, 70, 34, 14, DA(K.win0, 0.15));
         R(c, 140, 62, 14, 10, '#c8c8d0'); R(c, 166, 62, 14, 10, '#c8c8d0'); R(c, 143, 65, 8, 4, '#7c5c4c'); R(c, 169, 65, 8, 4, '#7c5c4c'); L(c, 154, 67, 166, 67, '#a8a8b0', 2);
-        blit(c, personSpr(GACY, { f: -1, arm: 'fwd', id: 'gh' }), 130, 150, PER_AX, PER_AY, { s: 1.4 }); blit(c, personSpr(YOUTH[1], { f: -1, arm: 'fwd', id: 'yh2' }), 180, 150, PER_AX, PER_AY, { s: 1.3, flip: true });
+        blit(c, gFig(GACY, { f: -1, arm: 'fwd', id: 'gh' }), 130, 150, FIG_AX2, FIG_AY2); blit(c, gFig(YOUTH[1], { f: -1, arm: 'fwd', id: 'yh2' }), 180, 150, FIG_AX2, FIG_AY2, { s: 1, flip: true });
         void sh; return { z: 1.06, fx: 160, fy: 100 };
       }
       const v = t - S.tRope, pull = Math.sin(v * 5) * 2;
       c.fillStyle = DA('#000000', 0.5); c.fillRect(0, 0, W, H);
-      wallShadow(c, personSpr(GACY, { f: -1, arm: 'up', id: 'gr' }), 150 + pull, 150, 2.4, 'shg2');
-      wallShadow(c, personSpr(YOUTH[1], { f: -1, arm: 'fwd', id: 'yr', shock: true }), 180, 150 - Math.min(10, v * 4), 2.2, 'shy2');
+      wallShadow(c, gFig(GACY, { f: -1, arm: 'up', id: 'gr' }), 150 + pull, 150, 1.7, 'shg2');
+      wallShadow(c, gFig(YOUTH[1], { f: -1, arm: 'fwd', id: 'yr', shock: true }), 180, 150 - Math.min(10, v * 4), 1.55, 'shy2');
       L(c, 150 + pull, 40, 180, 56, '#c8a860', 2);
       redVignette(c, Math.min(0.7, v * 0.3));
       return { z: 1.08, fx: 165, fy: 90, sx: Math.round(Math.sin(t * 40) * 1) };
@@ -1506,7 +1616,7 @@ const GG = {
     // the bridge over the Des Plaines River
     nightSky(c, t, 120, [K.night0, K.night1, K.night2]); VG(c, 0, 120, W, 120, ['#1c2c3c', '#0c1824']); for (let i = 0; i < 20; i++) R(c, mod(i * 41 - t * 12, W), 130 + (i * 13 % 100), 10, 1, '#2c4c6c');
     R(c, 0, 92, W, 10, '#4c4c54'); for (let x = 0; x < W; x += 20) R(c, x, 72, 3, 20, '#4c4c54'); R(c, 0, 72, W, 3, '#5c5c64'); for (const x of [60, 260]) R(c, x, 102, 14, 60, '#3c3c44');
-    const u = t - S.tRiver; blit(c, personSpr(GACY, { f: -1, arm: 'fwd', id: 'gbr' }), 150, 92, PER_AX, PER_AY, { s: 1.2 });
+    const u = t - S.tRiver; blit(c, gFig(GACY, { f: -1, arm: 'fwd', id: 'gbr' }), 150, 92, FIG_AX2, FIG_AY2);
     if (u > 0.8) { const v = u - 0.8, y = 96 + v * v * 60; if (y < 140) E(c, 172, y, 10, 4, '#5c4c3c'); else { const r2 = (v - 0.7) * 30; if (r2 < 40) { ER(c, 172, 142, r2, r2 * 0.25, '#8cb4d8'); ER(c, 172, 142, r2 * 0.6, r2 * 0.15, '#c8dce8'); } } }
     capPlate(c, t, S.tRiver + 0.2, ['デスプレーンズ川']);
     return { z: 1.04, fx: 160, fy: 110 };
@@ -1539,8 +1649,8 @@ const GI = {
     for (const wx of [72, 186]) { R(c, wx, 84, 62, 44, K.win0); for (let s = 0; s < 3; s++) R(c, wx + 4, 92 + s * 12, 54, 2, '#c8a860'); }
     R(c, 146, 86, 28, 54, '#3c2c24'); R(c, 149, 89, 22, 30, K.win1);
     snowGround(c, 140, 0, 100);
-    if (t > S.tGacy) { nightSky(c, t, 130, [K.night0, K.night1, K.night2]); snowGround(c, 136, 0, 104); ranchHouse(c, 110, 140, t, { snow: true, lit: true, wall: '#8c8070', wall2: '#7c7064', roof: '#3c3430' }); blit(c, personSpr(COP, { f: -1, id: 'cv', shock: t > S.tGacy + 1.5 }), 160, 146, PER_AX, PER_AY, { s: 1.3 }); for (let k = 0; k < 8; k++) { const u = fr(t * 0.4 + k / 8), x = 120 + k * 12 + Math.sin(t + k) * 4; PL(c, [x, 120 - u * 50, x + 3, 114 - u * 50, x - 2, 108 - u * 50], DA('#a8b46c', 0.6 * (1 - u))); } capPlate(c, t, S.tGacy + 0.3, ['ゲイシーの家']); snowfall(c, t, 50, 33, 8, 12); return { z: 1.05, fx: 160, fy: 110 }; }
-    if (t > S.tOut) { const u = t - S.tOut, x = 160 + u * 18, a = 1 - sg(t, S.tGone + 1.5, S.tGone + 3); for (let i = 0; i < u * 3 && i < 30; i++) R(c, 162 + i * 6, 150 + (i & 1) * 2, 3, 1, K.snow3); if (a > 0) c.drawImage(ditherFade(personSpr(BOY, { f: Math.floor(t * 7) & 3 }), a, 'boyf'), Math.round(x - PER_AX - 1), Math.round(152 - PER_AY - 1)); }
+    if (t > S.tGacy) { nightSky(c, t, 130, [K.night0, K.night1, K.night2]); snowGround(c, 136, 0, 104); ranchHouse(c, 110, 140, t, { snow: true, lit: true, wall: '#8c8070', wall2: '#7c7064', roof: '#3c3430' }); blit(c, gFig(COP2, { f: -1, id: 'cv', shock: t > S.tGacy + 1.5 }), 160, 146, FIG_AX2, FIG_AY2); for (let k = 0; k < 8; k++) { const u = fr(t * 0.4 + k / 8), x = 120 + k * 12 + Math.sin(t + k) * 4; PL(c, [x, 120 - u * 50, x + 3, 114 - u * 50, x - 2, 108 - u * 50], DA('#a8b46c', 0.6 * (1 - u))); } capPlate(c, t, S.tGacy + 0.3, ['ゲイシーの家']); snowfall(c, t, 50, 33, 8, 12); return { z: 1.05, fx: 160, fy: 110 }; }
+    if (t > S.tOut) { const u = t - S.tOut, x = 160 + u * 18, a = 1 - sg(t, S.tGone + 1.5, S.tGone + 3); for (let i = 0; i < u * 3 && i < 30; i++) R(c, 162 + i * 6, 150 + (i & 1) * 2, 3, 1, K.snow3); if (a > 0) c.drawImage(ditherFade(gFig(BOY, { f: Math.floor(t * 7) & 3 }), a, 'boyf'), Math.round(x - FIG_AX2 - 1), Math.round(152 - FIG_AY2 - 1)); }
     snowfall(c, t, 60, 31, 10, 14);
     capPlate(c, t, 0.5, ['1978年12月', 'イリノイ州 デス・プレーンズ']);
     return { z: 1 + 0.06 * ss(t / S.dur), fx: 190, fy: 110 };
@@ -1558,7 +1668,7 @@ const GJ = {
       return { z: 1.04, fx: 160, fy: 120, sy: Math.round(Math.sin(t * 25)) };
     }
     R(c, 0, 0, W, H, '#1c1814'); roomBg(c, { wall: '#4c4038', wall2: '#443830', floor: '#2c241c', fy: 150, lamp: [160, 20] });
-    R(c, 100, 120, 120, 8, '#5c3c28'); blit(c, personSpr(GACY, { f: -1, id: 'gcf' }), 136, 150, PER_AX, PER_AY, { s: 1.4 }); blit(c, personSpr(DET, { f: -1, id: 'lw' }), 190, 150, PER_AX, PER_AY, { s: 1.4, flip: true });
+    R(c, 100, 120, 120, 8, '#5c3c28'); blit(c, gFig(GACY, { f: -1, id: 'gcf' }), 136, 150, FIG_AX2, FIG_AY2); blit(c, gFig(DET2, { f: -1, id: 'lw' }), 190, 150, FIG_AX2, FIG_AY2, { s: 1, flip: true });
     for (let i = 0; i < 3; i++) { const u = fr(t * 0.3 + i / 3); E(c, 150 + u * 10, 90 - u * 40, 3 + u * 6, 2 + u * 3, DA('#c8c8c8', 0.5 * (1 - u))); } // cigarette smoke
     return { z: 1.06, fx: 160, fy: 110 };
   }
@@ -1571,7 +1681,7 @@ const GK = {
     if (t < S.tCount) {
       const n = Math.round(lerp(0, 29, sg(t, 1, S.tCount)));
       crossSection(c, t, n, { lit: true, blood: true });
-      for (let i = 0; i < 3; i++) { const x = 60 + i * 90 + Math.sin(t + i) * 8; blit(c, personSpr(COP, { f: -1, weapon: 'shovel', arm: (Math.floor(t * 2 + i) & 1) ? 'dig' : 'fwd', id: 'cd' + i + ((Math.floor(t * 2 + i) & 1)) }), x, 152, PER_AX, PER_AY, { s: 0.9 }); beam(c, x + 6, 132, 0.6 + Math.sin(t + i) * 0.3, 40, 0.2, 0.4); }
+      for (let i = 0; i < 3; i++) { const x = 60 + i * 90 + Math.sin(t + i) * 8; blit(c, gFig(COP2, { f: -1, weapon: 'shovel', arm: (Math.floor(t * 2 + i) & 1) ? 'dig' : 'fwd', id: 'cd' + i + ((Math.floor(t * 2 + i) & 1)) }), x, 152, FIG_AX2, FIG_AY2, { s: 0.8 }); beam(c, x + 6, 132, 0.6 + Math.sin(t + i) * 0.3, 40, 0.2, 0.4); }
       darkness(c, 160, 130, 170, 0.5);
       yearFlash(c, t, 0.2, 1978, 216, 4, '12月');
       return { z: 1.08, fx: 160, fy: 120 };
@@ -1595,15 +1705,15 @@ const GL = {
       const hit = t > S.tGavel && t < S.tGavel + 0.25; blit(c, cached('gavel', () => SPR(null, 22, 8, x => { R(x, 0, 0, 10, 8, '#6c4428'); R(x, 10, 3, 12, 2, '#8c5c38'); })), 200, 66, 20, 4, { rot: hit ? 0.2 : -0.9 }); R(c, 186, 70, 20, 4, '#4c2c1c');
       if (hit) for (let i = 0; i < 6; i++) L(c, 192, 70, 192 + Math.cos(i) * 14, 70 - Math.abs(Math.sin(i)) * 10, C.white);
       if (t > S.tJack) { const k = ss(sg(t, S.tJack, S.tJack + 2.5)), dk = t < S.tTrial ? 1 : 1 - ss(sg(t, S.tTrial, S.tTrial + 0.6)); c.fillStyle = DA('#000000', 0.55 * dk); c.fillRect(0, 0, W, H);
-        if (dk > 0) for (let i = 0; i < 4; i++) { const ox = (i - 1.5) * 34 * k, sh = personSpr(GACY, { f: -1, id: 'gj' + i }); c.globalAlpha = 0.35 * dk; blit(c, sh, 120 + ox, 156, PER_AX, PER_AY, { flip: i < 2, s: 1.4 }); c.globalAlpha = 1; }
+        if (dk > 0) for (let i = 0; i < 4; i++) { const ox = (i - 1.5) * 34 * k, sh = gFig(GACY, { f: -1, id: 'gj' + i }); c.globalAlpha = 0.35 * dk; blit(c, sh, 120 + ox, 156, FIG_AX2, FIG_AY2, { flip: i < 2, s: 1 }); c.globalAlpha = 1; }
         if (dk > 0 && k > 0.6) { c.globalAlpha = dk; for (let i = 0; i < 4; i++) TX(c, 'JACK', 120 + (i - 1.5) * 34 - 16, 64, K.red0, 16, '#000000'); c.globalAlpha = 1; } }
-      blit(c, personSpr(GACY, { f: -1, id: 'gt' }), 120, 156, PER_AX, PER_AY, { flip: true, s: 1.4 });
+      blit(c, gFig(GACY, { f: -1, id: 'gt' }), 120, 156, FIG_AX2, FIG_AY2, { flip: true, s: 1 });
       for (let i = 0; i < 5; i++) { const x = 20 + i * 64; E(c, x, 190, 12, 12, '#0c0806'); R(c, x - 14, 196, 28, 44, '#0c0806'); }
       if (t > S.tTrial) yearFlash(c, t, S.tTrial + 0.2, 1980, 14, 10, t > S.tGavel ? '死刑判決' : ''); return { z: 1.05, fx: 160, fy: 80, sy: hit ? 2 : 0 }; }
     // the cell, clown paintings on the wall
     R(c, 0, 0, W, H, '#4c4c54'); for (let y = 0; y < H; y += 10) R(c, 0, y, W, 1, '#44444c'); R(c, 0, 150, W, 90, '#3c3c44');
     [[30, 30], [130, 24], [230, 34]].forEach(([x, y], i) => { R(c, x - 4, y - 4, 68, 76, '#5c3c24'); R(c, x, y, 60, 68, ['#3c6cb8', '#c83c3c', '#48a048'][i]); bigFace(c, pogoFace({ expr: i === 1 ? 'creepy' : 'smile' }), x + 30, y + 34, 1, 1, 'pp' + i); });
-    blit(c, personSpr(GACY, { f: -1, arm: 'fwd', id: 'gpt' }), 150, 156, PER_AX, PER_AY, { s: 1.4 }); R(c, 166, 120, 2, 14, '#8c5c30');
+    blit(c, gFig(GACY, { f: -1, arm: 'fwd', id: 'gpt' }), 150, 156, FIG_AX2, FIG_AY2); R(c, 166, 120, 2, 14, '#8c5c30');
     for (let i = 0; i < 9; i++) R(c, 10 + i * 36, 0, 5, 150, '#2c2c34');
     return { z: 1.04, fx: 160, fy: 100 };
   }
@@ -1658,7 +1768,7 @@ const SS1 = {
   draw(c, t, S) {
     if (t < S.tDown) { VG(c, 0, 0, W, H, ['#06040a', '#140812', '#06040a']); bigFace(c, pogoFace({ blink: blinkOf(t, 12) }), 160, 90, 2, Math.min(1, t / 0.5), 'sp1');
       [[60, '#e83c3c', '#a01c1c'], [270, '#3c8cd8', '#1c5c9c']].forEach(([x, a, b], i) => balloon(c, x, 60 + Math.sin(t * 1.4 + i) * 3, a, b, t, i)); return { z: 1, fx: 160, fy: 100 }; }
-    const k = ss(sg(t, S.tDown, S.tDown + 1.4)); crossSection(c, t, 24, { blood: true }); blit(c, clownSpr(t), 150, 90, 12, 43, { s: 1.2 });
+    const k = ss(sg(t, S.tDown, S.tDown + 1.4)); crossSection(c, t, 24, { blood: true }); blit(c, clownSpr(t), 150, 91, CLOWN_AX, CLOWN_AY);
     if (k < 1) { c.fillStyle = '#000000'; c.fillRect(0, 102 + 60 * k, W, 140); }
     return { z: 1 + 0.3 * (1 - k), fx: 150, fy: lerp(70, 120, k) };
   }
