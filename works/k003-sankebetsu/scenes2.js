@@ -110,7 +110,7 @@ const KE = {
 /* ---- KF: the Myokei house — the window bursts; darkness ---- */
 const KF = {
   name: '明景の家', ch: '明景の家', bgm: 'dread',
-  init(S) { S.tBurst = ln(S, 'L12') ? at(S, 'L12', 1) + 0.2 : (ln(S, 'S1') ? at(S, 'S1', 2) : 1); S.tDark = ln(S, 'L13') ? at(S, 'L13', 1) - 0.2 : S.tBurst + 3; S.dur = lastSe(S) + 1.2; },
+  init(S) { if (ln(S, 'C0')) { S.tBurst = at(S, 'C0', 3) - 0.1; S.tDark = at(S, 'C0', 4) + 0.9; S.dur = lastSe(S) + 1.6; return; } S.tBurst = ln(S, 'L12') ? at(S, 'L12', 1) + 0.2 : (ln(S, 'S1') ? at(S, 'S1', 2) : 1); S.tDark = ln(S, 'L13') ? at(S, 'L13', 1) - 0.2 : S.tBurst + 3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     if (t > S.tDark) { // only darkness; two red eyes; the fire is out
       R(c, 0, 0, W, H, '#030204'); const x = 160 + Math.sin(t * 0.9) * 90, y = 96 + Math.sin(t * 1.7) * 10;
@@ -124,7 +124,7 @@ const KF = {
     const fam = [YAYO, { id: 'k1', robe: '#5c6c7c', robe2: '#3c4c5c', trim: '#c8c8c8', sash: '#2c2c34', hair: '#1c1c24' }, { id: 'k2', robe: '#7c5c4c', robe2: '#5c3c34', trim: '#d8c8b8', sash: '#2c2c34', hair: '#1c1c24' }, { id: 'tk', robe: '#5c4c6c', robe2: '#3c3450', trim: '#d8d0c8', sash: '#6c2c2c', hair: '#1c1c24', female: true }, { id: 'k3', robe: '#6c7c5c', robe2: '#4c5c3c', trim: '#d8d8c8', sash: '#2c2c34', hair: '#1c1c24' }];
     fam.forEach((st, i) => pioneer(c, st, 30 + i * 30 + (i > 2 ? 140 : 0), 144, i === 0 || i === 3 ? 1.45 : 1.1, { pose: 'sit', expr: hit ? 'shock' : 'normal', k: 'h' }));
     if (hit) { const bx = lerp(270, 210, eOut(k)); blit(c, tintSpr(bearSpr('lunge', 0), '#050304', 'bsil'), bx, 140, 42, 55, { s: 1.6, flip: true }); for (const dx of [-38, -34]) R(c, bx + dx * 1.6 + 70, 140 - 30 * 1.6 + 2, 2, 2, '#e8281c'); for (let i = 0; i < 16; i++) R(c, 260 + Math.cos(i) * 60 * k, 64 + Math.sin(i * 2) * 40 * k + k * k * 50, 4, 2, i & 1 ? '#5c4c3c' : '#a8c0d8'); }
-    capPlate(c, t, 0.4, ['12月10日 午後8時50分', '明景の家']);
+    if (!ln(S, 'C0')) capPlate(c, t, 0.4, ['12月10日 午後8時50分', '明景の家']);
     return { z: hit ? 1.12 : 1.03, fx: hit ? 220 : 160, fy: 100, sx: hit && t < S.tBurst + 0.6 ? Math.round(Math.sin(t * 60) * 4) : 0 };
   }
 };

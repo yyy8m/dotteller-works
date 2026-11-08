@@ -12,6 +12,8 @@ const fs = require('fs'), path = require('path');
   let rows = sc.filter(s => s[3]).map(s => [s[1] + 0.5, s[3]]);
   if (!rows.length) rows = sc.map(s => [s[1] + 0.5, s[0]]);
   rows[0][0] = 0;
+  // cold open before the title card: name the first chapter as the prologue
+  if (sc.findIndex(s => s[0] === 'ドット語り') > 0) rows[0][1] = 'プロローグ';
   // YouTube needs every chapter to be at least 10 s long: fold short ones into the previous chapter
   const out = []; for (const r of rows) { if (out.length && r[0] - out[out.length - 1][0] < 10) continue; out.push(r); }
   rows = out;

@@ -1,28 +1,29 @@
 /* ================= 記録 #003 三毛別羆事件: story plan ================= */
 const EXPR = {};
-['L0', 'L1', 'L2', 'L3', 'L6', 'L8', 'L10', 'L11', 'L12', 'L17', 'L19', 'L20', 'L21', 'L22', 'L23', 'L24', 'L25', 'L26', 'L27', 'L28', 'L29', 'L31', 'S1', 'S2', 'S01', 'Y01', 'K01'].forEach(id => EXPR[id] = [[0, 'normal']]);
+['C0', 'L2b', 'L15b', 'L0', 'L1', 'L2', 'L3', 'L6', 'L8', 'L10', 'L11', 'L12', 'L17', 'L19', 'L20', 'L21', 'L22', 'L23', 'L24', 'L25', 'L26', 'L27', 'L28', 'L29', 'L31', 'S1', 'S2', 'S01', 'Y01', 'K01'].forEach(id => EXPR[id] = [[0, 'normal']]);
 ['L4', 'L5', 'L7', 'L9', 'L13', 'L14', 'L15', 'L16', 'L18', 'L30'].forEach(id => EXPR[id] = [[0, 'sad']]);
 const SPEAKERS_EXTRA = { saburo: { name: '太田三郎', bg: ['#3c2c1c', '#5c4430'] }, yayo: { name: '明景ヤヨ', bg: ['#3c2434', '#5c3c4c'] }, suga: { name: '討伐隊長 菅', bg: ['#141a28', '#2c3448'] } };
 const HOOK = ['窓を突き破ってきたのは', '1頭のヒグマだった'];
 const PLAN_FULL = [
-  { sc: S0, pre: 1.0, items: ['L0'], tr: 'fromBlack', td: 1.0 },
+  { sc: KF, pre: 0.6, items: ['C0'], tr: 'fromBlack', td: 0.6 },
+  { sc: S0, pre: 0.8, items: ['L0'], tr: 'white', td: 1.0 },
   { sc: KA, pre: 1.0, items: ['L1'], tr: 'dither', td: 1.2 },
-  { sc: KB, pre: 0.6, items: ['L2'], tr: 'dither', td: 1.0 },
-  { sc: KC, pre: 0.8, items: ['L3', 0.4, 'S01', 0.8, 'L4', 0.6, 'L5'], tr: 'dither', td: 1.2 },
+  { sc: KB, pre: 0.6, items: ['L2', 0.6, 'L2b'], tr: 'dither', td: 1.0 },
+  { sc: KC, pre: 0.8, items: ['L3', 0.6, 'S01', 1.2, 'L4', 1.0, 'L5'], tr: 'dither', td: 1.2 },
   { sc: KD, pre: 0.6, items: ['L6', 0.6, 'L7'], tr: 'dither', td: 1.0 },
   { sc: KE, pre: 0.8, items: ['L8', 0.5, 'L9', 0.6, 'L10'], tr: 'dither', td: 1.0 },
   { sc: KF, pre: 0.8, items: ['L11', 0.5, 'L12', 0.2, 'Y01', 0.4, 'L13'], tr: 'dither', td: 0.8 },
-  { sc: KG, pre: 1.0, items: ['L14', 0.8, 'L15'], tr: 'dither', td: 1.4 },
-  { sc: KH, pre: 0.8, items: ['L16'], tr: 'dither', td: 1.0 },
+  { sc: KG, pre: 1.0, items: ['L14', 1.4, 'L15'], tr: 'dither', td: 1.4 },
+  { sc: KH, pre: 0.8, items: ['L15b', 0.5, 'L16'], tr: 'dither', td: 1.0 },
   { sc: KI, pre: 0.8, items: ['L17', 0.6, 'L18'], tr: 'blinds', td: 1.0 },
   { sc: KX, pre: 0, items: [], tr: 'dither', td: 0.3 },
   { sc: KJ, pre: 0.6, items: ['L19'], tr: 'dither', td: 1.0 },
-  { sc: KK, pre: 0.8, items: ['L20', 0.4, 'K01', 0.6, 'L21'], tr: 'dither', td: 1.0 },
+  { sc: KK, pre: 0.8, items: ['L20', 0.8, 'K01', 1.0, 'L21'], tr: 'dither', td: 1.0 },
   { sc: KL, pre: 0.8, items: ['L22', 0.6, 'L23'], tr: 'white', td: 1.0 },
-  { sc: KM, pre: 0.8, items: ['L24', 0.6, 'L25'], tr: 'dither', td: 1.0 },
+  { sc: KM, pre: 0.8, items: ['L24', 1.0, 'L25'], tr: 'dither', td: 1.0 },
   { sc: KN, pre: 0.8, items: ['L26'], tr: 'dither', td: 1.2 },
   { sc: KO, pre: 0.8, items: ['L27', 0.6, 'L28'], tr: 'dither', td: 1.0 },
-  { sc: KP, pre: 1.0, items: ['L29', 0.8, 'L30', 1.0, 'L31'], tr: 'dither', td: 1.4 },
+  { sc: KP, pre: 1.0, items: ['L29', 1.0, 'L30', 1.2, 'L31'], tr: 'dither', td: 1.4 },
 ];
 const PLAN_SHORT = [
   { sc: KF, pre: 0.4, items: ['S1', 0.2, 'Y01'], tr: 'fromBlack', td: 0.4 },
