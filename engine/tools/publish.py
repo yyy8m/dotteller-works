@@ -254,9 +254,12 @@ def thumb(work, tok):
     """set <work>/build/thumb.png (engine/tools/thumb.js) as the thumbnail of the uploaded videos"""
     state, path = load_state(work), os.path.join(work, 'build', 'thumb.png')
     if not os.path.exists(path): sys.exit('サムネ画像がありません: node engine/tools/thumb.js ' + os.path.relpath(work, ROOT))
-    img = open(path, 'rb').read()
+    imgs = {'youtube_main': open(path, 'rb').read()}
+    tall = path.replace('.png', '_tall.png')  # the Short gets the vertical thumbnail (the 16:9 one is cut in the middle)
+    imgs['youtube_short'] = open(tall, 'rb').read() if os.path.exists(tall) else imgs['youtube_main']
     for k in ('youtube_main', 'youtube_short'):
         if not state.get(k): continue
+        img = imgs[k]
         try:
             call('POST', 'https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=' + yt_id(state[k]), tok, raw=img, headers={'Content-Type': 'image/png'})
             print('thumbnail set:', k, state[k])

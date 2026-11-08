@@ -16,5 +16,9 @@ const fs = require('fs'), path = require('path');
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, Buffer.from(url.split(',')[1], 'base64'));
   console.log(out, fs.statSync(out).size);
+  // vertical version for the Short (1080x1920)
+  const urlT = await p.evaluate(() => { const tc = drawThumbTall(0), [o, x] = mk(1080, 1920); x.imageSmoothingEnabled = false; x.drawImage(tc, 0, 0, 1080, 1920); return o.toDataURL('image/png'); });
+  const outT = out.replace(/\.png$/, '_tall.png'); fs.writeFileSync(outT, Buffer.from(urlT.split(',')[1], 'base64'));
+  console.log(outT, fs.statSync(outT).size);
   await b.close();
 })();
