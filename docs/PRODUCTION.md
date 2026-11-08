@@ -90,4 +90,5 @@ python3 engine/tools/publish.py works/<id> all
 - つまずいた所と対処は `notes/技術メモ.md` に書く。
 
 ## 7. 報告
+- 前日の19:00に公開された作品について、オーナーに「YouTube Studio でショートの関連動画に本編を設定してください」と頼む（API ではできず、公開後にしか選べないため）。
 作った作品、公開日時、本編・ショート・ブログの URL、TikTok 用の `works/<id>/tiktok.txt` の中身を短く報告する。
