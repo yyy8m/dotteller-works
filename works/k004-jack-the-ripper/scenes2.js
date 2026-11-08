@@ -44,16 +44,22 @@ const RC = {
 /* ---- RD: Sep 8 — Hanbury Street; the witness; the man in the deerstalker ---- */
 const RD = {
   name: 'ハンバリー・ストリート', bgm: 'dread',
-  init(S) { S.tWit = at(S, 'L7', 0) - 0.3; S.tTalk = ln(S, 'J1') ? at(S, 'J1', 0) - 0.4 : 1e9; S.dur = lastSe(S) + 1.0; },
+  init(S) { S.cold = ln(S, 'C0'); S.tGone = ln(S, 'C1') ? at(S, 'C1', 2) - 0.2 : 1e9; S.tWit = S.cold ? at(S, 'C0', 3) - 0.3 : at(S, 'L7', 0) - 0.3; S.tTalk = ln(S, 'J1') ? at(S, 'J1', 0) - 0.4 : 1e9; S.dur = lastSe(S) + 1.0; },
   draw(c, t, S) {
     const dawn = t < S.tWit ? 0.2 : 0.35;
     eastEnd(c, t, { lamps: true }); c.fillStyle = DA('#2c3448', dawn); c.fillRect(0, 0, W, 60);
     R(c, 134, 98, 30, 50, '#1c1414'); TX(c, '29', 140, 80, '#c8b894', 16, '#000000'); // No. 29
     if (t > S.tWit) { woman(c, 1, 50, 150, 1.25, { flip: false, expr: t > S.tTalk ? 'shock' : 'normal', k: 'wit' }); }
     // Annie and the man by the door, seen from across the street
+    // cold open: after "her last moment" the couple fades into the dark, leaving the empty doorway
+    const fade = 1 - ss(sg(t, S.tGone, S.tGone + 2.4));
+    c.save(); c.globalAlpha = fade;
     woman(c, 0, 190, 150, 1.35, { flip: true, k: 'an' });
     jack(c, 216, 150, 1.45, { flip: true, eyes: t > S.tTalk });
-    if (t > S.tTalk) glow(c, 204, 100, 40, 30, '#f8c870', 0.15);
+    c.restore();
+    if (t > S.tTalk) glow(c, 204, 100, 40, 30, '#f8c870', 0.15 * fade);
+    if (S.cold) { c.save(); c.globalAlpha = 0.55 * ss(sg(t, S.tGone, S.tGone + 3)); c.fillStyle = '#04040a'; c.fillRect(0, 0, W, H); c.restore(); capPlate(c, t, 0.6, ['1888年9月8日', 'ハンバリー通り']);
+      return { z: lerp(1.0, 1.32, ss(sg(t, 0.5, S.tGone))), fx: lerp(160, 204, ss(sg(t, 0.5, S.tTalk))), fy: 110 }; }
     yearFlash(c, t, 0.3, 1888, 214, 10, '9月8日'); capPlate(c, t, 0.6, ['ハンバリー通り', '29番地']);
     return { z: t > S.tTalk ? 1.25 : 1.06, fx: t > S.tTalk ? 200 : 160, fy: 108 };
   }
@@ -81,7 +87,7 @@ const RE = {
 /* ---- RF: Sep 30 — the "double event": Dutfield's Yard, then Mitre Square 45 minutes later ---- */
 const RF = {
   name: '二つの事件', ch: '9月30日', bgm: 'dread',
-  init(S) { S.tSecond = at(S, 'L10', 2) - 0.3; S.tApron = ln(S, 'L11') ? at(S, 'L11', 0) - 0.3 : 1e9; S.tWall = ln(S, 'L11') ? at(S, 'L11', 2) - 0.2 : 1e9; S.dur = lastSe(S) + 1.0; },
+  init(S) { S.tSecond = at(S, 'L10', 3) - 0.2; S.tApron = ln(S, 'L11') ? at(S, 'L11', 0) - 0.3 : 1e9; S.tWall = ln(S, 'L11') ? at(S, 'L11', 2) - 0.2 : 1e9; S.dur = lastSe(S) + 1.0; },
   draw(c, t, S) {
     if (t > S.tApron) { // the doorway in Goulston Street: a torn piece of apron, chalk on the wall above
       brickWall(c, 0, 0, W, 150, '#3c2c2c', '#2c2020'); R(c, 120, 30, 80, 120, '#140c0c'); R(c, 116, 26, 88, 4, '#5c4c44'); R(c, 0, 150, W, H - 150, '#2c2c34');
@@ -101,13 +107,13 @@ const RF = {
 /* ---- RG: "From Hell" — a small box and a letter for George Lusk ---- */
 const RG = {
   name: '地獄より', ch: '地獄より', bgm: 'dread',
-  init(S) { S.tBox = at(S, 'L12', 1) - 0.2; S.tFrom = at(S, 'L12', 2) - 0.2; S.dur = lastSe(S) + 1.0; },
+  init(S) { S.tBox = at(S, 'L12', 2) - 0.2; S.tFrom = at(S, 'L12', 4) - 0.2; S.dur = lastSe(S) + 1.0; },
   draw(c, t, S) {
     R(c, 0, 0, W, H, '#140c08'); for (let y = 0; y < 150; y += 8) R(c, 0, y, W, 1, '#1c1410'); R(c, 0, 130, W, H - 130, '#3c2818'); glow(c, 160, 90, 140, 80, '#f8c870', 0.2);
     blit(c, suitFig({ id: 'lu', coat: '#3c3028', coat2: '#2c2420', pants: '#2c2c2c', boots: '#141414', hair: '#5c4434', moustache: true }, { arm: 'reach', expr: t > S.tFrom + 2 ? 'shock' : 'normal', k: 'l' }), 70, 150, FIG_AX2, FIG_AY2, { s: 1.4 });
     if (t > S.tBox) { R(c, 160, 112, 34, 20, '#8c6c48'); R(c, 160, 112, 34, 4, '#a8845c'); L(c, 177, 112, 177, 132, '#5c4430'); }
     if (t > S.tFrom) letterSheet(c, 206, 40, 96, 84, t, { k: sg(t, S.tFrom, S.tFrom + 3), head: 'From hell' });
-    yearFlash(c, t, 0.3, 1888, 214, 10, '10月16日'); capPlate(c, t, 0.6, ['自警団のリーダー', 'ジョージ・ラスク']);
+    if (t < S.tFrom) yearFlash(c, t, 0.3, 1888, 214, 10, '10月16日'); capPlate(c, t, 0.6, ['自警団のリーダー', 'ジョージ・ラスク']);
     return { z: 1.05 + 0.1 * sg(t, S.tFrom, S.dur), fx: 200, fy: 100 };
   }
 };
@@ -218,7 +224,7 @@ const RO = {
     VG(c, 0, 0, W, H, ['#06040a', '#0c0810', '#140c10']); glow(c, 160, 96, 150, 50, '#8c94a8', 0.12);
     const names = ['メアリー・アン・ニコルズ', 'アニー・チャップマン', 'エリザベス・ストライド', 'キャサリン・エドウッズ', 'メアリー・ジェーン・ケリー'];
     let cur = -1;
-    names.forEach((nm, i) => { const t0 = ln(S, 'L25') ? at(S, 'L25', 2 + i) - 0.2 : 1e9; const lit = t > t0; if (lit) cur = i; candle(c, 56 + i * 52, 100, t, i, lit ? 1 : 0); });
+    names.forEach((nm, i) => { const t0 = ln(S, 'L25') ? at(S, 'L25', 6 + i) - 0.2 : 1e9; const lit = t > t0; if (lit) cur = i; candle(c, 56 + i * 52, 100, t, i, lit ? 1 : 0); });
     if (cur >= 0 && t < (ln(S, 'L26') ? at(S, 'L26', 0) : 1e9)) { const nm = names[cur], w = textSpr(nm, 16, '#e8dcbc').width; TX(c, nm, 160 - w / 2, 24, '#e8dcbc', 16, '#000000'); }
     return { z: 1 + 0.06 * ss(sg(t, 0, S.tEnd + 2)), fx: 160, fy: 90 };
   }
