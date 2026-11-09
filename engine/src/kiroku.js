@@ -397,7 +397,7 @@ function suitFig(st, o = {}) {
 
 /* ---- modern figure (1950s-80s clothes): 36x58 (body in the left 26 px, room for the arm), anchor at the feet (FIG_AX2, FIG_AY2), 3/4 view facing right (use flip)
    st: { id, top: 'shirt'|'jacket'|'tee'|'uniform'|'dress'|'sweater', coat, coat2, shirt, tie, pants, shoes, skin, hair,
-         hairStyle: 'short'|'long'|'curly'|'side'|'bald', moustache, glasses, heavy, kid, hat: 'police'|'fedora'|'cap', hatCol, plaid, badge }
+         hairStyle: 'short'|'long'|'curly'|'side'|'bald', moustache, glasses, heavy, kid, hat: 'police'|'fedora'|'cap'|'helmet', hatCol, plaid, badge }
    o:  { f (walk frame, -1 = stand), arm: 'up'|'fwd'|'stab'|'dig'|'wave'|'point'|'hold', weapon: 'bottle'|'knife'|'shovel'|'flash', expr|shock, blink, k } ---- */
 function shadeCol(col, k) { const [r, g, b] = hex(col), f = v => Math.max(0, Math.min(255, Math.round(v * k))).toString(16).padStart(2, '0'); return '#' + f(r) + f(g) + f(b); }
 function modFig(st, o = {}) {
@@ -465,6 +465,7 @@ function modFig(st, o = {}) {
     } else { L(c, cx - hr + 1, hy - 1, cx - hr + 1, hy + 2, hc); }
     if (st.hat === 'police') { R(c, cx - hr - 1, hy - hr - 2, hr * 2 + 2, 5, st.hatCol || '#1c2c4c'); R(c, cx - hr + 1, hy - hr + 3, hr * 2 + 2, 2, '#141414'); P(c, cx, hy - hr, '#f0d060'); R(c, cx - hr - 1, hy - hr - 2, hr * 2 + 2, 1, shadeCol(st.hatCol || '#1c2c4c', 1.4)); }
     if (st.hat === 'fedora') { R(c, cx - hr - 3, hy - 4, hr * 2 + 6, 2, st.hatCol || '#3c3428'); PF(c, [cx - hr + 1, hy - 4, cx - hr + 2, hy - hr - 4, cx + hr - 2, hy - hr - 4, cx + hr - 1, hy - 4], st.hatCol || '#3c3428'); R(c, cx - hr + 1, hy - 6, hr * 2 - 2, 1, '#1c1814'); }
+    if (st.hat === 'helmet') { E(c, cx, hy - 3, hr + 1.5, hr, '#f4f4f0'); E(c, cx - 2, hy - 5, 2.5, 2, '#ffffff'); R(c, cx - hr - 1, hy - 1, hr * 2 + 3, 2, '#c8c8c4'); R(c, cx - hr, hy - 3, hr * 2 + 1, 2, '#3c3c44'); R(c, cx - 4, hy - 3, 3, 2, '#8cb4d8'); R(c, cx + 1, hy - 3, 3, 2, '#8cb4d8'); L(c, cx - hr - 1, hy + 1, cx - hr + 1, hy + 6, '#2c2c2c'); } // white police-bike helmet with goggles
     if (st.hat === 'cap') { E(c, cx, hy - hr + 1, hr, 3, st.hatCol || '#c82828'); R(c, cx + 1, hy - hr + 2, hr + 3, 2, shadeCol(st.hatCol || '#c82828', 0.7)); }
     // face
     const ey = hy;

@@ -94,6 +94,7 @@ function scheduleAll(T0) {
     const nx = TL.scenes[i + 1];
     const tr = { style: S.sc.bgm, a: Math.max(0, S.start - 0.2), b: nx ? nx.start + nx.td * 0.7 : Infinity, fin: i ? 1 : 2, fout: 1.2 };
     if (S.sc.bgmTrack) S.sc.bgmTrack(S, tr);
+    if (tr.mute) { tr.muteA = S.start + tr.mute[0]; tr.muteB = S.start + tr.mute[1]; } // silence the music inside the scene (seconds from the scene start)
     return tr;
   }).filter(tr => tr.style);
   bgmStart(tracks, T0);

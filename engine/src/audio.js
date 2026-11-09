@@ -196,6 +196,7 @@ function bgmStart(tracks, T0) {
   BGM.tracks = tracks.map(tr => {
     const g = ac.createGain(); g.connect(AU.bgm); const a = T0 + tr.a, b = T0 + tr.b;
     g.gain.setValueAtTime(0.0001, ac.currentTime); g.gain.setValueAtTime(0.0001, a); g.gain.linearRampToValueAtTime(1, a + (tr.fin || 1));
+    if (tr.muteA != null) { g.gain.setValueAtTime(1, T0 + tr.muteA); g.gain.linearRampToValueAtTime(0.0001, T0 + tr.muteA + 0.4); g.gain.setValueAtTime(0.0001, T0 + tr.muteB); g.gain.linearRampToValueAtTime(1, T0 + tr.muteB + 1.0); }
     if (isFinite(b)) { if (tr.cut) { g.gain.setValueAtTime(1, b - 0.02); g.gain.linearRampToValueAtTime(0.0001, b); } else { g.gain.setValueAtTime(1, b - (tr.fout || 1.2)); g.gain.linearRampToValueAtTime(0.0001, b); } }
     return Object.assign({ g, A: a, B: b, next: 0 }, tr);
   });

@@ -44,7 +44,7 @@ RI.sfx = (S, ev) => { ['L14'].forEach(id => { for (let k = 0; k < 3; k++) ev(at(
 RK.sfx = (S, ev) => { ev(0.3, 'excl'); };
 RL.sfx = (S, ev) => { if (S.tRep < 1e8) ev(S.tRep + 3, 'stamp'); };
 RM.sfx = (S, ev) => { if (S.tBlitz < 1e8) { ev(S.tBlitz, 'thunder'); ev(S.tBlitz + 0.3, 'burn', 3); } if (S.tUnk < 1e8) ev(S.tUnk, 'sting'); };
-RO.sfx = (S, ev) => { for (let i = 0; i < 5; i++) ev(at(S, 'L25', 2 + i) - 0.2, 'toll'); ev(S.tEnd, 'end'); };
+RO.sfx = (S, ev) => { for (let i = 0; i < 5; i++) ev(at(S, 'L25', 6 + i) - 0.2, 'toll'); ev(S.tEnd, 'end'); };
 SS1.sfx = (S, ev) => { for (let k = 0; k < 6; k++) ev(0.4 + k * 0.6, 'step'); };
 RO.bgmTrack = (S, tr) => { tr.fin = 3; };
 RO.ending = true;
