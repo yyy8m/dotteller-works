@@ -79,7 +79,7 @@ function buildTimeline(bufs) {
 /* ---- schedule audio for the whole show ---- */
 function scheduleAll(T0) {
   const ac = AU.ctx, sfx = [];
-  const ev = (t, f, ...a) => sfx.push([t, f, a]);
+  const ev = (t, f, ...a) => { if (isFinite(t)) sfx.push([Math.max(0, t), f, a]); }; // a cue before the start (e.g. a scene that opens mid-action) plays at 0
   TL.scenes.forEach((S, i) => {
     const s0 = S.start, L0 = S.lines[0], Ll = S.lines[S.lines.length - 1];
     if (L0) { ev(s0 + L0.t0 - 0.25, 'open'); ev(s0 + Ll.se + 0.7, 'close'); }
