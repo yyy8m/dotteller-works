@@ -94,5 +94,5 @@ python3 engine/tools/publish.py works/<id> all
 - つまずいた所と対処は `notes/技術メモ.md` に書く。
 
 ## 7. 報告
-- 本編は18:00、ショートは20:00に公開される（publish.py が自動で2時間ずらす）。18:00〜20:00の間に、オーナーが YouTube Studio でショートの「関連動画」に本編を設定する（API ではできず、本編が公開されてからしか選べないため）。その日の18:05ごろにオーナーへ知らせる。知らせには、ショートの編集画面への直接リンク `https://studio.youtube.com/video/<ショートのID>/edit` を付ける。
+- 本編・ショート・ブログはすべて18:00に同時公開（`publish.py` の `SHORT_DELAY_H = 0`）。ショートの「関連動画」は、公開直後に Muse が YouTube Studio で設定する。オーナーへの手作業の依頼（18:05のお知らせ）は入れない。
 作った作品、公開日時、本編・ショート・ブログの URL、TikTok 用の `works/<id>/tiktok.txt` の中身を短く報告する。

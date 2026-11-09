@@ -141,7 +141,7 @@ def theme_inline(content):
             '<style>' + css + '</style>\n')
 
 
-SHORT_DELAY_H = 2
+SHORT_DELAY_H = 0  # 2026-11-09: main and Short go out together at 18:00 (the related-video link is set right after publishing, outside this script)
 
 
 def publish_at(work, kind='main'):
