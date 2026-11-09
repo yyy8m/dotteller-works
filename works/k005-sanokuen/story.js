@@ -1,6 +1,6 @@
 /* ================= 記録 #005 三億円事件: story plan ================= */
 const EXPR = {};
-['F1', 'F2', 'D1', 'B1', 'C0', 'L0', 'L1', 'L2', 'L3', 'L4', 'L5b', 'L6', 'L7', 'L8', 'L9', 'L11', 'L12', 'L13', 'L14', 'L15', 'L17', 'L18', 'L19', 'L20', 'L21', 'L22', 'L23', 'L24', 'L26', 'L28', 'L29', 'L30', 'L31', 'L33', 'L34', 'S1', 'S2'].forEach(id => EXPR[id] = [[0, 'normal']]);
+['F1', 'F2', 'D1', 'B1', 'C0', 'L0', 'L1', 'L2', 'L3', 'L4', 'L5b', 'L6', 'L7', 'L8', 'L9', 'L11', 'L12', 'L13', 'L14', 'L15', 'L17', 'L18', 'L19', 'L20', 'L21', 'L22', 'L23', 'L24', 'L26', 'L28', 'L29', 'L30', 'L31', 'L33', 'L34', 'S1', 'S2'].forEach(id => EXPR[id] = [[0, 'normal']]); EXPR.T1 = [[0, 'normal']];
 ['C1', 'L5', 'L10', 'L16', 'L25', 'L27', 'L32'].forEach(id => EXPR[id] = [[0, 'sad']]);
 const SPEAKERS_EXTRA = { fake: { name: '白バイの男', bg: ['#141c2c', '#34405c'] }, driver: { name: '輸送車の運転手', bg: ['#1c1c24', '#3c4048'] }, banker: { name: '銀行員', bg: ['#141c30', '#2c3448'] } };
 const HOOK = ['3分で、3億円が消えた', '犯人は、白バイ警官――'];
@@ -29,7 +29,16 @@ const PLAN_SHORT = [
   { sc: SG, pre: 0.2, items: ['L14'], tr: 'dither', td: 0.4 },
   { sc: SS2, pre: 0.3, items: ['S2'], tr: 'dither', td: 0.5 },
 ];
-const PLAN = SHORT ? PLAN_SHORT : PLAN_FULL;
+// TikTok teaser (60-75 s, ends with 「続きは、本編で。」)
+const PLAN_TIKTOK = [
+  { sc: SS1, pre: 0.3, items: ['S1'], tr: 'fromBlack', td: 0.3 },
+  { sc: SD, pre: 0.3, items: ['L8', 0.4, 'L9'], tr: 'dither', td: 0.5 },
+  { sc: SE, pre: 0.3, items: ['D1', 0.3, 'F2'], tr: 'dither', td: 0.5 },
+  { sc: SF, pre: 0.3, items: ['L12', 0.3, 'F1'], tr: 'dither', td: 0.5 },
+  { sc: SG, pre: 0.3, items: ['L14'], tr: 'dither', td: 0.5 },
+  { sc: SS2, pre: 0.3, items: ['T1'], tr: 'dither', td: 0.5 },
+];
+const PLAN = SHORT ? (TIKTOK ? PLAN_TIKTOK : PLAN_SHORT) : PLAN_FULL;
 SX.sfx = (S, ev) => { ev(0.1, 'burn', 4); ev(0.2, 'sting'); for (let k = 0; k < 6; k++) ev(0.5 + k * 0.3, 'step'); if (S.tGo < 1e8) { ev(S.tGo, 'door'); ev(S.tGo + 0.3, 'whoosh'); } };
 SA.sfx = (S, ev) => { ev(0.3, 'stamp'); ev(S.tSum + 2.4, 'sparkle'); };
 SB.sfx = (S, ev) => { ev(0.3, 'stamp'); ev(S.tOpen, 'creak'); ev(S.tLetter, 'sting'); for (let k = 0; k < 6; k++) ev(S.tWatch + 0.6 + k * 1.0, 'heart'); ev(S.tNote, 'stamp'); };

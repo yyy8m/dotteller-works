@@ -157,7 +157,7 @@ const QG = {
 /* ---- QH: the cedar, the fire, the broken branches; three between the tree and the tent ---- */
 const QH = {
   name: 'ヒマラヤスギ', ch: '大きな木の下', bgm: 'requiem',
-  init(S) { S.tBranch = at(S, 'L13', 0) - 0.3; S.tThree = at(S, 'L14', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
+  init(S) { S.tBranch = ln(S, 'L13') ? at(S, 'L13', 0) - 0.3 : 1e9; S.tThree = at(S, 'L14', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     if (t > S.tThree) { // the long slope: three figures fallen in a line, facing the tent
       slope(c, t, 'day'); tent(c, 290, 74, { cut: true, snow: true });
@@ -208,7 +208,7 @@ const QJ = {
 /* ---- QK: the autopsies — 6 by cold, 3 crushed with no outer wound; radiation on the clothes ---- */
 const QK = {
   name: '検視', ch: '検視', bgm: 'pulse',
-  init(S) { S.tBones = at(S, 'L18', 1) - 0.3; S.tGeiger = at(S, 'L20', 0) - 0.3; S.dur = lastSe(S) + 1.0; },
+  init(S) { S.tBones = at(S, 'L18', 1) - 0.3; S.tGeiger = ln(S, 'L20') ? at(S, 'L20', 0) - 0.3 : 1e9; S.dur = lastSe(S) + 1.0; },
   draw(c, t, S) {
     if (t > S.tGeiger) { // a Geiger counter over a sweater
       R(c, 0, 0, W, H, '#2c2a28'); R(c, 60, 50, 140, 100, '#7c6c4c'); for (let y = 54; y < 150; y += 4) L(c, 60, y, 200, y, '#6c5c3c');
@@ -299,7 +299,7 @@ const QP = {
 /* ---- shorts ---- */
 const SS2 = {
   name: 'ショート締め', bgm: 'eerie',
-  init(S) { S.dur = lastSe(S) + 0.6; },
+  init(S) { S.dur = lastSe(S) + (TIKTOK ? 2.2 : 0.6); },
   draw(c, t, S) {
     slope(c, t, 'night'); tent(c, 160, 110, { cut: true, night: true }); blizzard(c, t, 0.8); bigCap(c, '?', 40, 24, '#f8d860');
     return { z: 1.1, fx: 160, fy: 100 };

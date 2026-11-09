@@ -1,6 +1,6 @@
 /* ================= 記録 #006 ディアトロフ峠事件: story plan ================= */
 const EXPR = {};
-['M1', 'Y1', 'C0', 'L0', 'L1', 'L2', 'L3', 'L5', 'L6', 'L7', 'L8', 'L9', 'L10', 'L11', 'L12', 'L13', 'L15', 'L16', 'L20', 'L21', 'L22', 'L23', 'L24', 'L26', 'L29', 'S1', 'S2'].forEach(id => EXPR[id] = [[0, 'normal']]);
+['M1', 'Y1', 'C0', 'L0', 'L1', 'L2', 'L3', 'L5', 'L6', 'L7', 'L8', 'L9', 'L10', 'L11', 'L12', 'L13', 'L15', 'L16', 'L20', 'L21', 'L22', 'L23', 'L24', 'L26', 'L29', 'S1', 'S2'].forEach(id => EXPR[id] = [[0, 'normal']]); EXPR.T1 = [[0, 'normal']];
 ['C1', 'L4', 'L4b', 'L14', 'L17', 'L18', 'L19', 'L25', 'L27', 'L28'].forEach(id => EXPR[id] = [[0, 'sad']]);
 const SPEAKERS_EXTRA = { searcher: { name: '捜索隊の学生', bg: ['#2c2014', '#5c3c2c'] }, yudin: { name: 'ユーリー・ユーディン', bg: ['#14241c', '#2c4c3c'] } };
 const HOOK = ['テントは内側から', '切り裂かれていた――'];
@@ -29,7 +29,15 @@ const PLAN_SHORT = [
   { sc: QG, pre: 0.2, items: ['L11'], tr: 'dither', td: 0.4 },
   { sc: SS2, pre: 0.3, items: ['S2'], tr: 'dither', td: 0.5 },
 ];
-const PLAN = SHORT ? PLAN_SHORT : PLAN_FULL;
+// TikTok teaser (60-75 s, ends with 「続きは、本編で。」)
+const PLAN_TIKTOK = [
+  { sc: QX, pre: 0.3, items: ['S1'], tr: 'fromBlack', td: 0.3 },
+  { sc: QG, pre: 0.3, items: ['L10', 0.4, 'L11'], tr: 'white', td: 0.5 },
+  { sc: QH, pre: 0.3, items: ['L12', 0.6, 'L14'], tr: 'dither', td: 0.6 },
+  { sc: QK, pre: 0.3, items: ['L18', 0.6, 'L19'], tr: 'blinds', td: 0.5 },
+  { sc: SS2, pre: 0.3, items: ['T1'], tr: 'dither', td: 0.5 },
+];
+const PLAN = SHORT ? (TIKTOK ? PLAN_TIKTOK : PLAN_SHORT) : PLAN_FULL;
 QX.sfx = (S, ev) => { ev(0.2, 'wind', 6); if (S.tCut < 1e8) { ev(S.tCut, 'sting'); for (let k = 0; k < 3; k++) ev(S.tCut + 0.2 + k * 0.25, 'stab'); } };
 QA.sfx = (S, ev) => { ev(0.3, 'stamp'); ev(S.tMap, 'whoosh'); };
 QB.sfx = (S, ev) => { ev(0.4, 'stamp'); ev(1.2, 'toll'); ev(S.tSki, 'wind', 4); };

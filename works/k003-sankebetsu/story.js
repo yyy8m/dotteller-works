@@ -1,6 +1,6 @@
 /* ================= 記録 #003 三毛別羆事件: story plan ================= */
 const EXPR = {};
-['C0', 'L2b', 'L15b', 'L0', 'L1', 'L2', 'L3', 'L6', 'L8', 'L10', 'L11', 'L12', 'L17', 'L19', 'L20', 'L21', 'L22', 'L23', 'L24', 'L25', 'L26', 'L27', 'L28', 'L29', 'L31', 'S1', 'S2', 'S01', 'Y01', 'K01'].forEach(id => EXPR[id] = [[0, 'normal']]);
+['T1', 'C0', 'L2b', 'L15b', 'L0', 'L1', 'L2', 'L3', 'L6', 'L8', 'L10', 'L11', 'L12', 'L17', 'L19', 'L20', 'L21', 'L22', 'L23', 'L24', 'L25', 'L26', 'L27', 'L28', 'L29', 'L31', 'S1', 'S2', 'S01', 'Y01', 'K01'].forEach(id => EXPR[id] = [[0, 'normal']]);
 ['L4', 'L5', 'L7', 'L9', 'L13', 'L14', 'L15', 'L16', 'L18', 'L30'].forEach(id => EXPR[id] = [[0, 'sad']]);
 const SPEAKERS_EXTRA = { saburo: { name: '太田三郎', bg: ['#3c2c1c', '#5c4430'] }, yayo: { name: '明景ヤヨ', bg: ['#3c2434', '#5c3c4c'] }, suga: { name: '討伐隊長 菅', bg: ['#141a28', '#2c3448'] } };
 const HOOK = ['窓を突き破ってきたのは', '1頭のヒグマだった'];
@@ -30,7 +30,15 @@ const PLAN_SHORT = [
   { sc: KM, pre: 0.3, items: ['L24'], tr: 'dither', td: 0.6 },
   { sc: SS2, pre: 0.3, items: ['S2'], tr: 'dither', td: 0.6 },
 ];
-const PLAN = SHORT ? PLAN_SHORT : PLAN_FULL;
+// TikTok teaser (60-75 s, ends with 「続きは、本編で。」): the hook, then the story up to the ice bridge
+const PLAN_TIKTOK = [
+  { sc: KF, pre: 0.4, items: ['S1', 0.2, 'Y01'], tr: 'fromBlack', td: 0.4 },
+  { sc: KB, pre: 0.4, items: ['L2'], tr: 'dither', td: 0.6 },
+  { sc: KE, pre: 0.4, items: ['L8', 0.3, 'L9'], tr: 'dither', td: 0.6 },
+  { sc: KK, pre: 0.4, items: ['L20', 0.5, 'K01', 0.6, 'L21'], tr: 'dither', td: 0.6 },
+  { sc: SS2, pre: 0.3, items: ['T1'], tr: 'dither', td: 0.5 },
+];
+const PLAN = SHORT ? (TIKTOK ? PLAN_TIKTOK : PLAN_SHORT) : PLAN_FULL;
 KA.sfx = (S, ev) => { ev(0.3, 'wind', 4); ev(0.4, 'stamp'); };
 KB.sfx = (S, ev) => { ev(S.tBear, 'step'); ev(S.tBear + 1, 'step'); if (S.tShot < 1e8) ev(S.tShot, 'gun'); };
 KC.sfx = (S, ev) => { ev(0.5, 'door'); ev(S.tNear + 1, 'sting'); ev(S.tWin, 'wind', 3); };

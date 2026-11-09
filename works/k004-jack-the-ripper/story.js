@@ -1,6 +1,6 @@
 /* ================= 記録 #004 切り裂きジャック: story plan ================= */
 const EXPR = {};
-['C0', 'L0', 'L1', 'L3', 'L4', 'L6', 'L7', 'L8', 'L9', 'L10', 'L11', 'L12', 'L14', 'L15', 'L16', 'L17', 'L18', 'L19', 'L20', 'L21', 'L22', 'L23', 'L24', 'L27', 'S1', 'S2', 'J1', 'A1', 'D1', 'W1', 'M1'].forEach(id => EXPR[id] = [[0, 'normal']]);
+['C0', 'L0', 'L1', 'L3', 'L4', 'L6', 'L7', 'L8', 'L9', 'L10', 'L11', 'L12', 'L14', 'L15', 'L16', 'L17', 'L18', 'L19', 'L20', 'L21', 'L22', 'L23', 'L24', 'L27', 'S1', 'S2', 'J1', 'A1', 'D1', 'W1', 'M1'].forEach(id => EXPR[id] = [[0, 'normal']]); EXPR.T1 = [[0, 'normal']];
 ['C1', 'L13b', 'L2', 'L5', 'L13', 'L25', 'L26'].forEach(id => EXPR[id] = [[0, 'sad']]);
 const SPEAKERS_EXTRA = { man: { name: '鹿撃ち帽の男', bg: ['#0c0a0e', '#1c1820'] }, annie: { name: 'アニー', bg: ['#3c2c34', '#5c4450'] }, writer: { name: '手紙の主', bg: ['#2c0c0c', '#4c1414'] },
   warren: { name: 'チャールズ・ウォーレン', bg: ['#141c34', '#24304c'] }, macnaghten: { name: 'マクノートン', bg: ['#1c1c24', '#34343c'] } };
@@ -31,7 +31,14 @@ const PLAN_SHORT = [
   { sc: RE, pre: 0.3, items: ['D1', 0.4, 'L9'], tr: 'blinds', td: 0.6 },
   { sc: RM, pre: 0.3, items: ['L22', 0.4, 'S2'], tr: 'dither', td: 0.6 },
 ];
-const PLAN = SHORT ? PLAN_SHORT : PLAN_FULL;
+// TikTok teaser (60-75 s, ends with 「続きは、本編で。」)
+const PLAN_TIKTOK = [
+  { sc: SS1, pre: 0.3, items: ['S1'], tr: 'fromBlack', td: 0.3 },
+  { sc: RD, pre: 0.4, items: ['C0', 0.5, 'J1', 0.4, 'A1', 0.8, 'C1'], tr: 'dither', td: 0.6 },
+  { sc: RE, pre: 0.4, items: ['L8', 0.3, 'D1', 0.5, 'L9'], tr: 'blinds', td: 0.6 },
+  { sc: RM, pre: 0.4, items: ['T1'], tr: 'dither', td: 0.6 },
+];
+const PLAN = SHORT ? (TIKTOK ? PLAN_TIKTOK : PLAN_SHORT) : PLAN_FULL;
 RA.sfx = (S, ev) => { ev(0.3, 'stamp'); ev(0.4, 'wind', 4); };
 RC.sfx = (S, ev) => { for (let k = 0; k < 6; k++) ev(0.6 + k * 0.6, 'step'); ev(S.tLamp, 'sting'); ev(0.3, 'stamp'); };
 RD.sfx = (S, ev) => { ev(0.3, 'stamp'); if (S.tTalk < 1e8) ev(S.tTalk, 'heart'); };

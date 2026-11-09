@@ -76,6 +76,8 @@ node engine/tools/chapters.js works/<id>
 node engine/tools/thumb.js works/<id>
 node engine/tools/export_video.js works/<id>/index.html wide works/<id>/build/video/<n>_wide.mp4
 node engine/tools/export_video.js works/<id>/build/index_short.html tall works/<id>/build/video/<n>_short.mp4 30 1
+python3 engine/tools/build.py works/<id> --tiktok        # TikTok 版（60〜75秒の予告編、PLAN_TIKTOK。docs/TIKTOK.md）
+node engine/tools/export_video.js works/<id>/build/index_tiktok.html tall works/<id>/build/video/<n>_tiktok.mp4 30 1
 ```
 
 ## 6. 投稿（予約）
@@ -95,4 +97,4 @@ python3 engine/tools/publish.py works/<id> all
 
 ## 7. 報告
 - 本編・ショート・ブログはすべて18:00に同時公開（`publish.py` の `SHORT_DELAY_H = 0`）。ショートの「関連動画」は、公開直後に Muse が YouTube Studio で設定する。オーナーへの手作業の依頼（18:05のお知らせ）は入れない。
-作った作品、公開日時、本編・ショート・ブログの URL、TikTok 用の `works/<id>/tiktok.txt` の中身を短く報告する。
+作った作品、公開日時、本編・ショート・ブログの URL、TikTok 用の `works/<id>/tiktok.txt` の中身を短く報告し、TikTok 版の動画（`<n>_tiktok.mp4`、60〜75秒）をファイルで送る。

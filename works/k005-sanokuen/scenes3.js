@@ -4,7 +4,7 @@ const goldBg = ['#1c140c', '#5c442c'], blueBg = ['#0c1020', '#2c3c5c'], greyBg =
 /* ---- SE: at the driver's window ---- */
 const SE = {
   name: '停車', bgm: 'pulse',
-  init(S) { S.tOut = at(S, 'L11', 0) - 0.3; S.tKey = at(S, 'L11', 1) - 0.2; S.dur = lastSe(S) + 1.0; },
+  init(S) { S.tOut = ln(S, 'L11') ? at(S, 'L11', 0) - 0.3 : 1e9; S.tKey = ln(S, 'L11') ? at(S, 'L11', 1) - 0.2 : 1e9; S.dur = lastSe(S) + 1.0; },
   draw(c, t, S) {
     if (t > S.tKey) { // the key left in the ignition, on the same ring as the trunk and case keys
       VG(c, 0, 0, W, H, ['#14161c', '#2c3038', '#14161c']); R(c, 40, 60, 240, 90, '#1c1e24'); R(c, 40, 60, 240, 4, '#3c4048'); E(c, 160, 106, 26, 26, '#2c2e34'); E(c, 160, 106, 22, 22, '#3c3e44'); E(c, 160, 106, 8, 8, '#141418');
@@ -238,7 +238,7 @@ const SS1 = {
 };
 const SS2 = {
   name: 'ショート締め', bgm: 'pulse',
-  init(S) { S.dur = lastSe(S) + 0.6; },
+  init(S) { S.dur = lastSe(S) + (TIKTOK ? 2.2 : 0.6); },
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#06040a', '#1c2440', '#06040a']); for (let i = 0; i < 22; i++) { const a = i / 22 * TAU + t * 0.1, w = 0.05; PF(c, [160, 72, 160 + Math.cos(a - w) * 260, 72 + Math.sin(a - w) * 260, 160 + Math.cos(a + w) * 260, 72 + Math.sin(a + w) * 260], DA('#5c7cc8', 0.16)); }
     bigFace(c, fakeFace({ blink: blinkOf(t, 12), dark: true }), 160, 72, 2, 1, 'ss2'); bigCap(c, '?', 40, 24, '#f8d860');

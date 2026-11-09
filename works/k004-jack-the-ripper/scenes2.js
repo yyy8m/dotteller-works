@@ -186,7 +186,7 @@ const RL = {
 /* ---- RM: 100+ suspects, none confirmed; records lost in the Blitz; DNA inconclusive ---- */
 const RM = {
   name: '容疑者', ch: '正体', bgm: 'eerie',
-  init(S) { S.tBlitz = ln(S, 'L21') ? at(S, 'L21', 0) - 0.3 : 1e9; S.tUnk = ln(S, 'L22') ? at(S, 'L22', 0) - 0.3 : 1e9; S.dur = lastSe(S) + 1.4; },
+  init(S) { S.tBlitz = ln(S, 'L21') ? at(S, 'L21', 0) - 0.3 : 1e9; S.tUnk = ln(S, 'L22') ? at(S, 'L22', 0) - 0.3 : 1e9; S.dur = lastSe(S) + (TIKTOK ? 2.2 : 1.4); },
   draw(c, t, S) {
     if (t > S.tUnk) { R(c, 0, 0, W, H, '#05040a'); const k = ss(sg(t, S.tUnk, S.tUnk + 2)); c.save(); c.globalAlpha = k; blit(c, jackFace({}), 160, 100, 24, 24, { s: 3.2 }); c.restore(); TX(c, '?', 230, 30, '#f8e0a0', 32, '#000000'); return { z: 1, fx: 160, fy: 100 }; }
     if (t > S.tBlitz) { // papers burning in the Blitz
