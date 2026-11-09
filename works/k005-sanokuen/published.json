@@ -1,6 +1,12 @@
 {
  "youtube_main": "https://youtu.be/oKGFwJA4PeY",
- "youtube_short": "https://youtu.be/UsePxalBF2s",
  "blog_post_id": "1711435110071719345",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-005-sanokuen-jiken.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-005-sanokuen-jiken.html",
+ "replaced": [
+  {
+   "youtube_short": "https://youtu.be/UsePxalBF2s",
+   "note": "ショートの決まり（冒頭2秒・ループ）前の版（2026-11-09 ショートのみ差し替え・削除）"
+  }
+ ],
+ "youtube_short": "https://youtu.be/ZOWXnbxo8OQ"
 }

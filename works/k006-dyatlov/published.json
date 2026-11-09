@@ -1,6 +1,12 @@
 {
  "youtube_main": "https://youtu.be/dSnX35d8xvA",
- "youtube_short": "https://youtu.be/XFIbgwS0loM",
  "blog_post_id": "8890107017140260170",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-006-dyatlov-pass.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-006-dyatlov-pass.html",
+ "replaced": [
+  {
+   "youtube_short": "https://youtu.be/XFIbgwS0loM",
+   "note": "ショートの決まり（冒頭2秒・ループ）前の版（2026-11-09 ショートのみ差し替え・削除）"
+  }
+ ],
+ "youtube_short": "https://youtu.be/-jXqEaOeprY"
 }
