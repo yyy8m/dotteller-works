@@ -48,7 +48,7 @@ SM.sfx = (S, ev) => { for (let k = 0; k < 7; k++) ev(k * 0.5, 'tick'); ev(S.tSta
 SN.sfx = (S, ev) => { ev(0.3, 'sparkle'); ev(S.tBank, 'stamp'); ev(S.tGoro, 'excl'); };
 SO.sfx = (S, ev) => { ev(S.tCand, 'toll'); ev(S.tEnd, 'end'); };
 SS1.sfx = (S, ev) => { ev(0.3, 'whoosh'); ev(1.2, 'whoosh'); };
-SS2.sfx = (S, ev) => { ev(lastSe(S) - 1.4, 'stamp'); };
+SS2.sfx = (S, ev) => { ev(0.2, 'heart'); };
 SO.bgmTrack = (S, tr) => { tr.fin = 3; };
 SO.ending = true;
 // the cars and people stand on the road (y 116-160): keep them above the dialog window

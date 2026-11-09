@@ -47,7 +47,7 @@ QM.sfx = (S, ev) => { ev(S.tStamp, 'gavel'); ev(S.tStamp + 1.5, 'door'); };
 QN.sfx = (S, ev) => { ev(0.4, 'whoosh'); for (let k = 0; k < 3; k++) ev(S.tTheory + k * 1.4, 'stamp'); };
 QO.sfx = (S, ev) => { ev(0.3, 'stamp'); };
 QP.sfx = (S, ev) => { ev(0.3, 'wind', 4); ev(S.tCand, 'toll'); ev(S.tEnd, 'end'); };
-SS2.sfx = (S, ev) => { ev(0.2, 'wind', 3); ev(lastSe(S) - 1.4, 'stamp'); };
+SS2.sfx = (S, ev) => { ev(0.2, 'wind', 3); ev(0.2, 'heart'); };
 QP.bgmTrack = (S, tr) => { tr.fin = 3; };
 QP.ending = true;
 // people and the tent stand low on the slope: keep them above the dialog window

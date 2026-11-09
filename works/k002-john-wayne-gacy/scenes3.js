@@ -139,23 +139,21 @@ const GN = {
 /* ---- Shorts only ---- */
 const SS1 = {
   name: 'ショート冒頭', bgm: 'pulse',
-  init(S) { S.tDown = at(S, 'S1', 2) - 0.3; S.dur = lastSe(S) + 0.6; },
+  // starts on the bodies under the floor (the hook), then pans up to the clown on 「陽気なピエロの、」
+  init(S) { S.tUp = at(S, 'S1', 2) - 0.2; S.dur = lastSe(S) + 0.6; S.kd = t => 1 - ss(sg(t, S.tUp, S.tUp + 1.4)); },
   draw(c, t, S) {
-    if (t < S.tDown) { VG(c, 0, 0, W, H, ['#06040a', '#140812', '#06040a']); bigFace(c, pogoFace({ blink: blinkOf(t, 12) }), 160, 90, 2, Math.min(1, t / 0.5), 'sp1');
-      [[60, '#e83c3c', '#a01c1c'], [270, '#3c8cd8', '#1c5c9c']].forEach(([x, a, b], i) => balloon(c, x, 60 + Math.sin(t * 1.4 + i) * 3, a, b, t, i)); return { z: 1, fx: 160, fy: 100 }; }
-    const k = ss(sg(t, S.tDown, S.tDown + 1.4)); crossSection(c, t, 24, { blood: true }); blit(c, clownSpr(t), 150, 91, CLOWN_AX, CLOWN_AY);
-    if (k < 1) { c.fillStyle = '#000000'; c.fillRect(0, 102 + 60 * k, W, 140); }
-    return { z: 1 + 0.3 * (1 - k), fx: 150, fy: lerp(70, 120, k) };
+    const k = S.kd(t); crossSection(c, t, 29, { blood: true }); blit(c, clownSpr(t), 150, 91, CLOWN_AX, CLOWN_AY);
+    for (let i = 0; i < 3; i++) { const a = t * 4 + i * 2.1; E(c, 150 + Math.cos(a) * 14, 32 + Math.sin(a) * 8, 2.5, 2.5, ['#d83838', '#f8d040', '#3c8cd8'][i]); }
+    return { z: 1 + 0.3 * (1 - k), fx: 150, fy: lerp(70, 124, k) };
   }
 };
 const SS2 = {
   name: 'ショート締め', bgm: 'pulse',
-  init(S) { S.dur = lastSe(S) + 2.4; },
+  init(S) { S.dur = lastSe(S) + 0.6; },
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#06040a', '#2c0a14', '#06040a']);
     for (let i = 0; i < 22; i++) { const a = i / 22 * TAU + t * 0.1, w = 0.05; PF(c, [160, 72, 160 + Math.cos(a - w) * 260, 72 + Math.sin(a - w) * 260, 160 + Math.cos(a + w) * 260, 72 + Math.sin(a + w) * 260], DA(K.red0, 0.16)); }
     bigFace(c, pogoFace({ expr: 'creepy', blink: blinkOf(t, 12) }), 160, 72, 2, 1, 'ss2'); redVignette(c, 0.6);
-    const t1 = lastSe(S) - 1.4; if (t > t1) { const k = eOut(sg(t, t1, t1 + 0.4)), s = '▶ 続きは本編で'; R(c, 60, 126, 200, Math.round(30 * k), '#000000'); R(c, 62, 128, 196, Math.round(26 * k), K.red1); if (k >= 1) TX(c, s, 160 - textSpr(s, 16, C.white).width / 2, 133, C.white, 16, null); }
     return { z: 1, fx: 160, fy: 100 };
   }
 };

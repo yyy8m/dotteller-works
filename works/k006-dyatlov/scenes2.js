@@ -11,7 +11,7 @@ function slope(c, t, mood = 'day', o = {}) { // the bare east slope of Kholat Sy
 /* ---- QX: cold open — the searchers find the tent (Feb 26, 1959) ---- */
 const QX = {
   name: '死の山', ch: '1959年2月', bgm: 'eerie',
-  init(S) { S.cold = !!ln(S, 'C0'); S.tCut = S.cold ? at(S, 'C1', 0) - 0.3 : 1e9; S.tPrints = S.cold ? at(S, 'C1', 2) - 0.3 : 1e9; S.dur = lastSe(S) + 1.4; },
+  init(S) { S.cold = !!ln(S, 'C0'); S.tCut = S.cold ? at(S, 'C1', 0) - 0.3 : 1e9; S.tPrints = S.cold ? at(S, 'C1', 2) - 0.3 : 1e9; if (ln(S, 'S1')) { S.tCut = -0.7; S.tPrints = at(S, 'S1', 2) - 0.3; } /* short: open straight on the slashed canvas */ S.dur = lastSe(S) + 1.4; },
   draw(c, t, S) {
     slope(c, t, 'storm'); blizzard(c, t, 0.6);
     if (t > S.tCut) { // close: the cut canvas, black slits, snow drifting in
@@ -299,10 +299,9 @@ const QP = {
 /* ---- shorts ---- */
 const SS2 = {
   name: 'ショート締め', bgm: 'eerie',
-  init(S) { S.dur = lastSe(S) + 2.4; },
+  init(S) { S.dur = lastSe(S) + 0.6; },
   draw(c, t, S) {
     slope(c, t, 'night'); tent(c, 160, 110, { cut: true, night: true }); blizzard(c, t, 0.8); bigCap(c, '?', 40, 24, '#f8d860');
-    const t1 = lastSe(S) - 1.4; if (t > t1) { const k = eOut(sg(t, t1, t1 + 0.4)), s = '▶ 続きは本編で'; R(c, 60, 126, 200, Math.round(30 * k), '#000000'); R(c, 62, 128, 196, Math.round(26 * k), '#2c4c9c'); if (k >= 1) TX(c, s, 160 - textSpr(s, 16, C.white).width / 2, 133, C.white, 16, null); }
     return { z: 1.1, fx: 160, fy: 100 };
   }
 };

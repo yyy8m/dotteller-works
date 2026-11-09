@@ -110,7 +110,7 @@ const KE = {
 /* ---- KF: the Myokei house — the window bursts; darkness ---- */
 const KF = {
   name: '明景の家', ch: '明景の家', bgm: 'dread',
-  init(S) { if (ln(S, 'C0')) { S.tBurst = at(S, 'C0', 3) - 0.1; S.tDark = at(S, 'C0', 4) + 0.9; S.dur = lastSe(S) + 1.6; return; } S.tBurst = ln(S, 'L12') ? at(S, 'L12', 1) + 0.2 : (ln(S, 'S1') ? at(S, 'S1', 2) : 1); S.tDark = ln(S, 'L13') ? at(S, 'L13', 1) - 0.2 : S.tBurst + 3; S.dur = lastSe(S) + 1.2; },
+  init(S) { if (ln(S, 'C0')) { S.tBurst = at(S, 'C0', 3) - 0.1; S.tDark = at(S, 'C0', 4) + 0.9; S.dur = lastSe(S) + 1.6; return; } S.tBurst = ln(S, 'L12') ? at(S, 'L12', 1) + 0.2 : (ln(S, 'S1') ? at(S, 'S1', 0) + 0.5 : 1); S.tDark = ln(S, 'L13') ? at(S, 'L13', 1) - 0.2 : S.tBurst + 3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     if (t > S.tDark) { // only darkness; two red eyes; the fire is out
       R(c, 0, 0, W, H, '#030204'); const x = 160 + Math.sin(t * 0.9) * 90, y = 96 + Math.sin(t * 1.7) * 10;
@@ -311,6 +311,6 @@ const KP = {
 /* ---- Shorts ---- */
 const SS2 = {
   name: 'ショート結び', bgm: 'dread',
-  init(S) { S.dur = lastSe(S) + 2.0; },
+  init(S) { S.dur = lastSe(S) + 0.6; },
   draw(c, t, S) { R(c, 0, 0, W, H, '#030204'); const k = ss(sg(t, 0.2, 1.5)); c.save(); c.globalAlpha = k; blit(c, bearFace({ roar: t > 2 }), 160, 100, 24, 24, { s: 3.2 }); c.restore(); redVignette(c, 0.3); return { z: 1, fx: 160, fy: 100 }; }
 };

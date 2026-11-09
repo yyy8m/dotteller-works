@@ -233,16 +233,15 @@ const SO = {
 const SS1 = {
   name: 'ショート冒頭', bgm: 'pulse',
   init(S) { S.dur = lastSe(S) + 0.6; },
-  draw(c, t, S) { const ox = t * 90; roadScene(c, t, ox, { tower: 300 }); blit(c, cedricSpr(), 210, CAR_Y, 50, 35); const bx = lerp(-30, 120, ss(sg(t, 0.3, 5))); trailingSheet(c, bx - 26, CAR_Y - 6, t, -1, 30); blit(c, bikeSpr({ rider: true, lean: true }), bx, CAR_Y + 6, 30, 39);
+  draw(c, t, S) { const ox = t * 90; roadScene(c, t, ox, { tower: 300 }); blit(c, cedricSpr(), 210, CAR_Y, 50, 35); const bx = lerp(90, 128, ss(sg(t, 0, 4))); trailingSheet(c, bx - 26, CAR_Y - 6, t, -1, 30); blit(c, bikeSpr({ rider: true, lean: true }), bx, CAR_Y + 6, 30, 39);
     for (let i = 0; i < 5; i++) L(c, bx - 40 - i * 10, CAR_Y - 14 + i * 3, bx - 30 - i * 10, CAR_Y - 14 + i * 3, DA('#ffffff', 0.5)); return { z: 1.1, fx: 170, fy: 112 }; }
 };
 const SS2 = {
   name: 'ショート締め', bgm: 'pulse',
-  init(S) { S.dur = lastSe(S) + 2.4; },
+  init(S) { S.dur = lastSe(S) + 0.6; },
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#06040a', '#1c2440', '#06040a']); for (let i = 0; i < 22; i++) { const a = i / 22 * TAU + t * 0.1, w = 0.05; PF(c, [160, 72, 160 + Math.cos(a - w) * 260, 72 + Math.sin(a - w) * 260, 160 + Math.cos(a + w) * 260, 72 + Math.sin(a + w) * 260], DA('#5c7cc8', 0.16)); }
     bigFace(c, fakeFace({ blink: blinkOf(t, 12), dark: true }), 160, 72, 2, 1, 'ss2'); bigCap(c, '?', 40, 24, '#f8d860');
-    const t1 = lastSe(S) - 1.4; if (t > t1) { const k = eOut(sg(t, t1, t1 + 0.4)), s = '▶ 続きは本編で'; R(c, 60, 126, 200, Math.round(30 * k), '#000000'); R(c, 62, 128, 196, Math.round(26 * k), '#2c4c9c'); if (k >= 1) TX(c, s, 160 - textSpr(s, 16, C.white).width / 2, 133, C.white, 16, null); }
     return { z: 1, fx: 160, fy: 100 };
   }
 };

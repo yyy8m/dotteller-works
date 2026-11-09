@@ -45,8 +45,8 @@ GK.sfx = (S, ev) => { for (let k = 0; k < 10; k++) ev(0.8 + k * 0.6, 'dig'); ev(
 GL.sfx = (S, ev) => { ev(S.tTrial + 0.2, 'stamp'); if (S.tJack < 1e8) { ev(S.tJack, 'sting'); for (let k = 0; k < 4; k++) ev(S.tJack + 0.6 + k * 0.8, 'heart'); } ev(S.tGavel, 'gavel'); ev(S.tPaint, 'whoosh'); };
 GM.sfx = (S, ev) => { ev(0.3, 'stamp'); ev(2.0, 'toll'); if (S.tMeal < 1e8) ev(S.tMeal + 0.2, 'whoosh'); };
 GN.sfx = (S, ev) => { ev(S.tSplit, 'sting'); ev(S.tCand, 'toll'); ev(S.tEnd, 'toll'); };
-SS1.sfx = (S, ev) => { ev(S.tDown, 'sting'); };
-SS2.sfx = (S, ev) => { ev(lastSe(S) - 1.4, 'stamp'); };
+SS1.sfx = (S, ev) => { ev(0.05, 'sting'); ev(S.tUp, 'heart'); };
+SS2.sfx = (S, ev) => { ev(0.2, 'heart'); };
 GX.sfx = (S, ev) => { ev(0.25, 'sting'); for (let k = 0; k < 4; k++) ev(0.9 + k * 0.75, 'heart'); };
 GN.bgmTrack = (S, tr) => { tr.fin = 3; };
 GN.ending = true;
@@ -55,11 +55,11 @@ function TITLE_DECO(c, t) {
   [[230, '#e83c3c', '#a01c1c'], [258, '#3c8cd8', '#1c5c9c'], [284, '#f8d040', '#b89020']].forEach(([x, a, b], i) => balloon(c, x, 160 + Math.sin(t * 1.4 + i) * 3 - i * 6, a, b, t, i));
   R(c, 0, 214, W, 26, '#1c2418'); PF(c, [250, 214, 258, 200, 266, 214], '#2c4cb8'); E(c, 258, 199, 2, 2, '#f8e070');
 }
-const HOOK = ['子どもの人気者のピエロ', '家の床下には――'];
+const HOOK = ['床下から、29人', '陽気なピエロの家だった'];
 /* widescreen: how far the picture is shifted up above the dialog window (default 24) */
 // the crawl space (y 102-158) must stay above the dialog window: pan the wide frame down when it is shown
 GA.wideDY = (t, S) => lerp(0, 56, ss(sg(t, S.tDown, S.tDown + 2.2)));
 GG.wideDY = (t, S) => (t >= S.tFill && t < S.tRiver ? 56 : 0);
 GF.wideDY = (t, S) => (t >= S.tBury ? 56 : 24);
-GH.wideDY = 56; SS1.wideDY = (t, S) => lerp(0, 56, ss(sg(t, S.tDown, S.tDown + 1.4)));
+GH.wideDY = 56; SS1.wideDY = (t, S) => lerp(0, 56, S.kd(t));
 GK.tallFit = true;
