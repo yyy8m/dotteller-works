@@ -1,6 +1,12 @@
 {
  "youtube_main": "https://youtu.be/vZf-Slm8Sa0",
- "youtube_short": "https://youtu.be/NcRNy8pPkrA",
  "blog_post_id": "4133558430248603620",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-bunko-004-rashomon.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-bunko-004-rashomon.html",
+ "replaced": [
+  {
+   "youtube_short": "https://youtu.be/NcRNy8pPkrA",
+   "note": "60秒未満・旧仕様のショート（2026-11-10 CEO決定の60秒超ループ版に差し替え・削除）"
+  }
+ ],
+ "youtube_short": "https://youtu.be/kcowLmCBwTk"
 }
