@@ -21,6 +21,8 @@ BRAND = dict(re.findall(r"(\w+): '([^']*)'", re.search(r'const BRAND = \{(.*?)\}
 
 parts = [rd(os.path.join(ENGINE, f)) for f in ['core.js', 'chars.js', 'env.js'] + (['kiroku.js'] if W['series'] == 'kiroku' or W.get('kit') == 'kiroku' else [])]
 parts += [rd(p) for p in sorted(glob.glob(os.path.join(work, 'scenes*.js')))]
+if SHORT and not TIKTOK and os.path.exists(os.path.join(work, 'thumb.js')):  # the YouTube Short shows the thumbnail face mid-video (YouTube's auto-picked cover frame)
+    parts += [rd(os.path.join(ENGINE, 'thumb.js')), rd(os.path.join(work, 'thumb.js'))]
 parts += [rd(os.path.join(ENGINE, 'brand.js')), rd(os.path.join(ENGINE, 'audio.js')), rd(os.path.join(work, 'story.js')), rd(os.path.join(ENGINE, 'main.js'))]
 js = 'const WORK = ' + json.dumps(W, ensure_ascii=False) + ';\nconst SHORT = ' + ('true' if SHORT else 'false') + ';\nconst TIKTOK = ' + ('true' if TIKTOK else 'false') + ';\n' + '\n'.join(parts)
 voices = rd(os.path.join(work, 'build', 'voices.js'))
