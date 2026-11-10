@@ -190,6 +190,6 @@ XL.ending = true;
 /* ---- shorts ---- */
 const SS2 = {
   name: 'ショート結び', bgm: 'dread',
-  init(S) { S.dur = lastSe(S) + 2.2; },
+  init(S) { S.dur = lastSe(S) + (TIKTOK ? 2.2 : 0.5); },
   draw(c, t, S) { loft(c, t, { fx: 170 }); baba(c, 176, 150, { arm: 'reach', k: 'ss2' }); for (let i = 0; i < 4; i++) { const u = fr(t * 0.7 + i / 4); L(c, 190, 132, 190 + u * 16, 132 - u * 8, DA('#1c1814', 1 - u)); } return { z: 1.35, fx: 170, fy: 124 }; }
 };

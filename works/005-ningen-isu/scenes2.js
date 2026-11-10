@@ -206,5 +206,5 @@ NM.ending = true;
 /* ---- shorts ---- */
 const SS1 = { name: 'ショート冒頭', bgm: 'eerie', init(S) { S.dur = lastSe(S) + 0.4; },
   draw(c, t, S) { study(c, t, {}); armchair(c, 150, 160, { s: 1.6, xray: true }); yoshiko(c, 150, 144, { pose: 'sit', k: 'ss1' }); return { z: 1.35, fx: 150, fy: 124 }; } };
-const SS2 = { name: 'ショート結び', bgm: 'eerie', init(S) { S.dur = lastSe(S) + 2.2; },
+const SS2 = { name: 'ショート結び', bgm: 'eerie', init(S) { S.dur = lastSe(S) + (TIKTOK ? 2.2 : 0.5); },
   draw(c, t, S) { study(c, t, {}); armchair(c, 150, 160, { s: 1.6, xray: true }); yoshiko(c, 150, 144, { pose: 'sit', k: 'ss2', expr: 'smile' }); return { z: 1.5, fx: 150, fy: 124 }; } };

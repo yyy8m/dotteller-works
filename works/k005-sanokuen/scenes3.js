@@ -238,7 +238,7 @@ const SS1 = {
 };
 const SS2 = {
   name: 'ショート締め', bgm: 'pulse',
-  init(S) { S.dur = lastSe(S) + 2.2; },
+  init(S) { S.dur = lastSe(S) + (TIKTOK ? 2.2 : 0.5); },
   draw(c, t, S) {
     VG(c, 0, 0, W, H, ['#06040a', '#1c2440', '#06040a']); for (let i = 0; i < 22; i++) { const a = i / 22 * TAU + t * 0.1, w = 0.05; PF(c, [160, 72, 160 + Math.cos(a - w) * 260, 72 + Math.sin(a - w) * 260, 160 + Math.cos(a + w) * 260, 72 + Math.sin(a + w) * 260], DA('#5c7cc8', 0.16)); }
     bigFace(c, fakeFace({ blink: blinkOf(t, 12), dark: true }), 160, 72, 2, 1, 'ss2'); bigCap(c, '?', 40, 24, '#f8d860');

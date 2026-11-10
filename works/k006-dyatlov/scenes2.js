@@ -299,7 +299,7 @@ const QP = {
 /* ---- shorts ---- */
 const SS2 = {
   name: 'ショート締め', bgm: 'eerie',
-  init(S) { S.dur = lastSe(S) + 2.2; },
+  init(S) { S.dur = lastSe(S) + (TIKTOK ? 2.2 : 0.5); },
   draw(c, t, S) {
     slope(c, t, 'night'); tent(c, 160, 110, { cut: true, night: true }); blizzard(c, t, 0.8); bigCap(c, '?', 40, 24, '#f8d860');
     return { z: 1.1, fx: 160, fy: 100 };

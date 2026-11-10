@@ -34,7 +34,8 @@ const PLAN_TIKTOK = [
   { sc: XJ, pre: 0.3, items: ['B1', 0.4, 'B3'], tr: 'dither', td: 0.5 },
   { sc: SS2, pre: 0.3, items: ['T1'], tr: 'dither', td: 0.5 },
 ];
-const PLAN = SHORT ? (TIKTOK ? PLAN_TIKTOK : PLAN_SHORT) : PLAN_FULL;
+// YouTube Short (60 s+, CEO decision 2026-11-10): the TikTok cut, but the last line S2 loops back into the hook S1 instead of 「続きは、本編で。」
+const PLAN = SHORT ? (TIKTOK ? PLAN_TIKTOK : PLAN_TIKTOK.map(p => ({ ...p, items: p.items.map(x => (x === 'T1' ? 'S2' : x)) }))) : PLAN_FULL;
 XA.sfx = (S, ev) => { ev(0.1, 'rain', 8); ev(0.4, 'heart'); if (ln(S, 'H1')) ev(ln(S, 'H1').t0 - 0.1, 'sting'); };
 XB.sfx = (S, ev) => { ev(0.1, 'rain', 12); ev(S.tCricket, 'tick'); };
 XC.sfx = (S, ev) => { ev(0.2, 'wind', 5); ev(S.tCrow, 'excl'); };
