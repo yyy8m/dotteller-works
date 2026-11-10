@@ -23,8 +23,8 @@ const PLAN_FULL = [
 ];
 const PLAN_SHORT = [
   { sc: SS1, pre: 0.2, items: ['S1'], tr: 'fromBlack', td: 0.2 },
+  { sc: NE, pre: 0.2, items: ['L9', 0.3, 'M3'], tr: 'dither', td: 0.4 },
   { sc: NH, pre: 0.2, items: ['M4'], tr: 'dither', td: 0.4 },
-  { sc: NJ, pre: 0.2, items: ['M6'], tr: 'dither', td: 0.4 },
   { sc: SS2, pre: 0.2, items: ['S2'], tr: 'dither', td: 0.4 },
 ];
 const PLAN_TIKTOK = [

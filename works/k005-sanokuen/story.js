@@ -26,7 +26,6 @@ const PLAN_FULL = [
 const PLAN_SHORT = [
   { sc: SS1, pre: 0.3, items: ['S1'], tr: 'fromBlack', td: 0.3 },
   { sc: SF, pre: 0.2, items: ['F1'], tr: 'dither', td: 0.4 },
-  { sc: SG, pre: 0.2, items: ['L14'], tr: 'dither', td: 0.4 },
   { sc: SS2, pre: 0.3, items: ['S2'], tr: 'dither', td: 0.5 },
 ];
 // TikTok teaser (60-75 s, ends with 「続きは、本編で。」)

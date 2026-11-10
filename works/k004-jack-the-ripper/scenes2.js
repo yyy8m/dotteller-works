@@ -232,6 +232,6 @@ const RO = {
 /* ---- shorts ---- */
 const SS1 = {
   name: 'ショート冒頭', bgm: 'dread',
-  init(S) { S.dur = lastSe(S) + 0.6; },
+  init(S) { S.dur = lastSe(S) + (ln(S, 'S2') ? 2.2 : 0.6); },
   draw(c, t, S) { eastEnd(c, t, {}); c.fillStyle = DA('#04040a', 0.5); c.fillRect(0, 0, W, H); jack(c, lerp(210, 170, ss(sg(t, 0, 5))), 150, 1.6, { f: Math.floor(t * 4) & 3, flip: true, eyes: true }); return { z: lerp(1.35, 1.6, ss(t / S.dur)), fx: 175, fy: 104 }; }
 };

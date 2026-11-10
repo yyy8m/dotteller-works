@@ -213,7 +213,7 @@ function render(T, noDialog) {
     if (!outIm) outIm = ctx.createImageData(W, H);
     transition(S.tr, p, Aim, Bim, outIm); ctx.putImageData(outIm, 0, 0);
   } else ctx.drawImage(B, 0, 0);
-  if (typeof TIKTOK !== 'undefined' && TIKTOK) tiktokCard(ctx, T - (TL.total - 2.4)); // TikTok teaser: 「▶ 続きは本編で」 at the end
+  if (SHORT) tiktokCard(ctx, T - (TL.total - 2.4)); // Shorts and TikTok teasers: 「▶ 続きは本編で」 at the end
   if (!noDialog) drawDialog(ctx, T);
   if (S.sc.ending && tl > S.tEnd) { // おわり
     const u = tl - S.tEnd, s = u < 0.25 ? u / 0.25 * 1.2 : u < 0.45 ? lerp(1.2, 1, (u - 0.25) / 0.2) : 1, bob = Math.round(Math.sin(u * 2) * 1);
@@ -273,5 +273,5 @@ requestAnimationFrame(loop);
 function tiktokCard(c, u) {
   if (u <= 0) return; const k = eOut(clamp(u / 0.4, 0, 1)), s = '▶ 続きは本編で';
   R(c, 60, 96, 200, Math.round(34 * k), '#000000'); R(c, 62, 98, 196, Math.round(30 * k), '#b01010');
-  if (k >= 1) { TX(c, s, 160 - textSpr(s, 16, C.white).width / 2, 100, C.white, 16, null); const t2 = 'YouTube「ドット語り」'; TX(c, t2, 160 - textSpr(t2, 16, C.white).width / 2, 134, '#f8e8c8', 16, '#000000'); }
+  if (k >= 1) { TX(c, s, 160 - textSpr(s, 16, C.white).width / 2, 100, C.white, 16, null); const t2 = TIKTOK ? 'YouTube「ドット語り」' : '▲ 上のリンクから本編へ'; TX(c, t2, 160 - textSpr(t2, 16, C.white).width / 2, 134, '#f8e8c8', 16, '#000000'); }
 }

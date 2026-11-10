@@ -311,6 +311,6 @@ const KP = {
 /* ---- Shorts ---- */
 const SS2 = {
   name: 'ショート結び', bgm: 'dread',
-  init(S) { S.dur = lastSe(S) + (TIKTOK ? 2.2 : 0.6); },
+  init(S) { S.dur = lastSe(S) + 2.2; },
   draw(c, t, S) { R(c, 0, 0, W, H, '#030204'); const k = ss(sg(t, 0.2, 1.5)); c.save(); c.globalAlpha = k; blit(c, bearFace({ roar: t > 2 }), 160, 100, 24, 24, { s: 3.2 }); c.restore(); redVignette(c, 0.3); return { z: 1, fx: 160, fy: 100 }; }
 };
