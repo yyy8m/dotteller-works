@@ -63,4 +63,4 @@ SO.ending = true;
 // the cars and people stand on the road (y 116-160): keep them above the dialog window
 SX.wideDY = 36; SD.wideDY = 36; SE.wideDY = (t, S) => (t > S.tKey ? 24 : 36); SF.wideDY = 36; SG.wideDY = (t, S) => (t > S.tClock ? 16 : t > S.tCall ? 30 : t > S.tFlare ? 36 : 36); SC.wideDY = 20; SI.wideDY = 36; SO.wideDY = 18; SA.wideDY = 30; SN.wideDY = (t, S) => (t > S.tBank ? 16 : 36);
 SJ.wideDY = 20; SK.wideDY = 10; SL.wideDY = (t, S) => (t > S.tMan ? 30 : 8); SM.wideDY = 10; SH.wideDY = 12; SB.wideDY = (t, S) => (t < S.tLetter ? 30 : t < S.tWatch ? 18 : 30);
-function TITLE_DECO(c, t) { blit(c, bikeSpr({ rider: true }), 270, 222, 30, 39); trailingSheet(c, 244, 210, t, -1, 22); }
+function TITLE_DECO(c, t) { blit(c, bikeSpr({ rider: true }), 270, 222, 30, 49); trailingSheet(c, 244, 210, t, -1, 22); }

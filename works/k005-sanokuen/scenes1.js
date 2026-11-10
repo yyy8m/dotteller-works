@@ -46,7 +46,8 @@ function corollaSpr(col) {
 // the fake police bike: a stolen motorcycle painted white, a red lamp, a megaphone, a cookie tin as the document box (60x40, anchor 30,39)
 function bikeSpr(o = {}) {
   const rider = !!o.rider, k = 'bike' + (rider ? 'r' : '') + (o.lean ? 'l' : '');
-  return cached(k, () => SPR(null, 60, 40, c => {
+  // 60x50 with 10 px of headroom so the rider's helmet is never cut off (anchor 30,49)
+  return cached(k, () => SPR(null, 60, 50, c => { c.translate(0, 10);
     for (const x of [12, 46]) { E(c, x, 32, 7, 7, '#141414'); E(c, x, 32, 4.5, 4.5, '#5c5c64'); E(c, x, 32, 1.5, 1.5, '#c8ccd4'); for (let a = 0; a < 6; a++) L(c, x, 32, x + Math.cos(a) * 4, 32 + Math.sin(a) * 4, '#8c8c94'); }
     L(c, 46, 32, 40, 14, '#c8ccd4', 2); L(c, 12, 32, 22, 22, '#3c3c44', 2); // fork, swingarm
     PF(c, [18, 22, 30, 16, 42, 16, 44, 22, 36, 26, 20, 26], '#f4f4f0'); PF(c, [24, 18, 38, 16, 40, 19, 26, 21], '#ffffff'); // white tank & body

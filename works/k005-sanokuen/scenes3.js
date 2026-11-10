@@ -15,7 +15,7 @@ const SE = {
       return { z: 1.0 + 0.08 * ss(sg(t, S.tKey, S.dur)), fx: 170, fy: 110 };
     }
     roadScene(c, t, 0, { tower: 300 });
-    blit(c, bikeSpr({}), 250, CAR_Y + 4, 30, 39); trailingSheet(c, 224, CAR_Y - 8, 0.2, -1, 18);
+    blit(c, bikeSpr({}), 250, CAR_Y + 4, 30, 49); trailingSheet(c, 224, CAR_Y - 8, 0.2, -1, 18);
     blit(c, cedricSpr('#16181e', { open: t > S.tOut }), 150, CAR_Y, 50, 35);
     if (t < S.tOut) blit(c, modFig(FAKE, { f: -1, arm: 'point', k: 'se' }), 196, CAR_Y + 4, FIG_AX2, FIG_AY2, { flip: true });
     else { BANKERS.concat([DRIVER]).forEach((st, i) => { const k = sg(t, S.tOut + i * 0.3, S.tOut + 0.8 + i * 0.3); if (k > 0) blit(c, modFig(st, { f: -1, expr: 'sad', k: 'out' }), 112 + i * 16, CAR_Y + 4 + (1 - k) * 4, FIG_AX2, FIG_AY2); }); blit(c, modFig(FAKE, { f: -1, arm: 'point', k: 'se2' }), 212, CAR_Y + 4, FIG_AX2, FIG_AY2, { flip: true }); }
@@ -34,7 +34,7 @@ const SF = {
   init(S) { S.tUnder = ln(S, 'L12') ? at(S, 'L12', 0) : -1; S.tFire = ln(S, 'L12') ? at(S, 'L12', 2) + 0.3 : 0.2; S.tRun = ln(S, 'L13') ? at(S, 'L13', 1) - 0.2 : (ln(S, 'F1') ? ln(S, 'F1').se : 1e9); S.dur = lastSe(S) + 1.0; },
   draw(c, t, S) {
     roadScene(c, t, 0, {});
-    blit(c, bikeSpr({}), 250, CAR_Y + 4, 30, 39); trailingSheet(c, 224, CAR_Y - 8, 0.2, -1, 18);
+    blit(c, bikeSpr({}), 250, CAR_Y + 4, 30, 49); trailingSheet(c, 224, CAR_Y - 8, 0.2, -1, 18);
     blit(c, cedricSpr('#16181e', { open: true }), 150, CAR_Y, 50, 35);
     const fire = t > S.tFire;
     if (!fire && t > S.tUnder) { R(c, 170, CAR_Y - 4, 20, 5, '#2c3448'); R(c, 188, CAR_Y - 4, 6, 4, '#141414'); R(c, 188, CAR_Y + 1, 6, 4, '#141414'); } // only his legs stick out
@@ -71,13 +71,13 @@ const SG = {
     if (t > S.tFlare) { // the "dynamite": a flare on the road; the white bike with the sheet still hooked on
       wintrySky(c, t, 60); R(c, 0, 60, W, 180, '#5c5c60'); for (let i = 0; i < 60; i++) P(c, hash(i * 3) * W, 64 + hash(i * 7) * 100, '#6c6c70');
       const k = t > S.tFake ? 0.3 : 1; flareSmoke(c, 92, 136, t, k, 5); R(c, 76, 134, 34, 6, '#c83c24'); R(c, 76, 134, 34, 2, '#e85c3c'); R(c, 106, 133, 6, 8, '#3c3c44'); for (let i = 0; i < 3; i++) L(c, 82 + i * 8, 134, 84 + i * 8, 140, '#5c8cc8'); // the flare wrapped in a circuit diagram
-      trailingSheet(c, 206, 108, 0.2, -1, 22); blit(c, bikeSpr({}), 240, 144, 30, 39, { s: 1.6 });
+      trailingSheet(c, 206, 108, 0.2, -1, 22); blit(c, bikeSpr({}), 240, 144, 30, 49, { s: 1.6 });
       if (t > S.tFake) { const k2 = eOut(sg(t, S.tFake, S.tFake + 0.4)); c.save(); c.translate(240, 96); c.rotate(-0.2); c.globalAlpha = k2; R(c, -38, -16, 76, 32, '#c81818'); R(c, -35, -13, 70, 26, '#f4f0e8'); TX(c, 'ニセモノ', -30, -9, '#c81818', 16, null); c.restore(); }
       return { z: 1.04, fx: 160, fy: 110 };
     }
     // the car drives off, the bankers watch from the hedge, then wait for a blast that never comes
     roadScene(c, t, 0, {});
-    blit(c, bikeSpr({}), 250, CAR_Y + 4, 30, 39); trailingSheet(c, 224, CAR_Y - 8, 0.2, -1, 18);
+    blit(c, bikeSpr({}), 250, CAR_Y + 4, 30, 49); trailingSheet(c, 224, CAR_Y - 8, 0.2, -1, 18);
     flareSmoke(c, 150, CAR_Y + 2, t, 1);
     const go = Math.max(0, t - S.tGo), cx = 150 + go * go * 30;
     if (go <= 0) blit(c, modFig(FAKE, { f: Math.floor(t * 10) & 3, k: 'sg' }), lerp(200, 166, sg(t, S.tGo - 1.2, S.tGo)), CAR_Y + 4, FIG_AX2, FIG_AY2, { flip: true });
@@ -132,7 +132,7 @@ const SJ = {
     R(c, 0, 0, W, H, '#2c2a28'); R(c, 0, 100, W, 140, '#5c4c3c'); R(c, 0, 100, W, 3, '#7c6c5c');
     if (t < S.tMass) {
       const k = sg(t, 0.4, S.tMass - 0.4);
-      if (k > 0.05) blit(c, bikeSpr({}), 70, 150, 30, 39, { s: 1.4 }); if (k > 0.3) cookieTin(c, 140, 120, 1.6); if (k > 0.5) huntCap(c, 200, 130); if (k > 0.65) { R(c, 228, 136, 30, 6, '#c83c24'); R(c, 228, 136, 30, 2, '#e85c3c'); } if (k > 0.8) PF(c, [262, 112, 290, 112, 296, 150, 256, 150], '#1c2448');
+      if (k > 0.05) blit(c, bikeSpr({}), 70, 150, 30, 49, { s: 1.4 }); if (k > 0.3) cookieTin(c, 140, 120, 1.6); if (k > 0.5) huntCap(c, 200, 130); if (k > 0.65) { R(c, 228, 136, 30, 6, '#c83c24'); R(c, 228, 136, 30, 2, '#e85c3c'); } if (k > 0.8) PF(c, [262, 112, 290, 112, 296, 150, 256, 150], '#1c2448');
       const n = Math.round(124 * ss(k)); c.fillStyle = DA('#000000', 0.5); c.fillRect(0, 30, W, 34); bigCap(c, '遺留品 ' + n + '点', 34, 24, '#f4f0e8');
       [[70, 108], [148, 112], [200, 120], [242, 130], [276, 104]].forEach(([x, y], i) => { if (k > [0.05, 0.3, 0.5, 0.65, 0.8][i]) { R(c, x - 6, y - 14, 12, 8, '#f8f0c8'); TX(c, String(i + 1), x - 3, y - 15, '#141414', 16, null); } });
       return { z: 1.04, fx: 160, fy: 100 };
@@ -224,7 +224,7 @@ const SO = {
   draw(c, t, S) {
     VG(c, 0, 0, W, 90, ['#1c1830', '#5c3c5c', '#c87c5c', '#e8a868']); glow(c, 60, 78, 80, 20, '#f8b060', 0.4); prisonWall(c, 0, ROAD_Y, { tower: 250 }); roadSide(c, 0, ROAD_Y); c.save(); c.globalAlpha = 0.45; c.fillStyle = '#2c1c34'; c.fillRect(0, 68, W, H); c.restore();
     if (t > S.tCand) for (let i = 0; i < 2; i++) { const k = sg(t, S.tCand + i * 0.8, S.tCand + 0.6 + i * 0.8); if (k > 0) { candle(c, 140 + i * 40, 150, t, i, 1); glow(c, 140 + i * 40, 140, 20, 14, '#f8c060', 0.4 * k); R(c, 133 + i * 40, 152, 14, 3, '#1c2438'); } }
-    if (t > S.tMan) { const k = sg(t, S.tMan, S.tMan + 4); c.save(); c.globalAlpha = 1 - k; blit(c, tintSpr(bikeSpr({ rider: true }), '#0c0a10', 'bsil'), 250 + k * 80, CAR_Y + 2, 30, 39); c.restore(); }
+    if (t > S.tMan) { const k = sg(t, S.tMan, S.tMan + 4); c.save(); c.globalAlpha = 1 - k; blit(c, tintSpr(bikeSpr({ rider: true }), '#0c0a10', 'bsil'), 250 + k * 80, CAR_Y + 2, 30, 49); c.restore(); }
     return { z: 1 + 0.06 * ss(sg(t, 0, S.tEnd + 2)), fx: 170, fy: 108 };
   }
 };
@@ -233,8 +233,8 @@ const SO = {
 const SS1 = {
   name: 'ショート冒頭', bgm: 'pulse',
   init(S) { S.dur = lastSe(S) + 0.6; },
-  draw(c, t, S) { const ox = t * 90; roadScene(c, t, ox, { tower: 300 }); blit(c, cedricSpr(), 210, CAR_Y, 50, 35); const bx = lerp(90, 128, ss(sg(t, 0, 4))); trailingSheet(c, bx - 26, CAR_Y - 6, t, -1, 30); blit(c, bikeSpr({ rider: true, lean: true }), bx, CAR_Y + 6, 30, 39);
-    for (let i = 0; i < 5; i++) L(c, bx - 40 - i * 10, CAR_Y - 14 + i * 3, bx - 30 - i * 10, CAR_Y - 14 + i * 3, DA('#ffffff', 0.5)); return { z: 1.1, fx: 170, fy: 112 }; }
+  draw(c, t, S) { const ox = t * 90; roadScene(c, t, ox, { tower: 300 }); blit(c, cedricSpr(), 210, CAR_Y, 50, 35); const bx = lerp(112, 140, ss(sg(t, 0, 4))); trailingSheet(c, bx - 26, CAR_Y - 6, t, -1, 30); blit(c, bikeSpr({ rider: true, lean: true }), bx, CAR_Y + 6, 30, 49);
+    for (let i = 0; i < 5; i++) L(c, bx - 40 - i * 10, CAR_Y - 14 + i * 3, bx - 30 - i * 10, CAR_Y - 14 + i * 3, DA('#ffffff', 0.5)); return { z: 1.1, fx: 150, fy: 112 }; }
 };
 const SS2 = {
   name: 'ショート締め', bgm: 'pulse',

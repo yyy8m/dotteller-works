@@ -11,7 +11,7 @@ const SX = {
   draw(c, t, S) {
     roadScene(c, t, 0, {});
     const go = t > S.tGo ? t - S.tGo : 0, cx = 170 + go * go * 22;
-    blit(c, bikeSpr({}), 238, CAR_Y + 4, 30, 39, { flip: true }); trailingSheet(c, 262, CAR_Y - 10, 0.3, 1, 18); // the bike left behind, the sheet hanging
+    blit(c, bikeSpr({}), 238, CAR_Y + 4, 30, 49, { flip: true }); trailingSheet(c, 262, CAR_Y - 10, 0.3, 1, 18); // the bike left behind, the sheet hanging
     if (cx < W + 60) { blit(c, cedricSpr(), cx, CAR_Y, 50, 35); if (go > 0) for (let i = 0; i < 4; i++) E(c, cx - 56 - i * 8, CAR_Y - 2, 4 + i * 2, 2 + i, DA('#c8c8c4', 0.4 - i * 0.08)); }
     flareSmoke(c, 168, CAR_Y + 2, t, Math.min(1, t / 0.6 + 0.4));
     // the bankers: run, then hide behind the hedge; the "officer" by the car shouting
@@ -111,7 +111,7 @@ const SD = {
     if (moving) for (let i = 0; i < 3; i++) E(c, cx - 56 - i * 6, CAR_Y - 2, 3 + i, 1.5 + i * 0.5, DA('#c8c8c4', 0.3 - i * 0.08));
     if (t > S.tBike) { // from far behind, in the opposite lane, overtaking, cutting in front
       const u = t - S.tBike, bx = Math.min(250, -40 + u * 120), by = lerp(162, CAR_Y + 4, ss(sg(bx, 170, 240)));
-      trailingSheet(c, bx - 26, by - 12, t, -1, 26 + (moving ? 6 : 0)); blit(c, bikeSpr({ rider: true, lean: moving }), bx, by, 30, 39);
+      trailingSheet(c, bx - 26, by - 12, t, -1, 26 + (moving ? 6 : 0)); blit(c, bikeSpr({ rider: true, lean: moving }), bx, by, 30, 49);
       if (u < 2) for (let i = 0; i < 5; i++) L(c, bx - 40 - i * 10, by - 20 + i * 3, bx - 30 - i * 10, by - 20 + i * 3, DA('#ffffff', 0.5));
       if (t > S.tStop) { const fl = Math.floor(t * 4) & 1; if (fl) glow(c, bx + 16, by - 32, 10, 8, '#ff2020', 0.6); }
     }
