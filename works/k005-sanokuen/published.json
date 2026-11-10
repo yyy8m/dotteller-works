@@ -1,5 +1,4 @@
 {
- "youtube_main": "https://youtu.be/oKGFwJA4PeY",
  "blog_post_id": "1711435110071719345",
  "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-005-sanokuen-jiken.html",
  "replaced": [
@@ -14,8 +13,14 @@
   {
    "youtube_short": "https://youtu.be/mjm_8Y4_VMs",
    "note": "冒頭が黒・@dotgatari 表記の版（2026-11-10 冒頭カード1フレーム目・@dotteller に直して差し替え・削除）"
+  },
+  {
+   "youtube_main": "https://youtu.be/oKGFwJA4PeY",
+   "youtube_short": "https://youtu.be/CYmgyPXLIJE",
+   "note": "白バイの男の頭が切れていた版（2026-11-10 差し替え・削除）"
   }
  ],
- "youtube_short": "https://youtu.be/CYmgyPXLIJE",
- "playlist_id": "PLB1Jw-JyKW5k"
+ "playlist_id": "PLB1Jw-JyKW5k",
+ "youtube_main": "https://youtu.be/RwLlyorfOOA",
+ "youtube_short": "https://youtu.be/bJPnz0vh0jM"
 }
