@@ -89,6 +89,16 @@ python3 engine/tools/build.py works/<id> --tiktok        # TikTok 版（60〜75�
 node engine/tools/export_video.js works/<id>/build/index_tiktok.html tall works/<id>/build/video/<n>_tiktok.mp4 30 1
 ```
 
+### 5.1 投稿前チェック（必須・2026-11-10 CEO指示）
+公開済みショート4本（蜘蛛の糸・注文の多い料理店・杜子春・エド・ゲイン）で「1フレーム目が黒」「誘導文が @dotgatari」の誤りがあった。再発させないため、**アップロード前に毎回**次を確認する。
+```bash
+# 1フレーム目の平均の明るさ（0〜255）。20 未満なら黒い入りが残っている → 直してから書き出し直す
+for f in works/<id>/build/video/*_short.mp4 works/<id>/build/video/*_tiktok.mp4; do ffmpeg -v error -i "$f" -frames:v 1 -vf scale=1:1 -f rawvideo -pix_fmt gray - | od -An -tu1; done
+grep -n "youtube:" engine/src/brand.js     # '@dotteller' であること
+```
+- 書き出したショートの1フレーム目・最後の誘導文の場面を画像で目視し、冒頭カード（大きなフック文＋顔）と「@dotteller」を確かめる。
+- 本編・縦サムネ（`build/thumb.png`）を目視：有名な題材は名前が大きな文字、フックは赤帯。人物の頭や乗り物が絵の外で切れていないこと。
+
 ## 6. 投稿（予約）
 - `works/<id>/publish.json`: `publish_at`（例 `2026-11-13T18:00:00+09:00`）、ブログの `slug`（英字）、説明欄は既存作品と同じ構成（`{CHAPTERS}` を入れる）。
 - `blog/posts/<id>.html`: 既存の記事と同じ構成（遊べる画面・動画・あらすじ／どんな事件・年表・参考・クレジット）。

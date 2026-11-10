@@ -2320,6 +2320,7 @@ function render(T, noDialog) {
     if (!outIm) outIm = ctx.createImageData(W, H);
     transition(S.tr, p, Aim, Bim, outIm); ctx.putImageData(outIm, 0, 0);
   } else ctx.drawImage(B, 0, 0);
+  if (SHORT && !TIKTOK && typeof THUMB === 'function') coverFace(T); // the YouTube Short's cover frame (auto-picked by YouTube from the middle) shows the work's face card
   if (TIKTOK) tiktokCard(ctx, T - (TL.total - 2.4)); // TikTok teaser: 「▶ 続きは本編で」 at the end (the YouTube Short loops instead)
   if (!noDialog) drawDialog(ctx, T);
   if (S.sc.ending && tl > S.tEnd) { // おわり
@@ -2381,6 +2382,19 @@ function tiktokCard(c, u) {
   if (u <= 0) return; const k = eOut(clamp(u / 0.4, 0, 1)), s = '▶ 続きは本編で';
   R(c, 60, 96, 200, Math.round(34 * k), '#000000'); R(c, 62, 98, 196, Math.round(30 * k), '#b01010');
   if (k >= 1) { TX(c, s, 160 - textSpr(s, 16, C.white).width / 2, 100, C.white, 16, null); const t2 = TIKTOK ? 'YouTube「ドット語り」' : '▲ 上のリンクから本編へ'; TX(c, t2, 160 - textSpr(t2, 16, C.white).width / 2, 134, '#f8e8c8', 16, '#000000'); }
+}
+
+/* YouTube picks the Short's cover frame from around the middle of the video (about 50-80 %).
+   Show the work's thumbnail face (THUMB → thumbBigFace's face) there, so the cover matches the unified card. */
+let _coverOpt = null;
+function coverFace(T) {
+  const u = T / TL.total; if (u < 0.5 || u > 0.8) return;
+  if (!_coverOpt) { window.__thumbOpt = null; const [tc, x] = mk(320, 180); THUMB(x, 0); _coverOpt = window.__thumbOpt || {}; }
+  const o = _coverOpt; if (!o.face) return; if (window.__uiCollect) window.__uiCollect.length = 0; // no place captions over the cover
+  const bg = o.bg || ['#050203', '#3c060a'], rim = o.rim || '#e02020';
+  VG(ctx, 0, 0, W, H, [bg[0], bg[1], bg[0]]); glow(ctx, 160, 104, 130, 100, rim, 0.35);
+  const br = Math.round(Math.sin(T * 2.2)); blit(ctx, o.face, 160, 92 + br, o.face.width / 2, o.face.height / 2, { s: 3.2 });
+  window.__focus = [160, 100];
 }
 
 </script>
