@@ -4,7 +4,7 @@ const SERIES = { bunko: { name: '文庫', narrator: 'narrator' }, kiroku: { name
 /* subtitle under the title: 文庫 = 原作 author, 記録 = author field holds the year / place */
 const workSub = () => WORK.series === 'bunko' ? '原作　' + WORK.author : WORK.author;
 const workCredit = () => WORK.series === 'bunko' ? '原作　' + WORK.author + '「' + WORK.title + '」' : '参考　' + WORK.source;
-const BRAND = { name: 'ドット語り', roman: 'DOTGATARI', reading: 'どっとがたり', copy: 'ドットで描く、物語と記録。', tiktok: '@dotgatari', youtube: '@dotgatari' };
+const BRAND = { name: 'ドット語り', roman: 'DOTGATARI', reading: 'どっとがたり', copy: 'ドットで描く、物語と記録。', tiktok: '@dotgatari', youtube: '@dotteller' }; // YouTube handle: @dotteller (2026-11-10; @dotgatari on YouTube is a different, empty channel)
 const brandHandles = () => BRAND.tiktok === BRAND.youtube ? ['YouTube・TikTok ' + BRAND.youtube] : ['YouTube ' + BRAND.youtube, 'TikTok ' + BRAND.tiktok];
 /* logo: "ドット語り" in DotGothic16 (cream + dark drop shadow) + a blinking orange "." */
 function logoMetrics(size) { const tw = textSpr(BRAND.name, size, BR.cream).width - 2, d = Math.max(2, Math.round(size / 8)); return { tw, d, w: tw + Math.round(d / 2) + d }; }
@@ -137,7 +137,7 @@ function composeFrame(mode, T) {
   // the wide frame shows scene rows dy..dy+180; sky objects (moon) use skyY() so they stay inside the visible top
   const S0 = wide && T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, wd0 = S0 ? S0.sc.wideDY : null;
   window.__dy = !wide ? 0 : wd0 == null ? WIDE_DY : Math.round(typeof wd0 === 'function' ? wd0(T - S0.start, S0) : wd0);
-  if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); } else render(T, true);
+  if (T < 0 && !SHORT) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); } else render(Math.max(0, T), true); // shorts: the card is on screen from frame 1 (the list thumbnail is often frame 1)
   const ui = window.__uiCollect || []; window.__uiCollect = null; window.__wide = false; window.__dy = 0;
   const st = T >= 0 ? subtitleState(T) : null;
   if (wide) {

@@ -67,6 +67,12 @@ python3 engine/voice/reading.py works/<id>
 - 動物・怪物は、一目でそれとわかる特徴を描く（例：ヒグマは肩のこぶ・丸い耳2つ・短く太い鼻づら。ネズミや犬に見えないか確かめる）。
 - ショートの縦サムネは、テレビでは上下が切られる。`node engine/tools/thumb.js` の後、`build/thumb_tall.png` の上下1割に文字や顔がないことを確かめる。
 
+## 4.6 ショートの冒頭カードとサムネの統一フォーマット（恒常ルール・2026-11-10）
+- **ショートの1フレーム目から冒頭カードを出す**（黒い入り・黒からのフェードはなし。エンジンで自動：`SHORT` のとき 0:00 から最初の場面を描く）。チャンネルの一覧表示は1フレーム目が使われることがあるため。
+- 冒頭カードの型は全作品共通：上に「ドット語り.／シリーズ #番号」と**大きなフック文（2行目は赤）**、真ん中に**キャラクター（顔・人物）の絵**、下に字幕。最初の場面には必ず主要人物か象徴的な怪物の顔・姿を入れる（風景だけにしない）。
+- 映像の誘導文は「▶ 本編はチャンネルで @dotteller」（`engine/src/brand.js` の `BRAND.youtube`）。YouTube の @dotgatari は別の空チャンネルなので使わない。ハンドルを変えたら `BRAND.youtube` を直す。
+- **本編のサムネ・ショートの縦サムネも同じ系の型**：`thumbBigFace`（大きなタイトル文字＋赤帯のフック＋キャラクターの顔）。顔の代わりに物（テント・椅子など）は使わない。
+
 ## 5. 音声・ビルド・書き出し
 ```bash
 python3 engine/voice/gen_voice.py works/<id>          # WARN が出たら手順3に戻る
@@ -88,6 +94,11 @@ node engine/tools/export_video.js works/<id>/build/index_tiktok.html tall works/
 python3 engine/tools/publish.py works/<id> all
 ```
 - YouTube 2本が `private` + `publishAt`、ブログが `SCHEDULED` になっていることを読み戻して確認する。
+
+## 6.2 再生リスト（恒常ルール・2026-11-10）
+- チャンネルにはシリーズ別の再生リスト「ドット語り 文庫」「ドット語り 記録」がある（オーナー側で作成）。
+- 公開（予約）のとき、自シリーズの再生リストに**本編・ショートとも**追加する：`publish.py works/<id> all` に含まれる。単独では `python3 engine/tools/publish.py works/<id> playlist`。
+- 本編の説明欄には自シリーズの再生リストへのリンクを入れる（`publish.json` の本編の説明に `▶ 再生リスト「ドット語り 記録」：{PLAYLIST_URL}` の行。再生リストがまだないときは行ごと省かれ、できたあと `publish.py works/<id> link` で入る）。
 
 ## 6.5 制作ノートを書き足す（必須）
 - `notes/作業ログ/YYYY-MM-DD.md` に、その日にやったことを書く。

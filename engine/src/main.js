@@ -206,7 +206,7 @@ function render(T, noDialog) {
   if (T < 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); return; }
   const i = sceneAt(T), S = TL.scenes[i], tl = T - S.start;
   const B = renderScene(i, tl, 0);
-  if (tl < S.td) {
+  if (tl < S.td && !(SHORT && i === 0)) { // shorts open on the card itself, without a fade from black
     const p = clamp(tl / S.td, 0, 1);
     const Bim = B.getContext('2d').getImageData(0, 0, W, H);
     let Aim = null; if (i > 0) { const P = TL.scenes[i - 1]; Aim = renderScene(i - 1, T - P.start, 1).getContext('2d').getImageData(0, 0, W, H); }

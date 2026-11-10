@@ -11,6 +11,7 @@ usage:
   python3 engine/tools/publish.py - whoami                         # 認証確認（チャンネル名とブログ名を表示）
   python3 engine/tools/publish.py - pages                          # blog/pages/*.html で固定ページを上書き更新
   python3 engine/tools/publish.py works/NNN-xxx thumb              # build/thumb.png をYouTube本編・ショートのサムネに設定
+  python3 engine/tools/publish.py works/NNN-xxx playlist           # シリーズの再生リスト（ドット語り 文庫／記録）に本編・ショートを追加
   python3 engine/tools/publish.py works/NNN-xxx all                # youtube → thumb → blog → link をまとめて実行
     publish.json に "publish_at": "2026-11-09T19:00:00+09:00" があれば予約投稿（YouTubeは非公開アップ＋公開予約、
     Bloggerは予約記事）。"blog": {"slug": "dotgatari-kiroku-001-ed-gein"} で記事URLを英字にできる。
@@ -31,7 +32,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 BLOG_ID = os.environ.get('BLOGGER_BLOG_ID', '6071876282678666099')
 # brand settings live in one place: engine/src/brand.js (const BRAND = {...})
 BRAND = dict(re.findall(r"(\w+): '([^']*)'", re.search(r'const BRAND = \{(.*?)\};', open(os.path.join(ROOT, 'engine', 'src', 'brand.js'), encoding='utf-8').read()).group(1)))
-PH = re.compile(r'\{(BLOG_URL|MAIN_URL|SHORT_URL|TIKTOK_URL|MAIN_EMBED_URL|CHAPTERS)\}')
+PH = re.compile(r'\{(BLOG_URL|MAIN_URL|SHORT_URL|TIKTOK_URL|MAIN_EMBED_URL|CHAPTERS|PLAYLIST_URL)\}')
+# each series has its own playlist on the channel (made by the owner; found by exact title)
+SERIES_PLAYLIST = {'bunko': 'ドット語り 文庫', 'kiroku': 'ドット語り 記録'}
 WORK_DIR = None  # set in __main__; build/chapters.txt (engine/tools/chapters.js) fills {CHAPTERS}
 
 
@@ -52,6 +55,7 @@ def links(state):
     L = {'BLOG_URL': state.get('blog_url'), 'MAIN_URL': state.get('youtube_main'), 'SHORT_URL': state.get('youtube_short'),
          'TIKTOK_URL': state.get('tiktok_url') or 'https://www.tiktok.com/' + BRAND['tiktok']}
     if L['MAIN_URL']: L['MAIN_EMBED_URL'] = 'https://www.youtube.com/embed/' + yt_id(L['MAIN_URL'])
+    if state.get('playlist_id'): L['PLAYLIST_URL'] = 'https://www.youtube.com/playlist?list=' + state['playlist_id']
     cp = os.path.join(WORK_DIR or '', 'build', 'chapters.txt')
     if WORK_DIR and os.path.exists(cp): L['CHAPTERS'] = open(cp, encoding='utf-8').read().strip()
     return {k: v for k, v in L.items() if v}
@@ -224,10 +228,45 @@ def tiktok_txt(work, pub, L):
     return p
 
 
+def series_playlist(work, tok):
+    """id of this work's series playlist (「ドット語り 文庫」/「ドット語り 記録」), or None if the owner has not made it yet"""
+    series = json.load(open(os.path.join(work, 'lines.json'), encoding='utf-8'))['work']['series']
+    title, pt = SERIES_PLAYLIST[series], ''
+    while True:
+        r, _ = call('GET', 'https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&maxResults=50' + (f'&pageToken={pt}' if pt else ''), tok)
+        for p in r.get('items', []):
+            if p['snippet']['title'].strip() == title: return p['id']
+        pt = r.get('nextPageToken')
+        if not pt: return None
+
+
+def playlist(work, tok=None):
+    """add the main video and the Short to the series playlist (skips ones already in it); remember the playlist id"""
+    tok = tok or token('youtube'); state = load_state(work); pid = series_playlist(work, tok)
+    if not pid: print('playlist: シリーズの再生リストがまだありません（' + '／'.join(SERIES_PLAYLIST.values()) + '）。作られたら publish.py <work> playlist を実行'); return None
+    have, pt = set(), ''
+    while True:
+        r, _ = call('GET', f'https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId={pid}' + (f'&pageToken={pt}' if pt else ''), tok)
+        have |= {i['contentDetails']['videoId'] for i in r.get('items', [])}; pt = r.get('nextPageToken')
+        if not pt: break
+    for k in ('youtube_main', 'youtube_short'):
+        if not state.get(k): continue
+        vid = yt_id(state[k])
+        if vid in have: print('playlist: already in', k, vid); continue
+        call('POST', 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet', tok, {'snippet': {'playlistId': pid, 'resourceId': {'kind': 'youtube#video', 'videoId': vid}}})
+        print('playlist: added', k, vid)
+    if state.get('playlist_id') != pid: state['playlist_id'] = pid; save_state(work, state)
+    return pid
+
+
 def link(work):
     """after blog + youtube: fill every placeholder and update both YouTube descriptions and the blog post"""
     pub = json.load(open(os.path.join(work, 'publish.json'), encoding='utf-8'))
-    state = load_state(work); L = links(state)
+    state = load_state(work)
+    if not state.get('playlist_id'):  # the series playlist link goes into the description once the playlist exists
+        pid = series_playlist(work, token('youtube'))
+        if pid: state['playlist_id'] = pid; save_state(work, state)
+    L = links(state)
     miss = [k for k in ('BLOG_URL', 'MAIN_URL', 'SHORT_URL') if k not in L]
     if miss: sys.exit('まだURLがそろっていません: ' + ', '.join(miss) + '（blog → youtube の順に先に実行してください）')
     tok = token('youtube')
@@ -326,6 +365,7 @@ if __name__ == '__main__':
      'youtube': lambda: youtube(os.path.abspath(work), token('youtube')), 'pages': lambda: pages(token('blogger')),
      'link': lambda: link(os.path.abspath(work)), 'retire': lambda: retire(os.path.abspath(work)),
      'thumb': lambda: thumb(os.path.abspath(work), token('youtube')),
-     'all': lambda: (youtube(os.path.abspath(work), token('youtube')), thumb(os.path.abspath(work), token('youtube')),
+     'all': lambda: (youtube(os.path.abspath(work), token('youtube')), thumb(os.path.abspath(work), token('youtube')), playlist(os.path.abspath(work)),
                      blog(os.path.abspath(work), token('blogger')), link(os.path.abspath(work)), audit()),
+     'playlist': lambda: playlist(os.path.abspath(work)),
      'audit': lambda: audit(), 'blogsync': lambda: blogsync()}[what]()
