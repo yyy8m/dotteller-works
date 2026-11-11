@@ -4,7 +4,7 @@ const EXPR = {};
 ['L8', 'L9', 'L15', 'L17', 'L18', 'L19', 'L22', 'L24', 'L26', 'L28', 'L29'].forEach(id => EXPR[id] = [[0, 'sad']]);
 ['H1', 'H2', 'H3', 'B1', 'B2', 'B3'].forEach(id => EXPR[id] = [[0, 'normal']]); ['H4', 'H5'].forEach(id => EXPR[id] = [[0, 'cold']]);
 const SPEAKERS_EXTRA = { genin: { name: '下人', bg: ['#1c2438', '#2c3c5c'] }, baba: { name: '老婆', bg: ['#3c2c1c', '#5c4428'] } };
-const HOOK = ['死人の髪を抜く老婆', 'それを見た男は――'];
+const HOOK = ['羅生門', '死人の髪を抜く老婆――'];
 const PLAN_FULL = [
   { sc: XA, pre: 0.6, items: ['C0', 0.8, 'H1', 1.0, 'C1'], tr: 'fromBlack', td: 0.6 },
   { sc: S0, pre: 0.8, items: ['L0'], tr: 'white', td: 1.0 },

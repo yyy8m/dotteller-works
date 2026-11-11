@@ -4,7 +4,7 @@ const EXPR = {};
 ['C1', 'L13b', 'L2', 'L5', 'L13', 'L25', 'L26'].forEach(id => EXPR[id] = [[0, 'sad']]);
 const SPEAKERS_EXTRA = { man: { name: '鹿撃ち帽の男', bg: ['#0c0a0e', '#1c1820'] }, annie: { name: 'アニー', bg: ['#3c2c34', '#5c4450'] }, writer: { name: '手紙の主', bg: ['#2c0c0c', '#4c1414'] },
   warren: { name: 'チャールズ・ウォーレン', bg: ['#141c34', '#24304c'] }, macnaghten: { name: 'マクノートン', bg: ['#1c1c24', '#34343c'] } };
-const HOOK = ['5人を殺した男の名を', '今も、誰も知らない'];
+const HOOK = ['切り裂きジャック', '5人殺し、正体は今も謎――'];
 const PLAN_FULL = [
   { sc: RD, pre: 0.8, items: ['C0', 0.8, 'J1', 0.5, 'A1', 1.4, 'C1'], tr: 'fromBlack', td: 0.8 },
   { sc: S0, pre: 0.8, items: ['L0'], tr: 'white', td: 1.0 },

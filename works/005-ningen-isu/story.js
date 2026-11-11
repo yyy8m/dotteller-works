@@ -4,7 +4,7 @@ const EXPR = {};
 ['L6'].forEach(id => EXPR[id] = [[0, 'sad']]);
 ['M0', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'Y1', 'J1'].forEach(id => EXPR[id] = [[0, 'normal']]);
 const SPEAKERS_EXTRA = { otoko: { name: '手紙の男', bg: ['#140c08', '#3c2c24'] }, yoshiko: { name: '佳子', bg: ['#3c1428', '#6c2c48'] }, jochu: { name: '女中', bg: ['#1c2430', '#3c4858'] } };
-const HOOK = ['毎日座る椅子の中に', '男が、ひとり――'];
+const HOOK = ['人間椅子', '椅子の中に、男がひとり――'];
 const PLAN_FULL = [
   { sc: NA, pre: 0.6, items: ['M0', 1.0, 'C0', 0.6, 'C1'], tr: 'fromBlack', td: 0.6 },
   { sc: S0, pre: 0.8, items: ['L0'], tr: 'white', td: 1.0 },
