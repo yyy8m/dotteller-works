@@ -145,6 +145,7 @@ function composeFrame(mode, T) {
     // captions and year cards are drawn again at their usual place (top) so the shift never cuts them
     const S = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null, wd = S ? S.sc.wideDY : null, dy = wd == null ? WIDE_DY : Math.round(typeof wd === 'function' ? wd(T - S.start, S) : wd); // wideDY may change within a scene: (t, S) => dy
     f.drawImage(cv, 0, dy, W, 180, 0, 0, 640, 360);
+    window.__hiddenTxt = S && S.sc.noWin ? [] : (window.__txtScreen || []).filter(r => r[3] > 1 && r[1] < H - 1 && ((st && r[3] > dy + 137) || r[3] > dy + 180 || r[1] < dy - 1)); // scene text hidden by the dialog window or cut at the top (qc.js reports it)
     f.save(); f.scale(2, 2);
     for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], u[4]); else if (u[0] === 'big') bigCap(f, u[1], u[2], u[3], u[4], u[5]); else yearCard(f, u[3], u[4], u[1], u[2]); }
     f.restore();

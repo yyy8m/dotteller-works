@@ -71,7 +71,7 @@ const NE = {
     workshop(c, t);
     if (t > S.tParts) { // cross-section: the hollow inside, a breathing slit, a shelf with canteen and biscuits, a lid underneath
       R(c, 0, 0, W, H, '#1c1814'); for (let x = 0; x < W; x += 16) R(c, x, 0, 1, H, '#241e18'); armchair(c, 160, 170, { s: 3, xray: true });
-      const k = Math.floor(sg(t, S.tParts, S.tParts + 4) * 3); const tags = [[118, 52, '隙間'], [210, 60, '水筒と堅パン'], [130, 170, '出入り口']];
+      const k = Math.floor(sg(t, S.tParts, S.tParts + 4) * 3); const tags = [[118, 52, '隙間'], [210, 60, '水筒と堅パン'], [130, 132, '出入り口']];
       for (let i = 0; i < k; i++) { const [x, y, s] = tags[i]; TX(c, s, x, y, '#f8e8a0', 16, '#000000'); }
       return { z: 1.0, fx: 160, fy: 110 };
     }

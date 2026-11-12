@@ -162,7 +162,7 @@ const QH = {
     if (t > S.tThree) { // the long slope: three figures fallen in a line, facing the tent
       slope(c, t, 'day'); tent(c, 290, 74, { cut: true, snow: true });
       [[90, 1], [160, 2], [220, 4]].forEach(([x, i], k) => { if (t > S.tThree + 0.6 + k * 0.7) frozen(c, HIKERS[[0, 1, 4][k]], x, 128 - x * 0.16 + 26, { dir: -1, cover: k === 2 }); });
-      cedar(c, 24, 160, 70); bigCap(c, '300m 480m 630m', 150, 16, '#2c3c5c', sg(t, S.tThree + 2.5, S.tThree + 3.5));
+      cedar(c, 24, 160, 70); bigCap(c, '300m 480m 630m', 78, 16, '#2c3c5c', sg(t, S.tThree + 2.5, S.tThree + 3.5));
       return { z: 1.03, fx: 160, fy: 110 };
     }
     uralSky(c, t, 'day', 120); taiga(c, t, 132, 14, 'day', 0, 1.1, 13); snowGround(c, 132);
@@ -261,7 +261,7 @@ const QN = {
       return { z: 1.02, fx: 160, fy: 100 };
     }
     const n = Math.min(3, 1 + Math.floor((t - S.tTheory) / 1.4)); R(c, 0, 0, W, H, '#14141c');
-    const panel = (i, x, draw, lab) => { if (i >= n) return; R(c, x, 30, 90, 90, '#2c2c3c'); R(c, x + 3, 33, 84, 84, '#1c1c28'); draw(x + 3, 33); TX(c, lab, x + 45 - textSpr(lab, 16, '#e8e8f0').width / 2, 10, '#e8e8f0', 16, null); };
+    const panel = (i, x, draw, lab) => { if (i >= n) return; R(c, x, 30, 90, 90, '#2c2c3c'); R(c, x + 3, 33, 84, 84, '#1c1c28'); draw(x + 3, 33); TX(c, lab, x + 45 - textSpr(lab, 16, '#e8e8f0').width / 2, 12, '#e8e8f0', 16, null); };
     panel(0, 12, (x, y) => { PF(c, [x, y + 80, x + 84, y + 20, x + 84, y + 84, x, y + 84], '#e8eef4'); for (let k = 0; k < 6; k++) E(c, x + 30 + k * 8 + fr(t) * 10, y + 50 - k * 4, 6, 3, '#c8d4e4'); tent(c, x + 40, y + 70, {}); }, '雪崩');
     panel(1, 115, (x, y) => { for (let r = 0; r < 5; r++) { c.save(); c.globalAlpha = 1 - fr(t * 0.8 + r / 5); c.strokeStyle = '#8cb4f8'; c.beginPath(); c.arc(x + 42, y + 42, fr(t * 0.8 + r / 5) * 40, 0, TAU); c.stroke(); c.restore(); } }, '低い音');
     panel(2, 218, (x, y) => { E(c, x + 42, y + 42, 10, 10, '#f8a040'); glow(c, x + 42, y + 42, 30, 30, '#f88c2c', 0.5); }, '光の球');

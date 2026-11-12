@@ -160,7 +160,7 @@ function sceneAt(T) { let i = 0; for (let k = 0; k < TL.scenes.length; k++) if (
 const [WB, WX] = mk(W, H);
 // record where text sprites land on the scene canvas (the tall crop widens or shifts so text is never cut)
 { const _d = WX.drawImage.bind(WX); WX.drawImage = function (img, ...a) {
-  if (img && img.__txt && window.__txtRects) { let x, y, w, h; if (a.length === 2) { [x, y] = a; w = img.width; h = img.height; } else if (a.length === 4) { [x, y, w, h] = a; } else { [, , , , x, y, w, h] = a; }
+  if (img && img.__txt && window.__txtRects && WX.globalAlpha > 0.02) { let x, y, w, h; if (a.length === 2) { [x, y] = a; w = img.width; h = img.height; } else if (a.length === 4) { [x, y, w, h] = a; } else { [, , , , x, y, w, h] = a; }
     const m = WX.getTransform(), pts = [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].map(([px, py]) => [m.a * px + m.c * py + m.e, m.b * px + m.d * py + m.f]);
     window.__txtRects.push([Math.min(...pts.map(p => p[0])), Math.min(...pts.map(p => p[1])), Math.max(...pts.map(p => p[0])), Math.max(...pts.map(p => p[1]))]); }
   return _d(img, ...a); }; }

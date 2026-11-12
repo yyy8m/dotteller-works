@@ -70,7 +70,7 @@ const QC = {
   draw(c, t, S) {
     if (t > S.tOver) { // the verdict paper: overturned; unsolved
       R(c, 0, 0, W, H, '#1c1c24'); plate(c, 90, 30, 140, 110, '判決', '#5c2c2c'); for (let i = 0; i < 5; i++) R(c, 100, 60 + i * 12, 120, 2, '#8c8474');
-      L(c, 94, 40, 226, 136, '#c81818', 3); stamp(c, t, S.tOver + 0.4, 200, 120, '取り消し', 96); bigCap(c, '未解決', 160, 24, '#f4f0e8', sg(t, S.tOver + 3, S.tOver + 3.6));
+      L(c, 94, 40, 226, 136, '#c81818', 3); stamp(c, t, S.tOver + 0.4, 200, 120, '取り消し', 96); bigCap(c, '未解決', 54, 24, '#f4f0e8', sg(t, S.tOver + 3, S.tOver + 3.6));
       return { z: 1.03, fx: 160, fy: 90 };
     }
     if (t > S.tOther) { // a different man between two militiamen; later, the death sentence stamp
@@ -170,7 +170,7 @@ const QG = {
       return { z: 1.02, fx: 160, fy: 100 };
     }
     // a big station full of uniformed officers
-    grayDusk(c, 90, {}); R(c, 20, 20, 280, 90, '#a89c88'); for (let i = 0; i < 9; i++) R(c, 34 + i * 30, 40, 16, 40, '#4c5c6c'); R(c, 120, 6, 80, 20, '#8c7c68'); TX(c, 'РОСТОВ', 128, 6, '#f4f0e8', 16, null);
+    grayDusk(c, 90, {}); R(c, 20, 20, 280, 90, '#a89c88'); for (let i = 0; i < 9; i++) R(c, 34 + i * 30, 40, 16, 40, '#4c5c6c'); R(c, 120, 30, 80, 20, '#8c7c68'); TX(c, 'РОСТОВ', 128, 30, '#f4f0e8', 16, null);
     R(c, 0, 110, W, 130, '#7c7c78'); const n = Math.min(12, Math.floor(sg(t, 0.4, 4) * 12 + 1)); for (let i = 0; i < n; i++) person(c, MILITIA[i % 4], 20 + i * 25, 150 + (i % 2) * 6, { k: 'mm', flip: i % 2 });
     bigCap(c, '360人', 116, 24, '#f8d860', sg(t, 2.6, 3.2)); yearFlash(c, t, 0.4, 1990, 216, 10, 'ロストフ州');
     return { z: 1.03, fx: 160, fy: 110 };
@@ -183,7 +183,7 @@ const QI = {
   init(S) { S.tNote = at(S, 'L24', 0) - 0.3; S.tFound = at(S, 'L25', 0) - 0.3; S.tName = at(S, 'L25', 2) - 0.3; S.tArrest = at(S, 'L26', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     if (t > S.tArrest) { // outside a cafe: four plainclothes officers
-      grayDusk(c, 110, { snow: true }); R(c, 60, 30, 200, 90, '#a8988c'); R(c, 80, 60, 50, 60, '#5c4c3c'); R(c, 150, 50, 90, 40, '#f8e0a0'); R(c, 150, 30, 90, 16, '#5c2c2c'); TX(c, 'КАФЕ', 170, 30, '#f4f0e8', 16, null);
+      grayDusk(c, 110, { snow: true }); R(c, 60, 30, 200, 90, '#a8988c'); R(c, 80, 60, 50, 60, '#5c4c3c'); R(c, 150, 64, 90, 40, '#f8e0a0'); R(c, 150, 44, 90, 18, '#5c2c2c'); TX(c, 'КАФЕ', 170, 44, '#f4f0e8', 16, null);
       R(c, 0, 120, W, 120, '#9c9c98'); person(c, CHIKA_COAT, 160, 160, { expr: 'shock', k: 'arr' }); for (let i = 0; i < 4; i++) person(c, PLAIN[i], [120, 136, 186, 202][i], 162, { flip: i > 1, arm: i === 1 || i === 2 ? 'fwd' : null, k: 'arr' });
       yearFlash(c, t, S.tArrest + 0.2, 1990, 216, 10, '11月20日');
       return { z: 1.05, fx: 160, fy: 120 };

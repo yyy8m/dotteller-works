@@ -160,7 +160,7 @@ function blit(c, spr, x, y, ax, ay, opt) {
 /* dissolve a sprite with ordered dither (keep fraction a of pixels) */
 function ditherFade(spr, a, id) {
   const w = spr.width, h = spr.height, [cv, x] = slot(id || 'df' + w + 'x' + h, w, h);
-  cv.__txt = spr.__txt ? 1 : 0;
+  cv.__txt = spr.__txt && a > 0.02 ? 1 : 0;
   x.drawImage(spr, 0, 0); if (a >= 1) return cv;
   const im = x.getImageData(0, 0, w, h), d = im.data;
   for (let y = 0; y < h; y++) for (let xx = 0; xx < w; xx++) if (BAYER8[(y & 7) * 8 + (xx & 7)] >= a) d[(y * w + xx) * 4 + 3] = 0;

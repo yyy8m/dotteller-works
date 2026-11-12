@@ -62,7 +62,7 @@ UQ.bgmTrack = (S, tr) => { tr.fin = 3; };
 UQ.ending = true;
 // figures stand on the ground (y 150-172): keep them above the dialog window
 UX.wideDY = 36; UA.wideDY = (t, S) => (t < S.tPhoto ? 30 : 16); UB.wideDY = (t, S) => (t < S.tSteal ? 40 : 30); UC.wideDY = (t, S) => (t > S.tMedal ? 14 : t > S.tPhone ? 26 : 40); UD.wideDY = (t, S) => (t > S.tStart ? 22 : t > S.tPhone ? 20 : 40);
-UE.wideDY = (t, S) => (t > S.tFound ? 34 : t > S.tScar ? 18 : 34); UF.wideDY = (t, S) => (t > S.tCham ? 14 : t > S.tGirls ? 40 : 36); UG.wideDY = (t, S) => (t > S.tLetter ? 14 : 40); UI.wideDY = (t, S) => (t > S.tDrive ? 48 : 36);
-UJ.wideDY = (t, S) => (t > S.tCol ? 20 : t > S.tSent ? 30 : 48); UK.wideDY = (t, S) => (t < S.tJump + 0.6 ? 20 : 42); UL.wideDY = (t, S) => (t > S.tOut ? 36 : 6); UM.wideDY = (t, S) => (t > S.tRoom ? 30 : 4); UN.wideDY = (t, S) => (t > S.tStop ? 48 : t > S.tGirl ? 30 : t > S.tSiren ? 52 : 26);
+UE.wideDY = (t, S) => (t > S.tFound ? 34 : t > S.tScar ? 18 : 34); UF.wideDY = (t, S) => (t > S.tCham ? 0 : t > S.tGirls ? 40 : 36); UG.wideDY = (t, S) => (t > S.tLetter ? 14 : 40); UI.wideDY = (t, S) => (t > S.tDrive ? 48 : 36);
+UJ.wideDY = (t, S) => (t > S.tCol ? 20 : t > S.tSent ? 30 : 48); UK.wideDY = (t, S) => (t < S.tJump + 0.6 ? 20 : 42); UL.wideDY = (t, S) => (t > S.tOut ? 36 : 6); UM.wideDY = 4; UN.wideDY = (t, S) => (t > S.tStop ? 48 : t > S.tGirl ? 30 : t > S.tSiren ? 52 : 26);
 UO.wideDY = (t, S) => (t > S.tLetters && t < S.tDeath ? 40 : 22); UP.wideDY = (t, S) => (t > S.tMeal ? 24 : t > S.tChair ? 20 : 30); UQ.wideDY = 20; SS2.wideDY = 20;
 function TITLE_DECO(c, t) { blit(c, vwSpr('#c8a46c'), 262, 222, 40, 35); cuffs(c, 226, 206, t, 1); }

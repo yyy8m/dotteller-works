@@ -151,7 +151,7 @@ const YF = {
     R(c, 20, 40, 60, 40, '#141008'); R(c, 18, 38, 64, 4, '#6c4c2c'); PF(c, [20, 40, 80, 40, 92, 20, 32, 20], '#5c4430'); glow(c, 50, 60, 30, 16, '#c8d8e8', 0.25); // open hatch
     E(c, 160, 54, 20, 20, '#5c3c24'); E(c, 160, 54, 16, 16, '#f4ecd8'); for (let i = 0; i < 12; i++) { const a = i / 12 * TAU; P(c, 160 + Math.cos(a) * 13, 54 + Math.sin(a) * 13, '#2c2c34'); } L(c, 160, 54, 160 + 7, 54 - 6, '#141414', 2); L(c, 160, 54, 160 - 2, 54 + 11, '#141414'); R(c, 156, 76, 8, 30, '#5c3c24'); // clock (stopped)
     if (t > S.tComp) { R(c, 110, 140, 40, 14, '#5c3c24'); E(c, 130, 136, 16, 8, '#8c7c5c'); E(c, 130, 135, 13, 6, '#e8e0c8'); L(c, 120, 132, 142, 140, '#3c3c44'); L(c, 124, 140, 136, 130, '#3c3c44'); P(c, 130, 135, '#c81818'); } // broken compass
-    if (t > S.tGone) { for (let i = 0; i < 2; i++) { const x = 190 + i * 50; R(c, x, 130, 40, 26, '#4c3420'); R(c, x + 3, 133, 34, 20, '#2c1c10'); c.save(); c.globalAlpha = 0.3; if (i) { E(c, x + 20, 143, 9, 9, '#c8c0a8'); } else { PF(c, [x + 8, 150, x + 20, 136, x + 32, 150], '#c8c0a8'); } c.restore(); } TX(c, '六分儀', 186, 158, '#f4f0e8', 16, '#000000'); TX(c, '時計', 244, 158, '#f4f0e8', 16, '#000000'); }
+    if (t > S.tGone) { for (let i = 0; i < 2; i++) { const x = 190 + i * 50; R(c, x, 130, 40, 26, '#4c3420'); R(c, x + 3, 133, 34, 20, '#2c1c10'); c.save(); c.globalAlpha = 0.3; if (i) { E(c, x + 20, 143, 9, 9, '#c8c0a8'); } else { PF(c, [x + 8, 150, x + 20, 136, x + 32, 150], '#c8c0a8'); } c.restore(); } TX(c, '六分儀', 186, 110, '#f4f0e8', 16, '#000000'); TX(c, '時計', 244, 110, '#f4f0e8', 16, '#000000'); }
     if (t > S.tClock) bigCap(c, '止まった時計', 6, 16, '#f4f0e8', sg(t, S.tClock + 0.2, S.tClock + 0.8));
     return { z: 1.03, fx: 150, fy: 100 };
   }
@@ -166,7 +166,7 @@ const YG = withCuts({
     R(c, 40, 24, 240, 150, '#3c2414'); R(c, 46, 28, 112, 142, '#f0e4c8'); R(c, 162, 28, 112, 142, '#f4e8cc'); R(c, 158, 28, 4, 142, '#c8b898');
     for (let i = 0; i < 8; i++) { R(c, 54, 42 + i * 14, 96 - (i * 7) % 30, 1, '#8c7c64'); } TX(c, 'Nov. 24', 168, 34, '#3c2c1c', 16, null); for (let i = 0; i < 3; i++) R(c, 170, 58 + i * 14, 90 - i * 22, 1, '#5c4c3c');
     if (t > S.tBlank) { const k = sg(t, S.tBlank, S.tBlank + 3); for (let i = 3; i < 8; i++) R(c, 170, 58 + i * 14, 90, 1, DA('#c8b898', 0.3)); c.save(); c.globalAlpha = 0.25 * k; c.fillStyle = '#000'; c.fillRect(0, 0, W, H); c.restore(); }
-    if (t > S.tNone) bigCap(c, '10人は、どこへ', 186, 16, '#f4f0e8', sg(t, S.tNone, S.tNone + 0.6));
+    if (t > S.tNone) bigCap(c, '10人は、どこへ', 98, 16, '#f4f0e8', sg(t, S.tNone, S.tNone + 0.6));
     capPlate(c, t, 0.5, ['航海日誌', '最後の書き込み']);
     return { z: 1.03 + 0.05 * ss(sg(t, 0, S.dur)), fx: 216, fy: 80 };
   }
@@ -181,7 +181,7 @@ const YH = {
     if (t > S.tMap) { // the Atlantic: two courses meeting
       R(c, 0, 0, W, H, '#0c1c30'); for (let x = 0; x < W; x += 20) R(c, x, 0, 1, H, '#10243a'); PF(c, [0, 20, 60, 30, 80, 90, 50, 150, 0, 170], '#a89c7c'); PF(c, [320, 30, 270, 50, 262, 100, 280, 140, 320, 150], '#a89c7c'); TX(c, 'ニューヨーク', 4, 70, '#f4f0e8', 16, '#000000'); TX(c, 'ジェノヴァ', 236, 22, '#f4f0e8', 16, '#000000');
       const k1 = sg(t, S.tMap + 0.2, S.tMap + 2.4), k2 = sg(t, S.tMap + 0.8, S.tMap + 3.0); L(c, 60, 80, lerp(60, 200, k1), lerp(80, 96, k1), '#f8d860', 2); L(c, 60, 92, lerp(60, 200, k2), lerp(92, 100, k2), '#80c8f8', 2); E(c, 214, 98, 4, 4, '#ffffff');
-      if (k2 >= 1) { ER(c, 204, 98, 16, 12, '#f84040'); bigCap(c, '出来すぎた話？', 150, 16, '#f84040', sg(t, S.tMap + 3.1, S.tMap + 3.6)); }
+      if (k2 >= 1) { ER(c, 204, 98, 16, 12, '#f84040'); bigCap(c, '出来すぎた話？', 114, 16, '#f84040', sg(t, S.tMap + 3.1, S.tMap + 3.6)); }
       return { z: 1.03, fx: 160, fy: 100 };
     }
     if (t > S.tCourt) { // the court in Gibraltar

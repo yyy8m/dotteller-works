@@ -178,8 +178,8 @@ const UF = {
   draw(c, t, S) {
     if (t > S.tCham) { // four faces of one man
       R(c, 0, 0, W, H, '#1c1c24'); const looks = [{ smile: true }, { beard: true }, { look: 'long' }, { look: 'blond', smile: true }];
-      looks.forEach((o, i) => { const k = sg(t, S.tCham + 0.3 + i * 0.6, S.tCham + 0.8 + i * 0.6); if (k <= 0) return; const x = 46 + i * 76; R(c, x - 34, 30, 68, 92, '#c8c0b0'); R(c, x - 30, 34, 60, 70, '#8c9cac'); bigFace(c, tedFace({ ...o, blink: blinkOf(t, 20 + i) }), x, 70, 1.2, k, 'cham' + i); R(c, x - 30, 106, 60, 12, '#2c2c34'); TX(c, String(i + 1), x - 4, 104, '#f4f0e8', 16, null); });
-      bigCap(c, 'カメレオン', 140, 24, '#8cf87c', sg(t, S.tCham + 2.8, S.tCham + 3.4));
+      looks.forEach((o, i) => { const k = sg(t, S.tCham + 0.3 + i * 0.6, S.tCham + 0.8 + i * 0.6); if (k <= 0) return; const x = 46 + i * 76; R(c, x - 34, 40, 68, 92, '#c8c0b0'); R(c, x - 30, 44, 60, 70, '#8c9cac'); bigFace(c, tedFace({ ...o, blink: blinkOf(t, 20 + i) }), x, 80, 1.2, k, 'cham' + i); R(c, x - 30, 116, 60, 12, '#2c2c34'); TX(c, String(i + 1), x - 4, 114, '#f4f0e8', 16, null); });
+      bigCap(c, 'カメレオン', 6, 24, '#8cf87c', sg(t, S.tCham + 2.8, S.tCham + 3.4));
       return { z: 1.02, fx: 160, fy: 90 };
     }
     if (t > S.tGirls) { // long hair parted in the middle
@@ -208,7 +208,7 @@ const UG = {
       const k = eOut(sg(t, S.tLetter, S.tLetter + 0.5)); R(c, 84, lerp(-120, 26, k), 152, 116, '#f4f0e4'); const y = lerp(-120, 26, k);
       R(c, 84, y, 152, 18, '#2c3c6c'); TX(c, '推薦状', 136, y + 1, '#f4f0e8', 16, null); for (let i = 0; i < 6; i++) R(c, 96, y + 28 + i * 10, 128 - (i === 5 ? 60 : 0), 2, '#8c8474');
       TX(c, 'ワシントン州知事', 96, y + 92, '#2c2c34', 16, null);
-      if (t > S.tAgain) { dim(c, 0.6 * sg(t, S.tAgain, S.tAgain + 1.2), '#1c0408'); bigCap(c, '10月', 150, 24, '#f84040', sg(t, S.tAgain + 0.3, S.tAgain + 0.9)); }
+      if (t > S.tAgain) { dim(c, 0.6 * sg(t, S.tAgain, S.tAgain + 1.2), '#1c0408'); bigCap(c, '10月', 58, 24, '#f84040', sg(t, S.tAgain + 0.3, S.tAgain + 0.9)); }
       return { z: 1.03 + 0.05 * ss(sg(t, S.tAgain, S.dur)), fx: 160, fy: 90 };
     }
     if (t > S.tUtah) { // the Volkswagen on the desert road to Salt Lake City
@@ -335,9 +335,9 @@ const UM = {
     usaMap(c, t); const route = ['colorado', 'denver', 'chicago', 'annarbor', 'atlanta', 'tallahassee'], labs = [null, 'デンバー', 'シカゴ', 'アナーバー', 'アトランタ', 'タラハシー'], icons = ['', '✈', '✈', '列車', '車', 'バス'];
     const u = sg(t, 0.4, Math.min(S.tRoom, 0.4 + 9)) * (route.length - 1);
     for (let i = 0; i < route.length - 1; i++) { const [x0, y0] = CITY[route[i]], [x1, y1] = CITY[route[i + 1]], k = clamp(u - i, 0, 1); if (k <= 0) break; L(c, x0, y0, lerp(x0, x1, k), lerp(y0, y1, k), '#f84040', 2); }
-    const off = [[0, 0], [-56, 4], [-44, -22], [8, -20], [8, -8], [8, -2]]; route.forEach((k, i) => { if (u >= i - 0.05) mapDot(c, k, labs[i], i === route.length - 1 ? '#f84040' : '#f8d860', off[i][0], off[i][1]); });
+    const off = [[0, 0], [-56, 4], [-44, -22], [8, -20], [-84, -10], [10, -20]]; route.forEach((k, i) => { if (u >= i - 0.05) mapDot(c, k, labs[i], i === route.length - 1 ? '#f84040' : '#f8d860', off[i][0], off[i][1]); });
     const i = Math.min(route.length - 2, Math.floor(u)), [x0, y0] = CITY[route[i]], [x1, y1] = CITY[route[i + 1]], kk = clamp(u - i, 0, 1); E(c, lerp(x0, x1, kk), lerp(y0, y1, kk), 3, 3, '#ffffff');
-    if (t > S.tRoom) { const k = eOut(sg(t, S.tRoom, S.tRoom + 0.4)); R(c, 196, lerp(250, 168, k), 112, 56, '#f4f0e4'); R(c, 196, lerp(250, 168, k), 112, 16, '#5c3c24'); TX(c, '偽名で入居', 210, lerp(250, 168, k), '#f4f0e8', 16, null); TX(c, 'クリス・ヘイゲン', 200, lerp(250, 168, k) + 22, '#2c2c34', 16, null); }
+    if (t > S.tRoom) { const k = eOut(sg(t, S.tRoom, S.tRoom + 0.4)), py = lerp(-70, 10, k); R(c, 10, py, 112, 56, '#f4f0e4'); R(c, 10, py, 112, 16, '#5c3c24'); TX(c, '偽名で入居', 24, py, '#f4f0e8', 16, null); TX(c, 'クリス・ヘイゲン', 14, py + 22, '#2c2c34', 16, null); }
     return { z: 1.02 + 0.03 * ss(sg(t, 0.4, S.dur)), fx: lerp(160, 180, sg(t, 0.4, S.dur)), fy: 100 };
   }
 };
@@ -389,7 +389,7 @@ const UO = withCuts({
     R(c, 90, 64, 140, 50, '#3c2414'); R(c, 90, 64, 140, 4, '#6c4c2c'); R(c, 120, 70, 80, 2, '#2c1c10');
     person(c, TED_SUIT, 170, 166, { arm: t < S.tDeath ? 'point' : null, expr: t > S.tDeath ? 'normal' : 'smile', flip: true, blink: blinkOf(t, 6), k: 'crt' }); R(c, 180, 122, 22, 32, '#5c3c24'); R(c, 176, 118, 30, 6, '#6c4c2c'); // lectern
     for (let i = 0; i < 5; i++) person(c, { id: 'pd' + i, top: 'jacket', coat: ['#3c3c44', '#4c4034', '#2c3448', '#3c3c3c', '#4c4c54'][i], shirt: '#ece8e0', tie: '#3c2c2c', pants: '#2c2c34', skin: ['#e8c0a0', '#dcac88', '#f0c8a8', '#e0b090', '#e8c4a4'][i], hair: ['#3c2818', '#8c8c8c', '#1c1814', '#6c4c2c', '#a88c5c'][i], hairStyle: 'side', glasses: i % 2 }, 20 + i * 22, 166, { k: 'pd', flip: false });
-    for (let i = 0; i < 5; i++) R(c, 10 + i * 22, 140, 22, 30, '#4c3420'); TX(c, '弁護人 5人', 12, 176, '#f4f0e8', 16, '#000000');
+    for (let i = 0; i < 5; i++) R(c, 10 + i * 22, 140, 22, 30, '#4c3420'); TX(c, '弁護人 5人', 12, 92, '#f4f0e8', 16, '#000000');
     if (t > S.tDeath) { const k = eOut(sg(t, S.tDeath + 0.3, S.tDeath + 0.6)); c.save(); c.translate(250, 60); c.rotate(-0.15); c.scale(2 - k, 2 - k); c.globalAlpha = k; R(c, -34, -16, 68, 32, '#c81818'); R(c, -31, -13, 62, 26, '#f4f0e8'); TX(c, '死刑', -16, -9, '#c81818', 16, null); c.restore(); }
     yearFlash(c, t, 0.4, 1979, 216, 10, 'マイアミ');
     return { z: 1.03, fx: 150, fy: 110, sy: t > S.tDeath + 0.3 && t < S.tDeath + 0.5 ? 2 : 0 };

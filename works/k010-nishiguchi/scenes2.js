@@ -20,7 +20,7 @@ const JA = {
   name: '大阪', ch: '前科4犯', bgm: 'memory',
   init(S) { S.tRec = at(S, 'L2', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
-    if (t > S.tRec) { R(c, 0, 0, W, H, '#2c2418'); R(c, 80, 30, 160, 120, '#f0e8d4'); R(c, 80, 30, 160, 20, '#3c3c44'); TX(c, '犯歴', 140, 31, '#f4f0e8', 16, null); ['詐欺', '窃盗', '詐欺', '窃盗'].forEach((s, i) => { if (t > S.tRec + 0.4 + i * 0.5) { TX(c, (i + 1) + '．' + s, 100, 58 + i * 20, '#2c2c34', 16, null); } }); stamp(c, t, S.tRec + 2.6, 200, 130, '前科4犯', 96); yearFlash(c, t, S.tRec + 3.4, 1963, 216, 10, '37歳'); return { z: 1.03, fx: 160, fy: 90 }; }
+    if (t > S.tRec) { R(c, 0, 0, W, H, '#2c2418'); R(c, 80, 30, 160, 120, '#f0e8d4'); R(c, 80, 30, 160, 20, '#3c3c44'); TX(c, '犯歴', 140, 31, '#f4f0e8', 16, null); ['詐欺', '窃盗', '詐欺', '窃盗'].forEach((s, i) => { if (t > S.tRec + 0.4 + i * 0.5) { TX(c, (i + 1) + '．' + s, 100, 58 + i * 20, '#2c2c34', 16, null); } }); stamp(c, t, S.tRec + 2.6, 210, 108, '前科4犯', 96); yearFlash(c, t, S.tRec + 3.4, 1963, 216, 10, '37歳'); return { z: 1.03, fx: 160, fy: 90 }; }
     showaSky(c, 110, {}); for (let i = 0; i < 9; i++) { const x = i * 38, h = 20 + hash(i) * 26; R(c, x, 110 - h, 34, h, ['#8c7c6c', '#a8988c', '#7c6c5c'][i % 3]); for (let k = 0; k < 3; k++) R(c, x + 4 + k * 10, 116 - h, 6, 6, '#3c3428'); }
     R(c, 0, 110, W, 130, '#9c8c74'); R(c, 0, 140, W, 4, '#6c6c6c'); R(c, 0, 150, W, 4, '#6c6c6c'); // tram rails
     R(c, 190, 40, 30, 70, '#e8e0d0'); PF(c, [186, 40, 205, 14, 224, 40], '#5c4c4c'); R(c, 203, 2, 4, 14, '#d8b040'); R(c, 199, 6, 12, 3, '#d8b040'); // a church
@@ -36,7 +36,7 @@ const JB = {
   name: '福岡県', ch: '最初の事件', bgm: 'dread',
   init(S) { S.tPass = at(S, 'L3', 3) - 0.3; S.tWanted = at(S, 'L4', 0) - 0.3; S.tNation = at(S, 'L4', 2) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
-    if (t > S.tWanted) { japanMap(c, t); const k = sg(t, S.tNation, S.tNation + 2.5); for (let i = 0; i < 40; i++) { const p = JP[i % JP.length]; if (hash(i) < k) E(c, p[0] + (hash(i * 3) - 0.5) * 20, p[1] + (hash(i * 5) - 0.5) * 16, 2, 2, '#f84040'); } wantedPoster(c, 200, 100, sg(t, S.tWanted, S.tWanted + 0.6), { id: 'jb' }); bigCap(c, '全国指名手配', 30, 24, '#f84040', sg(t, S.tNation, S.tNation + 0.6)); return { z: 1.02, fx: 160, fy: 110 }; }
+    if (t > S.tWanted) { japanMap(c, t); const k = sg(t, S.tNation, S.tNation + 2.5); for (let i = 0; i < 40; i++) { const p = JP[i % JP.length]; if (hash(i) < k) E(c, p[0] + (hash(i * 3) - 0.5) * 20, p[1] + (hash(i * 5) - 0.5) * 16, 2, 2, '#f84040'); } c.save(); c.translate(236, 36); c.scale(0.8, 0.8); wantedPoster(c, 0, 0, sg(t, S.tWanted, S.tWanted + 0.6), { id: 'jb' }); c.restore(); bigCap(c, '全国指名手配', 30, 24, '#f84040', sg(t, S.tNation, S.tNation + 0.6)); return { z: 1.02, fx: 160, fy: 110 }; }
     if (t > S.tPass) { mtRoad(c, t, { dusk: true }); R(c, 236, 100, 4, 50, '#5c5c5c'); R(c, 224, 86, 28, 16, '#f4f0e8'); TX(c, '峠', 230, 86, '#2c2c34', 16, null); for (let i = 0; i < 3; i++) person(c, COPS[i], 120 + i * 28, 176, { k: 'ps' }); E(c, 170, 196, 24, 6, '#e8e4dc'); capPlate(c, t - S.tPass, 0.3, ['仲哀峠']); return { z: 1.04, fx: 160, fy: 130 }; }
     mtRoad(c, t, {}); for (let i = 0; i < 2; i++) person(c, COPS[i], 140 + i * 40, 176, { k: 'rd', flip: i === 1 }); E(c, 168, 200, 24, 6, '#e8e4dc');
     yearFlash(c, t, 0.4, 1963, 216, 10, '10月18日'); capPlate(c, t, 0.7, ['福岡県', '苅田町の山道']);
@@ -92,7 +92,7 @@ const JE = {
     // the badge, gleaming on a lapel
     R(c, 0, 0, W, H, '#1c1c24'); R(c, 0, 0, W, H, '#24242c'); PF(c, [80, 0, 200, 0, 240, 240, 40, 240], '#2c2c34'); PF(c, [140, 0, 160, 0, 170, 240, 130, 240], '#f0ece4'); L(c, 150, 30, 150, 240, '#5c2c2c', 6);
     blit(c, badgeSpr(1), 110, 110, 12, 12, { s: 2.6 }); const g = 0.5 + 0.5 * Math.sin(t * 4); glow(c, 110, 110, 40, 40, '#f8e8a0', 0.3 * g); star4(c, 96, 96, 4 * g, '#ffffff', '#f8e8a0');
-    bigCap(c, '弁護士', 160, 24, '#f8d860', sg(t, 1.6, 2.2));
+    bigCap(c, '弁護士', 40, 24, '#f8d860', sg(t, 1.6, 2.2));
     return { z: 1.04, fx: 130, fy: 110 };
   }
 };
@@ -103,7 +103,7 @@ const JF = withCuts({
   init(S) { S.tMeet = at(S, 'L12', 0) - 0.3; S.tGirl = at(S, 'L13', 0) - 0.3; S.tPhoto = at(S, 'L13', 2) - 0.3; S.tClass = at(S, 'L14', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     if (t > S.tClass) { // a school roll: two similar names side by side (names are not given in the record — shown as marks)
-      R(c, 0, 0, W, H, '#a8b4a0'); R(c, 40, 30, 240, 80, '#2c4c3c'); R(c, 36, 26, 248, 4, '#8c6c44'); TX(c, '５年', 60, 40, '#e8ece0', 16, null);
+      R(c, 0, 0, W, H, '#a8b4a0'); R(c, 40, 30, 240, 80, '#2c4c3c'); R(c, 36, 26, 248, 4, '#8c6c44'); TX(c, '５年', 60, 52, '#e8ece0', 16, null);
       R(c, 70, 120, 180, 80, '#f0e8d4'); for (let i = 0; i < 4; i++) R(c, 80, 132 + i * 16, 160, 1, '#a8a090'); R(c, 84, 148, 70, 12, '#f8e870'); TX(c, '同級生', 90, 146, '#2c2c34', 16, null); R(c, 160, 148, 70, 12, '#f8e870'); TX(c, '西口', 176, 146, '#2c2c34', 16, null); TX(c, '≒', 152, 146, '#c81818', 16, null);
       bigCap(c, '似た名前', 60, 24, '#f8d860', sg(t, S.tClass + 1.2, S.tClass + 1.8));
       return { z: 1.03, fx: 160, fy: 120 };
@@ -112,7 +112,6 @@ const JF = withCuts({
       R(c, 0, 0, W, H, '#14141c'); const k = sg(t, S.tPhoto, S.tPhoto + 1.2);
       wantedPoster(c, 40, 30, 1, { id: 'jf' }); R(c, 190, 46, 90, 90, '#2c2c34'); bigFace(c, nishiFace({ smile: true, blink: blinkOf(t, 3) }), 235, 91, 1.6, 'jfv');
       if (k > 0) { c.save(); c.globalAlpha = k; L(c, 130, 90, 190, 90, '#f84040', 3); bigCap(c, '＝', 76, 24, '#f84040'); c.restore(); }
-      bigFace(c, girlFace({ wide: t > S.tPhoto, blink: blinkOf(t, 7) }), 160, 190, 1.4, 'jfg');
       return { z: 1.02, fx: 160, fy: 110 };
     }
     showaSky(c, 110, { winter: true }); mountains(c, 80, '#7c8c94', '#6c7c84'); japHouse(c, t, {});
@@ -161,8 +160,8 @@ const JI = {
     // the counts, then a black medal
     R(c, 0, 0, W, H, '#4c3424'); for (let x = 0; x < W; x += 16) R(c, x, 0, 8, 150, '#56402c'); R(c, 0, 150, W, 90, '#3c2c20');
     if (t < S.tMedal) { ['殺人 5件', '詐欺 10件', '窃盗 2件'].forEach((s, i) => { if (t > 0.6 + i * 1.0) bigCap(c, s, 66 + i * 30, 24, '#f4f0e8'); }); person(c, NISHI, 160, 190, { k: 'crt', s: 1.2 }); return { z: 1.03, fx: 160, fy: 100 }; }
-    const k = eOut(sg(t, S.tMedal, S.tMedal + 0.6)); L(c, 160, 0, 140, lerp(-40, 60, k), '#5c1c1c', 4); L(c, 160, 0, 180, lerp(-40, 60, k), '#5c1c1c', 4); E(c, 160, lerp(-20, 90, k), 34, 34, '#141414'); E(c, 160, lerp(-20, 90, k), 28, 28, '#2c2c2c'); ER(c, 160, lerp(-20, 90, k), 30, 30, '#5c5c5c'); TX(c, '1', 155, lerp(-30, 80, k), '#5c5c5c', 16, null);
-    bigCap(c, '黒い金メダル', 140, 24, '#f8d860', sg(t, S.tMedal + 0.8, S.tMedal + 1.4));
+    const k = eOut(sg(t, S.tMedal, S.tMedal + 0.6)); L(c, 160, 0, 140, lerp(-40, 40, k), '#5c1c1c', 4); L(c, 160, 0, 180, lerp(-40, 40, k), '#5c1c1c', 4); E(c, 160, lerp(-20, 70, k), 34, 34, '#141414'); E(c, 160, lerp(-20, 70, k), 28, 28, '#2c2c2c'); ER(c, 160, lerp(-20, 70, k), 30, 30, '#5c5c5c'); TX(c, '1', 155, lerp(-30, 60, k), '#5c5c5c', 16, null);
+    bigCap(c, '黒い金メダル', 112, 24, '#f8d860', sg(t, S.tMedal + 0.8, S.tMedal + 1.4));
     return { z: 1.03, fx: 160, fy: 100 };
   }
 };
