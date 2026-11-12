@@ -158,9 +158,13 @@ function composeFrame(mode, T) {
     hook.forEach((h, i) => { const size = textSpr(h, 32, '#fff').width - 2 <= 344 ? 32 : 24, w = textSpr(h, size, '#fff').width - 2; outlineText(f, h, 180 - w / 2, 34 + i * 44, i === hook.length - 1 && hook.length > 1 ? '#ff3c3c' : C.white, size, 3); });
   }
   // scene: 180x180 around the camera focus, x2
-  const fx = (window.__focus || [160, 120])[0], sx = Math.round(clamp(fx - 90, 0, W - 180));
-  const Sc = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null;
-  if (Sc && Sc.sc.tallFit) { R(f, 0, 132, 360, 360, '#000000'); f.drawImage(cv, 0, 0, W, 180, 0, 132 + 79, 360, 202); } // whole width (text that must not be cut)
+  const fx = (window.__focus || [160, 120])[0]; let sx = Math.round(clamp(fx - 90, 0, W - 180));
+  const Sc = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null; let fit = !!(Sc && Sc.sc.tallFit);
+  if (!fit && window.__txtScreen) { // text that the 180-px crop would cut: shift the crop to hold it, or show the whole width
+    const rs = window.__txtScreen.filter(r => r[3] > 2 && r[1] < 178 && r[2] > 2 && r[0] < W - 2);
+    if (rs.length) { const tlo = Math.max(0, Math.min(...rs.map(r => r[0]))), thi = Math.min(W, Math.max(...rs.map(r => r[2]))), lo = Math.min(tlo, fx - 24), hi = Math.max(thi, fx + 24); // keep the camera's subject in view too
+      if (tlo < sx || thi > sx + 180) { if (hi - lo <= 180) sx = Math.round(clamp(tlo < sx ? lo : hi - 180, 0, W - 180)); else fit = true; window.__tallAdj = (window.__tallAdj || 0) + 1; } } }
+  if (fit) { R(f, 0, 132, 360, 360, '#000000'); f.drawImage(cv, 0, 0, W, 180, 0, 132 + 79, 360, 202); } // whole width (text that must not be cut)
   else f.drawImage(cv, sx, 0, 180, 180, 0, 132, 360, 360);
   R(f, 0, 130, 360, 2, BR.orange); R(f, 0, 492, 360, 2, BR.orange);
   // captions / year cards of the scene, redrawn inside the frame so the crop never cuts them

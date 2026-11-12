@@ -160,6 +160,7 @@ function blit(c, spr, x, y, ax, ay, opt) {
 /* dissolve a sprite with ordered dither (keep fraction a of pixels) */
 function ditherFade(spr, a, id) {
   const w = spr.width, h = spr.height, [cv, x] = slot(id || 'df' + w + 'x' + h, w, h);
+  cv.__txt = spr.__txt ? 1 : 0;
   x.drawImage(spr, 0, 0); if (a >= 1) return cv;
   const im = x.getImageData(0, 0, w, h), d = im.data;
   for (let y = 0; y < h; y++) for (let xx = 0; xx < w; xx++) if (BAYER8[(y & 7) * 8 + (xx & 7)] >= a) d[(y * w + xx) * 4 + 3] = 0;
@@ -182,7 +183,7 @@ function textSpr(str, size, col) {
   const [cv, x] = mk(w, h); x.font = size + 'px ' + FONT; x.textBaseline = 'top'; x.fillStyle = col; x.fillText(str, 0, 1);
   const im = x.getImageData(0, 0, w, h), d = im.data, [r, g, b] = hex(col);
   for (let i = 0; i < d.length; i += 4) { const on = d[i + 3] >= 120; d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = on ? 255 : 0; }
-  x.putImageData(im, 0, 0); _tc.set(k, cv); return cv;
+  x.putImageData(im, 0, 0); cv.__txt = 1; _tc.set(k, cv); return cv; // __txt: lets the tall crop keep text whole
 }
 function TX(c, str, x, y, col, size = 16, sh = C.uiD) {
   if (!str) return 0;

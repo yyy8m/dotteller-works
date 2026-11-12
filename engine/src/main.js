@@ -158,15 +158,21 @@ function sceneAt(T) { let i = 0; for (let k = 0; k < TL.scenes.length; k++) if (
 
 /* ---- scene rendering with camera ---- */
 const [WB, WX] = mk(W, H);
+// record where text sprites land on the scene canvas (the tall crop widens or shifts so text is never cut)
+{ const _d = WX.drawImage.bind(WX); WX.drawImage = function (img, ...a) {
+  if (img && img.__txt && window.__txtRects) { let x, y, w, h; if (a.length === 2) { [x, y] = a; w = img.width; h = img.height; } else if (a.length === 4) { [x, y, w, h] = a; } else { [, , , , x, y, w, h] = a; }
+    const m = WX.getTransform(), pts = [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].map(([px, py]) => [m.a * px + m.c * py + m.e, m.b * px + m.d * py + m.f]);
+    window.__txtRects.push([Math.min(...pts.map(p => p[0])), Math.min(...pts.map(p => p[1])), Math.max(...pts.map(p => p[0])), Math.max(...pts.map(p => p[1]))]); }
+  return _d(img, ...a); }; }
 const OUT = [mk(W, H), mk(W, H)];
 function renderScene(i, tl, k) {
   const S = TL.scenes[i]; WX.setTransform(1, 0, 0, 1, 0, 0); WX.fillStyle = '#000'; WX.fillRect(0, 0, W, H);
-  window.__uiq = []; const cam = S.sc.draw(WX, tl, S) || {}; WX.setTransform(1, 0, 0, 1, 0, 0); const uiq = window.__uiq; window.__uiq = null;
+  window.__uiq = []; window.__txtRects = k === 0 ? [] : null; const cam = S.sc.draw(WX, tl, S) || {}; const txr = window.__txtRects; window.__txtRects = null; WX.setTransform(1, 0, 0, 1, 0, 0); const uiq = window.__uiq; window.__uiq = null;
   let z = cam.z || 1; const sx = cam.sx || 0, sy = cam.sy || 0; if ((sx || sy) && z < 1.04) z = 1.04;
   const [oc, ox] = OUT[k]; ox.fillStyle = '#000'; ox.fillRect(0, 0, W, H);
   const fx = cam.fx == null ? 160 : cam.fx, fy = cam.fy == null ? 120 : cam.fy, w = W / z, h = H / z;
   const x0 = clamp(fx - fx / z + sx / z, 0, W - w), y0 = clamp(fy - fy / z + sy / z, 0, H - h);
-  if (k === 0) window.__focus = [(fx - x0) * z, (fy - y0) * z]; // where the camera's focus lands on screen (video crops follow it)
+  if (k === 0) window.__focus = [(fx - x0) * z, (fy - y0) * z]; if (k === 0) window.__txtScreen = (txr || []).map(([a1, b1, a2, b2]) => [(a1 - x0) * z, (b1 - y0) * z, (a2 - x0) * z, (b2 - y0) * z]); // where the camera's focus lands on screen (video crops follow it)
   if (z === 1) ox.drawImage(WB, 0, 0); else ox.drawImage(WB, x0, y0, w, h, 0, 0, W, H);
   if (S.sc.post) { const im = ox.getImageData(0, 0, W, H); S.sc.post(im, tl, S); ox.putImageData(im, 0, 0); }
   if (WORK.series === 'kiroku' && typeof horrorGrade === 'function') horrorGrade(ox, tl, S);
