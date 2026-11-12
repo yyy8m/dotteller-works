@@ -1,7 +1,13 @@
 {
- "youtube_main": "https://youtu.be/jp0Sj0khX1s",
  "youtube_short": "https://youtu.be/Pd8IOXAB5gA",
  "playlist_id": "PLB1Jw-JyKW5k",
  "blog_post_id": "8482378358173614946",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-007-ted-bundy.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-007-ted-bundy.html",
+ "replaced": [
+  {
+   "youtube_main": "https://youtu.be/jp0Sj0khX1s",
+   "note": "字幕の窓に文字が隠れていた版（2026-11-12 文字を動かして差し替え・削除）"
+  }
+ ],
+ "youtube_main": "https://youtu.be/DR1WW107n0g"
 }
