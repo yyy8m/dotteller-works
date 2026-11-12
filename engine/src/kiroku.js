@@ -285,7 +285,16 @@ function lawFace(id, o = {}) {
 const FIG_AX2 = 13, FIG_AY2 = 57;
 /* ---- lip sync for figures in the scene: give a cast member st.spk = '<speaker id>' and its mouth moves while that speaker talks ---- */
 function talkOf(st) { const tk = window.__talk; return st && st.spk && tk && tk.spk === st.spk ? tk.mouth : 0; }
-function openMouth(c, x, y, m) { if (m > 0) { E(c, x, y, 1 + m * 0.5, 0.6 + m * 0.7, '#3c1010'); if (m > 1) P(c, x, y - 1, '#e8e0d8'); } }
+function openMouth(c, x, y, m) { if (m > 0) E(c, x, y, 0.8 + m * 0.4, 0.5 + m * 0.5, '#3c1010'); }
+/* a talking mouth for a 48x48 portrait (sprite pixels): paint the closed mouth over with the skin colour, then draw an open pixel mouth */
+function portraitMouth(c, face, mx, my, m) {
+  const fx = face.getContext('2d').getImageData(mx + 1 - 7, my + 1, 1, 1).data, skin = `rgb(${fx[0]},${fx[1]},${fx[2]})`;
+  R(c, mx - 7, my - 2, 15, 5, skin); // erase the closed mouth / smile line (and its corners)
+  const w = m > 1 ? 7 : 5, h = m > 1 ? 3 : 2, x0 = mx - (w >> 1), y0 = my - (m > 1 ? 1 : 0);
+  R(c, x0, y0, w, h, '#4c1414'); R(c, x0 + 1, y0 - 1, w - 2, 1, '#4c1414'); R(c, x0 + 1, y0 + h, w - 2, 1, '#4c1414'); // rounded opening
+  R(c, x0 + 1, y0, w - 2, 1, '#e8e0d8'); // upper teeth
+  if (m > 1) R(c, x0 + 2, y0 + h - 1, w - 4, 1, '#a83c3c'); // tongue
+}
 function robeFig(st, o = {}) {
   const f = o.f == null ? -1 : o.f, pose = o.pose || 'stand', arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
   const mo = o.mouth != null ? o.mouth : talkOf(st);
@@ -351,8 +360,10 @@ function closeUp(c, t, face, o = {}) {
   if (o.glow) glow(c, 160, 104, 120, 100, o.glow, 0.35);
   if (o.lines) for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + t * 0.2; L(c, 160 + Math.cos(a) * 90, 104 + Math.sin(a) * 90, 160 + Math.cos(a) * 200, 104 + Math.sin(a) * 200, DA(o.lines, 0.35)); }
   const br = Math.round(Math.sin(t * 2.2) * 1);
+  const tk = window.__talk;
+  if (o.talk !== false && tk && tk.mouth && tk.spk !== 'lamp' && tk.spk !== 'narrator' && (!o.spk || o.spk === tk.spk)) { // the speaker's big face talks: draw the open mouth on a 1x copy, then enlarge
+    const [mc, mxc] = slot('cuMouth', face.width, face.height); mxc.clearRect(0, 0, face.width, face.height); mxc.drawImage(face, 0, 0); mxc.save(); mxc.translate(1, 1); const [mx, my] = o.mouthAt || [24, 31]; portraitMouth(mxc, face, mx, my, tk.mouth); mxc.restore(); face = mc; }
   blit(c, face, 160, 110 + br, 24, 24, { s: o.s || 3.5 });
-  const tk = window.__talk; if (o.talk !== false && tk && tk.mouth && tk.spk !== 'lamp' && tk.spk !== 'narrator' && (!o.spk || o.spk === tk.spk)) { const sc = o.s || 3.5, [mx, my] = o.mouthAt || [24, 31]; c.save(); c.translate(160 - 24 * sc, 110 + br - 24 * sc); c.scale(sc, sc); openMouth(c, mx, my, tk.mouth); c.restore(); }
   if (o.after) o.after(c, t);
   return { z: 1 + 0.03 * Math.sin(t * 0.5), fx: 160, fy: 104 };
 }
