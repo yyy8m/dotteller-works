@@ -1,5 +1,4 @@
 {
- "youtube_main": "https://youtu.be/dSnX35d8xvA",
  "blog_post_id": "8890107017140260170",
  "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-006-dyatlov-pass.html",
  "replaced": [
@@ -26,8 +25,13 @@
   {
    "youtube_short": "https://youtu.be/gD4SF7w1XUI",
    "note": "縦画面で文字が切れていた版（2026-11-12 切り取りの自動調整を入れて差し替え・削除）"
+  },
+  {
+   "youtube_main": "https://youtu.be/dSnX35d8xvA",
+   "note": "字幕の窓に文字が隠れていた版（2026-11-12 文字を動かして差し替え・削除）"
   }
  ],
  "playlist_id": "PLB1Jw-JyKW5k",
- "youtube_short": "https://youtu.be/4z54DNw4mPk"
+ "youtube_short": "https://youtu.be/4z54DNw4mPk",
+ "youtube_main": "https://youtu.be/OtV-8rrZkwU"
 }
