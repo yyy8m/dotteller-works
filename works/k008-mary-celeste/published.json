@@ -1,7 +1,13 @@
 {
  "youtube_main": "https://youtu.be/ljSggUzah-4",
- "youtube_short": "https://youtu.be/nkBcbKXZ05A",
  "playlist_id": "PLB1Jw-JyKW5k",
  "blog_post_id": "1104526257317307405",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-008-mary-celeste.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-008-mary-celeste.html",
+ "replaced": [
+  {
+   "youtube_short": "https://youtu.be/nkBcbKXZ05A",
+   "note": "縦画面で文字が切れていた版（2026-11-12 切り取りの自動調整を入れて差し替え・削除）"
+  }
+ ],
+ "youtube_short": "https://youtu.be/EEbP9rblc0o"
 }
