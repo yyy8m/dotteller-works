@@ -56,7 +56,7 @@ const JC = {
   draw(c, t, S) {
     if (t > S.tRun) { japanMap(c, t); const r = ['saga', 'kobe', 'osaka', 'kyoto', 'nagoya'], labs = [null, '神戸', '大阪', '京都', '名古屋'], off = [[0, 0], [-34, 4], [-4, 6], [-20, -22], [-10, -22]]; const u = sg(t, S.tRun, S.dur - 1) * (r.length - 1);
       for (let i = 0; i < r.length - 1; i++) { const [x0, y0] = PLACE[r[i]], [x1, y1] = PLACE[r[i + 1]], k = clamp(u - i, 0, 1); if (k > 0) L(c, x0, y0, lerp(x0, x1, k), lerp(y0, y1, k), '#f84040', 2); }
-      r.forEach((k, i) => { if (u >= i - 0.05) pin(c, k, labs[i], '#f8d860', off[i][0], off[i][1]); }); stamp(c, t, S.tRun + 0.3, 250, 130, '偽装', 70); return { z: 1.03, fx: 140, fy: 150 }; }
+      r.forEach((k, i) => { if (u >= i - 0.05) pin(c, k, labs[i], '#f8d860', off[i][0], off[i][1]); }); stamp(c, t, S.tRun + 0.3, 260, 40, '偽装', 70); return { z: 1.03, fx: 140, fy: 150 }; }
     ferryDeck(c, t); if (t > S.tShoes) { R(c, 140, 158, 14, 6, '#2c1c14'); R(c, 156, 158, 14, 6, '#2c1c14'); R(c, 180, 160, 20, 14, '#f4f0e4'); for (let i = 0; i < 3; i++) R(c, 183, 163 + i * 3, 14, 1, '#5c5c5c'); glow(c, 170, 162, 40, 12, '#ffffff', 0.2); }
     else person(c, NISHI_COAT, 160, 164, { k: 'fr', expr: 'normal' });
     capPlate(c, t, 0.5, ['瀬戸内海', '連絡船']);

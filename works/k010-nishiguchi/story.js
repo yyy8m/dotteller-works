@@ -50,7 +50,7 @@ SS2.sfx = (S, ev) => { ev(0.2, 'door'); ev(0.6, 'door'); };
 JJ.bgmTrack = (S, tr) => { tr.fin = 3; };
 JJ.ending = true;
 // figures stand in front of the house at y 150: keep them above the dialog window
-JX.wideDY = 26; JA.wideDY = (t, S) => (t > S.tRec ? 10 : 40); JB.wideDY = (t, S) => (t > S.tWanted ? 20 : 54); JC.wideDY = (t, S) => (t > S.tRun ? 60 : 40); JD.wideDY = 30;
-JE.wideDY = (t, S) => (t > S.tTokyo ? 30 : t > S.tMap ? 20 : 20); JF.wideDY = (t, S) => (t > S.tClass ? 40 : t > S.tGirl ? 40 : 26); JG.wideDY = (t, S) => (t > S.tCall ? 30 : 34); JH.wideDY = 34;
-JI.wideDY = (t, S) => (t > S.tExec ? 20 : t > S.tDevil ? 14 : t > S.tMedal ? 14 : 40); JJ.wideDY = (t, S) => (t > S.tGirl ? 40 : t > S.tCand ? 30 : t > S.tBook ? 14 : 30); SS2.wideDY = 26;
+JX.wideDY = 26; JA.wideDY = (t, S) => (t > S.tRec ? 10 : 40); JB.wideDY = (t, S) => (t > S.tWanted ? 0 : 54); JC.wideDY = (t, S) => (t > S.tRun ? 0 : 40); JD.wideDY = 30;
+JE.wideDY = (t, S) => (t > S.tTokyo ? 30 : t > S.tMap ? 0 : 20); JF.wideDY = (t, S) => (t > S.tClass ? 40 : t > S.tGirl ? 40 : 26); JG.wideDY = (t, S) => (t > S.tCall ? 30 : 34); JH.wideDY = 34;
+JI.wideDY = (t, S) => (t > S.tExec ? 20 : t > S.tDevil ? 14 : t > S.tMedal ? 14 : 40); JJ.wideDY = (t, S) => (t > S.tGirl ? 40 : t > S.tCand ? 30 : t > S.tBook ? 14 : 0); SS2.wideDY = 26;
 function TITLE_DECO(c, t) { blit(c, badgeSpr(1), 270, 200, 12, 12, { s: 1.6 }); }

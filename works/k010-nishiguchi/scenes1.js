@@ -37,10 +37,10 @@ function badgeSpr(s = 1) {
 }
 function wantedPoster(c, x, y, k = 1, o = {}) { if (k <= 0) return; c.save(); c.globalAlpha = k; R(c, x, y, 90, 120, '#f0e8d4'); R(c, x, y, 90, 20, '#c81818'); TX(c, '指名手配', x + 13, y + 2, '#ffffff', 16, null); R(c, x + 15, y + 26, 60, 60, '#b8b0a0'); bigFace(c, nishiFace({ photo: true }), x + 45, y + 56, 1.15, 'wp' + (o.id || '')); TX(c, '西口　彰', x + 13, y + 92, '#141414', 16, null); c.restore(); }
 // Japan (rough outline) with named points
-const JP = [[262, 26], [292, 40], [282, 66], [252, 74], [236, 96], [222, 120], [196, 138], [168, 150], [140, 158], [112, 168], [84, 176], [66, 186], [58, 172], [78, 160], [104, 150], [132, 140], [160, 128], [188, 116], [212, 98], [230, 72], [246, 46]];
-const KYU = [[44, 190], [70, 186], [74, 206], [60, 222], [40, 214], [36, 198]];
-const PLACE = { fukuoka: [56, 190], saga: [46, 198], kobe: [118, 152], osaka: [126, 152], kyoto: [130, 144], nagoya: [154, 140], hamamatsu: [170, 144], tokyo: [204, 130], chiba: [214, 134], hokkaido: [270, 46], tochigi: [204, 116], kumamoto: [56, 210] };
-function japanMap(c, t) { R(c, 0, 0, W, H, '#0c1c30'); for (let x = 0; x < W; x += 20) R(c, x, 0, 1, H, '#10243a'); PF(c, JP.flat(), '#a8a07c'); PF(c, KYU.flat(), '#a8a07c'); PF(c, [248, 8, 300, 6, 312, 30, 270, 40], '#a8a07c'); PF(c, [96, 168, 130, 166, 120, 180, 96, 180], '#a8a07c'); }
+const JP = [[227, 20], [245, 28], [239, 44], [221, 48], [212, 62], [203, 76], [188, 87], [171, 94], [154, 99], [137, 105], [120, 110], [110, 116], [105, 107], [117, 100], [132, 94], [149, 88], [166, 81], [183, 74], [197, 63], [208, 47], [218, 32]];
+const KYU = [[96, 118], [112, 116], [114, 128], [106, 137], [94, 132], [92, 123]];
+const PLACE = { fukuoka: [104, 118], saga: [98, 123], kobe: [141, 95], osaka: [146, 95], kyoto: [148, 90], nagoya: [162, 88], hamamatsu: [172, 90], tokyo: [192, 82], chiba: [198, 84], hokkaido: [232, 32], tochigi: [192, 74], kumamoto: [104, 130] };
+function japanMap(c, t) { R(c, 0, 0, W, H, '#0c1c30'); for (let x = 0; x < W; x += 20) R(c, x, 0, 1, H, '#10243a'); PF(c, JP.flat(), '#a8a07c'); PF(c, KYU.flat(), '#a8a07c'); PF(c, [219, 9, 250, 8, 257, 22, 232, 28], '#a8a07c'); PF(c, [128, 105, 148, 104, 142, 112, 128, 112], '#a8a07c'); }
 function pin(c, k, label, col = '#f8d860', dx = 6, dy = -16) { const [x, y] = PLACE[k]; E(c, x, y, 3, 3, '#141414'); E(c, x, y, 2, 2, col); if (label) TX(c, label, x + dx, y + dy, '#f4f0e8', 16, '#000000'); }
 
 /* ---- portraits (48x48) ---- */
