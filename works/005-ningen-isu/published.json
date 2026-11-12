@@ -1,5 +1,4 @@
 {
- "youtube_main": "https://youtu.be/7E9wjh7hgoc",
  "blog_post_id": "9112904992579106813",
  "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-bunko-005-ningen-isu.html",
  "replaced": [
@@ -22,8 +21,13 @@
   {
    "youtube_short": "https://youtu.be/v9lrGZNdDhM",
    "note": "縦画面で文字が切れていた版（2026-11-12 切り取りの自動調整を入れて差し替え・削除）"
+  },
+  {
+   "youtube_main": "https://youtu.be/7E9wjh7hgoc",
+   "note": "字幕の窓に文字が隠れていた版（2026-11-12 文字を動かして差し替え・削除）"
   }
  ],
  "playlist_id": "PLNhkGqYuSsA0",
- "youtube_short": "https://youtu.be/Fsj_rzzhjSs"
+ "youtube_short": "https://youtu.be/Fsj_rzzhjSs",
+ "youtube_main": "https://youtu.be/JBMyWMRi1ws"
 }
