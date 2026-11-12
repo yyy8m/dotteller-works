@@ -167,6 +167,7 @@ const [WB, WX] = mk(W, H);
 const OUT = [mk(W, H), mk(W, H)];
 function renderScene(i, tl, k) {
   const S = TL.scenes[i]; WX.setTransform(1, 0, 0, 1, 0, 0); WX.fillStyle = '#000'; WX.fillRect(0, 0, W, H);
+  window.__talk = null; if (k === 0) for (const L of S.lines) { const lt = tl - L.t0; if (lt > L.ss - 0.02 && lt < L.se - L.t0 + 0.08 && lt >= 0) { const v = L.env[Math.floor(lt * 60)] || 0; window.__talk = { spk: L.spk, mouth: v > 0.5 ? 2 : v > 0.16 ? 1 : 0 }; break; } } // who is talking now (scene figures and close-ups lip-sync to it)
   window.__uiq = []; window.__txtRects = k === 0 ? [] : null; const cam = S.sc.draw(WX, tl, S) || {}; const txr = window.__txtRects; window.__txtRects = null; WX.setTransform(1, 0, 0, 1, 0, 0); const uiq = window.__uiq; window.__uiq = null;
   let z = cam.z || 1; const sx = cam.sx || 0, sy = cam.sy || 0; if ((sx || sy) && z < 1.04) z = 1.04;
   const [oc, ox] = OUT[k]; ox.fillStyle = '#000'; ox.fillRect(0, 0, W, H);

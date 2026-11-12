@@ -202,6 +202,7 @@ function blit(c, spr, x, y, ax, ay, opt) {
 /* dissolve a sprite with ordered dither (keep fraction a of pixels) */
 function ditherFade(spr, a, id) {
   const w = spr.width, h = spr.height, [cv, x] = slot(id || 'df' + w + 'x' + h, w, h);
+  cv.__txt = spr.__txt ? 1 : 0;
   x.drawImage(spr, 0, 0); if (a >= 1) return cv;
   const im = x.getImageData(0, 0, w, h), d = im.data;
   for (let y = 0; y < h; y++) for (let xx = 0; xx < w; xx++) if (BAYER8[(y & 7) * 8 + (xx & 7)] >= a) d[(y * w + xx) * 4 + 3] = 0;
@@ -224,7 +225,7 @@ function textSpr(str, size, col) {
   const [cv, x] = mk(w, h); x.font = size + 'px ' + FONT; x.textBaseline = 'top'; x.fillStyle = col; x.fillText(str, 0, 1);
   const im = x.getImageData(0, 0, w, h), d = im.data, [r, g, b] = hex(col);
   for (let i = 0; i < d.length; i += 4) { const on = d[i + 3] >= 120; d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = on ? 255 : 0; }
-  x.putImageData(im, 0, 0); _tc.set(k, cv); return cv;
+  x.putImageData(im, 0, 0); cv.__txt = 1; _tc.set(k, cv); return cv; // __txt: lets the tall crop keep text whole
 }
 function TX(c, str, x, y, col, size = 16, sh = C.uiD) {
   if (!str) return 0;
@@ -1105,9 +1106,13 @@ function lawFace(id, o = {}) {
    st: { id, robe, robe2, trim, sash, skin, skin2, hair, hat: 'bun'|'cap'|'crown'|null, hatCol, beard, old, female }
    o:  { f (walk frame -1..3), pose: 'stand'|'sit'|'bow'|'kneel', arm: null|'up'|'point'|'clasp'|'reach'|'staff', expr: 'normal'|'shock'|'sad'|'cry'|'smile'|'angry', blink, k } */
 const FIG_AX2 = 13, FIG_AY2 = 57;
+/* ---- lip sync for figures in the scene: give a cast member st.spk = '<speaker id>' and its mouth moves while that speaker talks ---- */
+function talkOf(st) { const tk = window.__talk; return st && st.spk && tk && tk.spk === st.spk ? tk.mouth : 0; }
+function openMouth(c, x, y, m) { if (m > 0) { E(c, x, y, 1 + m * 0.5, 0.6 + m * 0.7, '#3c1010'); if (m > 1) P(c, x, y - 1, '#e8e0d8'); } }
 function robeFig(st, o = {}) {
   const f = o.f == null ? -1 : o.f, pose = o.pose || 'stand', arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
-  return SPR('rf' + st.id + (o.k || '') + f + pose + arm + ex + bl, 26, 58, c => {
+  const mo = o.mouth != null ? o.mouth : talkOf(st);
+  return SPR('rf' + st.id + (o.k || '') + f + pose + arm + ex + bl + 'm' + mo, 26, 58, c => {
     const R2 = st.robe2 || st.robe, sk = st.skin || '#f0c8a0', sk2 = st.skin2 || '#c8946c';
     const sw = f < 0 ? 0 : [0, 2, 0, -2][f & 3], bob = f < 0 ? 0 : (f & 1);
     const top = pose === 'sit' ? 18 : pose === 'kneel' ? 16 : 0, bow = pose === 'bow' ? 1 : 0;
@@ -1159,6 +1164,7 @@ function robeFig(st, o = {}) {
     else if (ex === 'smile') { L(c, hx - 2, ey + 3, hx, ey + 4, '#8c4c3c'); L(c, hx, ey + 4, hx + 2, ey + 3, '#8c4c3c'); }
     else R(c, hx - 1, ey + 4, 3, 1, '#8c4c3c');
     if (!st.beard && !st.female) P(c, hx, ey + 2, sk2);
+    if (!st.beard) openMouth(c, hx, ey + 4, mo);
   });
 }
 /* portrait close-up cut: a big face (48x48 portrait) over a soft background */
@@ -1169,6 +1175,7 @@ function closeUp(c, t, face, o = {}) {
   if (o.lines) for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + t * 0.2; L(c, 160 + Math.cos(a) * 90, 104 + Math.sin(a) * 90, 160 + Math.cos(a) * 200, 104 + Math.sin(a) * 200, DA(o.lines, 0.35)); }
   const br = Math.round(Math.sin(t * 2.2) * 1);
   blit(c, face, 160, 110 + br, 24, 24, { s: o.s || 3.5 });
+  const tk = window.__talk; if (o.talk !== false && tk && tk.mouth && tk.spk !== 'lamp' && tk.spk !== 'narrator' && (!o.spk || o.spk === tk.spk)) { const sc = o.s || 3.5, [mx, my] = o.mouthAt || [24, 31]; c.save(); c.translate(160 - 24 * sc, 110 + br - 24 * sc); c.scale(sc, sc); openMouth(c, mx, my, tk.mouth); c.restore(); }
   if (o.after) o.after(c, t);
   return { z: 1 + 0.03 * Math.sin(t * 0.5), fx: 160, fy: 104 };
 }
@@ -1178,7 +1185,8 @@ function closeUp(c, t, face, o = {}) {
    o:  { f, arm: null|'up'|'point'|'reach'|'rifle'|'cover', expr, blink, noHat, noCoat, cream, k } */
 function suitFig(st, o = {}) {
   const f = o.f == null ? -1 : o.f, arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
-  return SPR('sf' + st.id + (o.k || '') + f + arm + ex + bl + (o.noHat ? 'h' : '') + (o.noCoat ? 'c' : '') + (o.cream ? 'w' : ''), 26, 58, c => {
+  const mo = o.mouth != null ? o.mouth : talkOf(st);
+  return SPR('sf' + st.id + (o.k || '') + f + arm + ex + bl + (o.noHat ? 'h' : '') + (o.noCoat ? 'c' : '') + (o.cream ? 'w' : '') + 'm' + mo, 26, 58, c => {
     const sw = f < 0 ? 0 : [0, 3, 0, -3][f & 3], bob = f < 0 ? 0 : (f & 1);
     const coat = o.noCoat ? '#f0ece4' : st.coat, coat2 = o.noCoat ? '#d4cec4' : (st.coat2 || st.coat);
     const sk = o.cream ? '#fcfaf2' : (st.skin || '#f0c8a8'), sk2 = o.cream ? '#e0dcd0' : '#c89c7c';
@@ -1213,7 +1221,7 @@ function suitFig(st, o = {}) {
     if (ex === 'sad' || ex === 'cry' || ex === 'shock') { L(c, hx - 4, ey - 3, hx - 1, ey - 4, '#3c2c1c'); L(c, hx + 1, ey - 4, hx + 4, ey - 3, '#3c2c1c'); }
     if (ex === 'cry') { R(c, hx - 3, ey + 1, 1, 4, '#88c8f8'); R(c, hx + 2, ey + 1, 1, 4, '#88c8f8'); }
     if (st.moustache) PF(c, [hx - 4, ey + 3, hx, ey + 2, hx + 4, ey + 3, hx + 2, ey + 4, hx - 2, ey + 4], '#4c3020');
-    if (ex === 'shock') E(c, hx, ey + 5, 1.5, 1.6, '#5c1c1c'); else if (ex === 'smile') { L(c, hx - 2, ey + 4, hx, ey + 5, '#8c4c3c'); L(c, hx, ey + 5, hx + 2, ey + 4, '#8c4c3c'); } else R(c, hx - 1, ey + 5, 3, 1, '#8c4c3c');
+    if (ex === 'shock') E(c, hx, ey + 5, 1.5, 1.6, '#5c1c1c'); else if (ex === 'smile') { L(c, hx - 2, ey + 4, hx, ey + 5, '#8c4c3c'); L(c, hx, ey + 5, hx + 2, ey + 4, '#8c4c3c'); } else R(c, hx - 1, ey + 5, 3, 1, '#8c4c3c'); openMouth(c, hx, ey + 5, mo);
   });
 }
 
@@ -1224,7 +1232,8 @@ function suitFig(st, o = {}) {
 function shadeCol(col, k) { const [r, g, b] = hex(col), f = v => Math.max(0, Math.min(255, Math.round(v * k))).toString(16).padStart(2, '0'); return '#' + f(r) + f(g) + f(b); }
 function modFig(st, o = {}) {
   const f = o.f == null ? -1 : o.f, arm = o.arm || null, ex = o.shock ? 'shock' : (o.expr || 'normal'), bl = o.blink || 0, wp = o.weapon || null;
-  return SPR('mf' + st.id + (o.k || '') + f + arm + ex + bl + wp, 36, 58, c => {
+  const mo = o.mouth != null ? o.mouth : talkOf(st);
+  return SPR('mf' + st.id + (o.k || '') + f + arm + ex + bl + wp + 'm' + mo, 36, 58, c => {
     const kid = !!st.kid, hv = !!st.heavy, sw = f < 0 ? 0 : [0, 3, 0, -3][f & 3] * (kid ? 0.7 : 1), bob = f < 0 ? 0 : (f & 1);
     const hy = (kid ? 29 : 11) - bob, shY = (kid ? 37 : 21) - bob, waY = (kid ? 47 : 37) - bob, hr = kid ? 5 : 6, bw = kid ? 5 : (hv ? 9 : 6);
     const sk = st.skin || '#f0c8a8', sk2 = shadeCol(sk, 0.78), sk3 = shadeCol(sk, 0.6);
@@ -1301,6 +1310,7 @@ function modFig(st, o = {}) {
     if (ex === 'shock') E(c, cx, ey + 5, 1.5, 1.6, '#5c1c1c');
     else if (ex === 'smile') { L(c, cx - 2, ey + 4, cx, ey + 5, '#8c4c3c'); L(c, cx, ey + 5, cx + 2, ey + 4, '#8c4c3c'); }
     else R(c, cx - 1, ey + 4 + (st.moustache ? 1 : 0), 3, 1, '#8c4c3c');
+    openMouth(c, cx, ey + 5, mo);
     if (kid || st.top === 'dress') { P(c, cx - 4, ey + 2, '#e8a090'); P(c, cx + 4, ey + 2, '#e8a090'); }
   });
 }
@@ -1756,9 +1766,13 @@ function composeFrame(mode, T) {
     hook.forEach((h, i) => { const size = textSpr(h, 32, '#fff').width - 2 <= 344 ? 32 : 24, w = textSpr(h, size, '#fff').width - 2; outlineText(f, h, 180 - w / 2, 34 + i * 44, i === hook.length - 1 && hook.length > 1 ? '#ff3c3c' : C.white, size, 3); });
   }
   // scene: 180x180 around the camera focus, x2
-  const fx = (window.__focus || [160, 120])[0], sx = Math.round(clamp(fx - 90, 0, W - 180));
-  const Sc = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null;
-  if (Sc && Sc.sc.tallFit) { R(f, 0, 132, 360, 360, '#000000'); f.drawImage(cv, 0, 0, W, 180, 0, 132 + 79, 360, 202); } // whole width (text that must not be cut)
+  const fx = (window.__focus || [160, 120])[0]; let sx = Math.round(clamp(fx - 90, 0, W - 180));
+  const Sc = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null; let fit = !!(Sc && Sc.sc.tallFit);
+  if (!fit && window.__txtScreen) { // text that the 180-px crop would cut: shift the crop to hold it, or show the whole width
+    const rs = window.__txtScreen.filter(r => r[3] > 2 && r[1] < 178 && r[2] > 2 && r[0] < W - 2);
+    if (rs.length) { const tlo = Math.max(0, Math.min(...rs.map(r => r[0]))), thi = Math.min(W, Math.max(...rs.map(r => r[2]))), lo = Math.min(tlo, fx - 24), hi = Math.max(thi, fx + 24); // keep the camera's subject in view too
+      if (tlo < sx || thi > sx + 180) { if (hi - lo <= 180) sx = Math.round(clamp(tlo < sx ? lo : hi - 180, 0, W - 180)); else fit = true; window.__tallAdj = (window.__tallAdj || 0) + 1; } } }
+  if (fit) { R(f, 0, 132, 360, 360, '#000000'); f.drawImage(cv, 0, 0, W, 180, 0, 132 + 79, 360, 202); } // whole width (text that must not be cut)
   else f.drawImage(cv, sx, 0, 180, 180, 0, 132, 360, 360);
   R(f, 0, 130, 360, 2, BR.orange); R(f, 0, 492, 360, 2, BR.orange);
   // captions / year cards of the scene, redrawn inside the frame so the crop never cuts them
@@ -2201,15 +2215,22 @@ function sceneAt(T) { let i = 0; for (let k = 0; k < TL.scenes.length; k++) if (
 
 /* ---- scene rendering with camera ---- */
 const [WB, WX] = mk(W, H);
+// record where text sprites land on the scene canvas (the tall crop widens or shifts so text is never cut)
+{ const _d = WX.drawImage.bind(WX); WX.drawImage = function (img, ...a) {
+  if (img && img.__txt && window.__txtRects) { let x, y, w, h; if (a.length === 2) { [x, y] = a; w = img.width; h = img.height; } else if (a.length === 4) { [x, y, w, h] = a; } else { [, , , , x, y, w, h] = a; }
+    const m = WX.getTransform(), pts = [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].map(([px, py]) => [m.a * px + m.c * py + m.e, m.b * px + m.d * py + m.f]);
+    window.__txtRects.push([Math.min(...pts.map(p => p[0])), Math.min(...pts.map(p => p[1])), Math.max(...pts.map(p => p[0])), Math.max(...pts.map(p => p[1]))]); }
+  return _d(img, ...a); }; }
 const OUT = [mk(W, H), mk(W, H)];
 function renderScene(i, tl, k) {
   const S = TL.scenes[i]; WX.setTransform(1, 0, 0, 1, 0, 0); WX.fillStyle = '#000'; WX.fillRect(0, 0, W, H);
-  window.__uiq = []; const cam = S.sc.draw(WX, tl, S) || {}; WX.setTransform(1, 0, 0, 1, 0, 0); const uiq = window.__uiq; window.__uiq = null;
+  window.__talk = null; if (k === 0) for (const L of S.lines) { const lt = tl - L.t0; if (lt > L.ss - 0.02 && lt < L.se - L.t0 + 0.08 && lt >= 0) { const v = L.env[Math.floor(lt * 60)] || 0; window.__talk = { spk: L.spk, mouth: v > 0.5 ? 2 : v > 0.16 ? 1 : 0 }; break; } } // who is talking now (scene figures and close-ups lip-sync to it)
+  window.__uiq = []; window.__txtRects = k === 0 ? [] : null; const cam = S.sc.draw(WX, tl, S) || {}; const txr = window.__txtRects; window.__txtRects = null; WX.setTransform(1, 0, 0, 1, 0, 0); const uiq = window.__uiq; window.__uiq = null;
   let z = cam.z || 1; const sx = cam.sx || 0, sy = cam.sy || 0; if ((sx || sy) && z < 1.04) z = 1.04;
   const [oc, ox] = OUT[k]; ox.fillStyle = '#000'; ox.fillRect(0, 0, W, H);
   const fx = cam.fx == null ? 160 : cam.fx, fy = cam.fy == null ? 120 : cam.fy, w = W / z, h = H / z;
   const x0 = clamp(fx - fx / z + sx / z, 0, W - w), y0 = clamp(fy - fy / z + sy / z, 0, H - h);
-  if (k === 0) window.__focus = [(fx - x0) * z, (fy - y0) * z]; // where the camera's focus lands on screen (video crops follow it)
+  if (k === 0) window.__focus = [(fx - x0) * z, (fy - y0) * z]; if (k === 0) window.__txtScreen = (txr || []).map(([a1, b1, a2, b2]) => [(a1 - x0) * z, (b1 - y0) * z, (a2 - x0) * z, (b2 - y0) * z]); // where the camera's focus lands on screen (video crops follow it)
   if (z === 1) ox.drawImage(WB, 0, 0); else ox.drawImage(WB, x0, y0, w, h, 0, 0, W, H);
   if (S.sc.post) { const im = ox.getImageData(0, 0, W, H); S.sc.post(im, tl, S); ox.putImageData(im, 0, 0); }
   if (WORK.series === 'kiroku' && typeof horrorGrade === 'function') horrorGrade(ox, tl, S);

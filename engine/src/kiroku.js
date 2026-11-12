@@ -283,9 +283,13 @@ function lawFace(id, o = {}) {
    st: { id, robe, robe2, trim, sash, skin, skin2, hair, hat: 'bun'|'cap'|'crown'|null, hatCol, beard, old, female }
    o:  { f (walk frame -1..3), pose: 'stand'|'sit'|'bow'|'kneel', arm: null|'up'|'point'|'clasp'|'reach'|'staff', expr: 'normal'|'shock'|'sad'|'cry'|'smile'|'angry', blink, k } */
 const FIG_AX2 = 13, FIG_AY2 = 57;
+/* ---- lip sync for figures in the scene: give a cast member st.spk = '<speaker id>' and its mouth moves while that speaker talks ---- */
+function talkOf(st) { const tk = window.__talk; return st && st.spk && tk && tk.spk === st.spk ? tk.mouth : 0; }
+function openMouth(c, x, y, m) { if (m > 0) { E(c, x, y, 1 + m * 0.5, 0.6 + m * 0.7, '#3c1010'); if (m > 1) P(c, x, y - 1, '#e8e0d8'); } }
 function robeFig(st, o = {}) {
   const f = o.f == null ? -1 : o.f, pose = o.pose || 'stand', arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
-  return SPR('rf' + st.id + (o.k || '') + f + pose + arm + ex + bl, 26, 58, c => {
+  const mo = o.mouth != null ? o.mouth : talkOf(st);
+  return SPR('rf' + st.id + (o.k || '') + f + pose + arm + ex + bl + 'm' + mo, 26, 58, c => {
     const R2 = st.robe2 || st.robe, sk = st.skin || '#f0c8a0', sk2 = st.skin2 || '#c8946c';
     const sw = f < 0 ? 0 : [0, 2, 0, -2][f & 3], bob = f < 0 ? 0 : (f & 1);
     const top = pose === 'sit' ? 18 : pose === 'kneel' ? 16 : 0, bow = pose === 'bow' ? 1 : 0;
@@ -337,6 +341,7 @@ function robeFig(st, o = {}) {
     else if (ex === 'smile') { L(c, hx - 2, ey + 3, hx, ey + 4, '#8c4c3c'); L(c, hx, ey + 4, hx + 2, ey + 3, '#8c4c3c'); }
     else R(c, hx - 1, ey + 4, 3, 1, '#8c4c3c');
     if (!st.beard && !st.female) P(c, hx, ey + 2, sk2);
+    if (!st.beard) openMouth(c, hx, ey + 4, mo);
   });
 }
 /* portrait close-up cut: a big face (48x48 portrait) over a soft background */
@@ -347,6 +352,7 @@ function closeUp(c, t, face, o = {}) {
   if (o.lines) for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + t * 0.2; L(c, 160 + Math.cos(a) * 90, 104 + Math.sin(a) * 90, 160 + Math.cos(a) * 200, 104 + Math.sin(a) * 200, DA(o.lines, 0.35)); }
   const br = Math.round(Math.sin(t * 2.2) * 1);
   blit(c, face, 160, 110 + br, 24, 24, { s: o.s || 3.5 });
+  const tk = window.__talk; if (o.talk !== false && tk && tk.mouth && tk.spk !== 'lamp' && tk.spk !== 'narrator' && (!o.spk || o.spk === tk.spk)) { const sc = o.s || 3.5, [mx, my] = o.mouthAt || [24, 31]; c.save(); c.translate(160 - 24 * sc, 110 + br - 24 * sc); c.scale(sc, sc); openMouth(c, mx, my, tk.mouth); c.restore(); }
   if (o.after) o.after(c, t);
   return { z: 1 + 0.03 * Math.sin(t * 0.5), fx: 160, fy: 104 };
 }
@@ -356,7 +362,8 @@ function closeUp(c, t, face, o = {}) {
    o:  { f, arm: null|'up'|'point'|'reach'|'rifle'|'cover', expr, blink, noHat, noCoat, cream, k } */
 function suitFig(st, o = {}) {
   const f = o.f == null ? -1 : o.f, arm = o.arm || null, ex = o.expr || 'normal', bl = o.blink || 0;
-  return SPR('sf' + st.id + (o.k || '') + f + arm + ex + bl + (o.noHat ? 'h' : '') + (o.noCoat ? 'c' : '') + (o.cream ? 'w' : ''), 26, 58, c => {
+  const mo = o.mouth != null ? o.mouth : talkOf(st);
+  return SPR('sf' + st.id + (o.k || '') + f + arm + ex + bl + (o.noHat ? 'h' : '') + (o.noCoat ? 'c' : '') + (o.cream ? 'w' : '') + 'm' + mo, 26, 58, c => {
     const sw = f < 0 ? 0 : [0, 3, 0, -3][f & 3], bob = f < 0 ? 0 : (f & 1);
     const coat = o.noCoat ? '#f0ece4' : st.coat, coat2 = o.noCoat ? '#d4cec4' : (st.coat2 || st.coat);
     const sk = o.cream ? '#fcfaf2' : (st.skin || '#f0c8a8'), sk2 = o.cream ? '#e0dcd0' : '#c89c7c';
@@ -391,7 +398,7 @@ function suitFig(st, o = {}) {
     if (ex === 'sad' || ex === 'cry' || ex === 'shock') { L(c, hx - 4, ey - 3, hx - 1, ey - 4, '#3c2c1c'); L(c, hx + 1, ey - 4, hx + 4, ey - 3, '#3c2c1c'); }
     if (ex === 'cry') { R(c, hx - 3, ey + 1, 1, 4, '#88c8f8'); R(c, hx + 2, ey + 1, 1, 4, '#88c8f8'); }
     if (st.moustache) PF(c, [hx - 4, ey + 3, hx, ey + 2, hx + 4, ey + 3, hx + 2, ey + 4, hx - 2, ey + 4], '#4c3020');
-    if (ex === 'shock') E(c, hx, ey + 5, 1.5, 1.6, '#5c1c1c'); else if (ex === 'smile') { L(c, hx - 2, ey + 4, hx, ey + 5, '#8c4c3c'); L(c, hx, ey + 5, hx + 2, ey + 4, '#8c4c3c'); } else R(c, hx - 1, ey + 5, 3, 1, '#8c4c3c');
+    if (ex === 'shock') E(c, hx, ey + 5, 1.5, 1.6, '#5c1c1c'); else if (ex === 'smile') { L(c, hx - 2, ey + 4, hx, ey + 5, '#8c4c3c'); L(c, hx, ey + 5, hx + 2, ey + 4, '#8c4c3c'); } else R(c, hx - 1, ey + 5, 3, 1, '#8c4c3c'); openMouth(c, hx, ey + 5, mo);
   });
 }
 
@@ -402,7 +409,8 @@ function suitFig(st, o = {}) {
 function shadeCol(col, k) { const [r, g, b] = hex(col), f = v => Math.max(0, Math.min(255, Math.round(v * k))).toString(16).padStart(2, '0'); return '#' + f(r) + f(g) + f(b); }
 function modFig(st, o = {}) {
   const f = o.f == null ? -1 : o.f, arm = o.arm || null, ex = o.shock ? 'shock' : (o.expr || 'normal'), bl = o.blink || 0, wp = o.weapon || null;
-  return SPR('mf' + st.id + (o.k || '') + f + arm + ex + bl + wp, 36, 58, c => {
+  const mo = o.mouth != null ? o.mouth : talkOf(st);
+  return SPR('mf' + st.id + (o.k || '') + f + arm + ex + bl + wp + 'm' + mo, 36, 58, c => {
     const kid = !!st.kid, hv = !!st.heavy, sw = f < 0 ? 0 : [0, 3, 0, -3][f & 3] * (kid ? 0.7 : 1), bob = f < 0 ? 0 : (f & 1);
     const hy = (kid ? 29 : 11) - bob, shY = (kid ? 37 : 21) - bob, waY = (kid ? 47 : 37) - bob, hr = kid ? 5 : 6, bw = kid ? 5 : (hv ? 9 : 6);
     const sk = st.skin || '#f0c8a8', sk2 = shadeCol(sk, 0.78), sk3 = shadeCol(sk, 0.6);
@@ -479,6 +487,7 @@ function modFig(st, o = {}) {
     if (ex === 'shock') E(c, cx, ey + 5, 1.5, 1.6, '#5c1c1c');
     else if (ex === 'smile') { L(c, cx - 2, ey + 4, cx, ey + 5, '#8c4c3c'); L(c, cx, ey + 5, cx + 2, ey + 4, '#8c4c3c'); }
     else R(c, cx - 1, ey + 4 + (st.moustache ? 1 : 0), 3, 1, '#8c4c3c');
+    openMouth(c, cx, ey + 5, mo);
     if (kid || st.top === 'dress') { P(c, cx - 4, ey + 2, '#e8a090'); P(c, cx + 4, ey + 2, '#e8a090'); }
   });
 }
