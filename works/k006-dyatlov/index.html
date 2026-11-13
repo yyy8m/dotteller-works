@@ -1781,8 +1781,8 @@ const S0 = {
   sfx(S, ev) { ev(0.35, 'end'); ev(1.0, 'shine', 0.6); },
   draw(c, t, S) {
     brandBg(c, 0, 0, W, H, t);
-    logoLine(c, 160, 2, 32, t);
-    TX(c, SERIES[WORK.series].name + '　#' + WORK.no, 160 - 40, 38, BR.orange);
+    logoLine(c, 160, 8, 32, t);
+    TX(c, SERIES[WORK.series].name + '　#' + WORK.no, 160 - 40, 44, BR.orange);
     // soft glow behind the narrator (small, behind the scroll, real alpha: no dither mesh)
     { const g = c.createRadialGradient(54, 110, 4, 54, 110, 38); g.addColorStop(0, 'rgba(248,216,120,' + (0.22 + 0.06 * Math.sin(t * 3)) + ')'); g.addColorStop(1, 'rgba(248,216,120,0)'); c.fillStyle = g; c.fillRect(10, 66, 88, 88); }
     // scroll unrolling
