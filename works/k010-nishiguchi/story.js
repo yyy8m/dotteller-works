@@ -33,7 +33,7 @@ const PLAN_TIKTOK = [
   { sc: SS2, pre: 0.3, items: ['T1'], tr: 'dither', td: 0.5 },
 ];
 // YouTube Short (60 s+, CEO decision 2026-11-10): the TikTok cut, but the last line S2 loops back into the hook S1 instead of 「続きは、本編で。」
-const PLAN = SHORT ? (TIKTOK ? PLAN_TIKTOK : PLAN_TIKTOK.map(p => ({ ...p, items: p.items.map(x => (x === 'T1' ? 'S2' : x)) }))) : PLAN_FULL;
+const PLAN = SHORT ? PLAN_TIKTOK.map(p => ({ ...p, items: p.items.map(x => (x === 'T1' ? 'S2' : x)) })) : PLAN_FULL; // 2026-11-15: TikTok 版もショートと同じループ
 JX.sfx = (S, ev) => { ev(0.2, 'wind', 4); for (let k = 0; k < 6; k++) ev(0.5 + k * 0.6, 'step'); if (S.tGirl < 1e8) { ev(S.tGirl, 'heart'); ev(S.tGirl + 1.4, 'sting'); } };
 JA.sfx = (S, ev) => { ev(0.3, 'toll'); for (let k = 0; k < 4; k++) ev(S.tRec + 0.4 + k * 0.5, 'type'); ev(S.tRec + 2.6, 'stamp'); };
 JB.sfx = (S, ev) => { ev(0.3, 'wind', 4); ev(1.0, 'siren', 2); ev(S.tPass, 'toll'); ev(S.tWanted, 'stamp'); ev(S.tNation, 'whoosh'); };
