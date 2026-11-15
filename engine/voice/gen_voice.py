@@ -34,8 +34,8 @@ def voice_copy(src, alpha, name, out):
 FIX = reading.load_fix()
 
 SPEAKERS = {
-    'narrator': ('nitech_jp_atr503_m001.htsvoice', 0.55, 2.0, 0.95),    # 記録の神 (青空文庫シリーズの語り部): やさしいおじいさん, 約142Hz
-    'lamp':     ('nitech_jp_atr503_m001.htsvoice', 0.50, -2.0, 0.93),   # 灯の神 (Wikipediaシリーズの語り部)
+    'narrator': ('nitech_jp_atr503_m001.htsvoice', 0.55, 2.0, 1.18),  # 2026-11-15: 0.95 → 1.18（オーナー「話す速さは早く」）    # 記録の神 (青空文庫シリーズの語り部): やさしいおじいさん, 約142Hz
+    'lamp':     ('nitech_jp_atr503_m001.htsvoice', 0.50, -2.0, 1.18),  # 2026-11-15: 0.93 → 1.18   # 灯の神 (Wikipediaシリーズの語り部)
     'spider':   ('mei_happy.htsvoice', 0.53, 3.0, 1.02),
     'buddha':   ('nitech_jp_atr503_m001.htsvoice', 0.58, -4.5, 0.80),
     'buddha_sad': ('nitech_jp_atr503_m001.htsvoice', 0.58, -5.0, 0.76),

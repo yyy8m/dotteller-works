@@ -221,7 +221,7 @@ function render(T, noDialog) {
     transition(S.tr, p, Aim, Bim, outIm); ctx.putImageData(outIm, 0, 0);
   } else ctx.drawImage(B, 0, 0);
   if (SHORT && !TIKTOK && typeof THUMB === 'function') coverFace(T); // the YouTube Short's cover frame (auto-picked by YouTube from the middle) shows the work's face card
-  if (TIKTOK) tiktokCard(ctx, T - (TL.total - 2.4)); // TikTok teaser: 「▶ 続きは本編で」 at the end (the YouTube Short loops instead)
+  if (TIKTOK && typeof TIKTOK_CARD !== 'undefined' && TIKTOK_CARD) tiktokCard(ctx, T - (TL.total - 2.4)); // 2026-11-15: TikTok もループにする（札は出さない）。古い札が要るときだけ story.js で TIKTOK_CARD = true // TikTok teaser: 「▶ 続きは本編で」 at the end (the YouTube Short loops instead)
   if (!noDialog) drawDialog(ctx, T);
   if (S.sc.ending && tl > S.tEnd) { // おわり
     const u = tl - S.tEnd, s = u < 0.25 ? u / 0.25 * 1.2 : u < 0.45 ? lerp(1.2, 1, (u - 0.25) / 0.2) : 1, bob = Math.round(Math.sin(u * 2) * 1);
