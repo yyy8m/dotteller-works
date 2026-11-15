@@ -35,6 +35,8 @@ TikTok アプリ → プロフィール → 「プロフィールを編集」で
   - 作り方：`story.js` の `PLAN_TIKTOK`（ショートの冒頭 S1 → 本編の場面を3〜4つ → 締めの `T1`）、`python3 engine/tools/build.py works/<id> --tiktok`、`node engine/tools/export_video.js works/<id>/build/index_tiktok.html tall works/<id>/build/video/<n>_tiktok.mp4 30 1`。
   - 場面の `init` で、TikTok 版に入らないセリフを `at()` で参照するときは `ln(S, 'Lxx') ? … : 1e9` で守る（ないセリフは0秒扱いになり、絵が最初から先に進んでしまう）。
 - 11/9 までの作品（ゲイシーまで）は YouTube ショート（`_short.mp4`、30〜45秒）をそのまま使う。
+- 動画と文面は、**その作品の公開日**にエージェントから届く（制作した日ではない。2026-11-15 から）。
+  - 尺の中ほど（約30〜35秒）に、もう一度興味を引き直す一文（中間のつかみ）を入れる（`docs/SCRIPT.md` 6章）。
 - 文面は `tiktok.txt` をそのまま貼る。
   - TikTok は本文のリンクを押せないので、URL は書かない。「本編は YouTube『ドット語り』で（プロフィールから）」と案内する。
   - 1行目はつかみにする。最後の行は問いかけにして、コメントを呼ぶ。
