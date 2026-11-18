@@ -28,7 +28,9 @@ const PLAN_TIKTOK = [
   { sc: TE, pre: 0.3, items: ['T2', 0.3, 'L15', 0.3, 'L16', 0.4, 'L17'], tr: 'dither', td: 0.4 },
   { sc: SS2, pre: 0.3, items: ['S2'], tr: 'dither', td: 0.4 },
 ];
-const PLAN = SHORT ? PLAN_TIKTOK : PLAN_FULL;
+// 2026-11-18 Muse 連絡6: TikTok 版だけ75秒の上限に余裕を持たせるため L16（姉への遺書）を外す。YouTube ショートは PLAN_TIKTOK のまま
+const PLAN_TT = PLAN_TIKTOK.map(p => ({ ...p, items: p.items.filter((x, i, a) => x !== 'L16' && !(a[i - 1] === 'L16' && typeof x === 'number')) }));
+const PLAN = SHORT ? (TIKTOK ? PLAN_TT : PLAN_TIKTOK) : PLAN_FULL;
 TZ.sfx = (S, ev) => { ev(0.3, 'wind', 4); for (let k = 0; k < 8; k++) ev(at(S, 'C0', 3) + k * 0.5, 'step'); if (S.tGear < 1e8) ev(S.tGear + 0.2, 'sting'); if (S.t30 < 1e8) ev(at(S, 'C2', 1), 'toll'); };
 TA.sfx = (S, ev) => { ev(0.4, 'wind', 3); for (let i = 1; i <= 3; i++) if (at(S, 'L2', i) < 1e8) ev(at(S, 'L2', i), 'toll'); if (S.tClan < 1e8) ev(S.tClan + 0.3, 'tick'); if (S.tMove < 1e8) for (let k = 0; k < 6; k++) ev(S.tMove + 0.6 + k * 0.5, 'step'); };
 TB.sfx = (S, ev) => { ev(0.4, 'type'); if (S.tSick < 1e8) ev(S.tSick + 0.3, 'breath'); if (S.tSis < 1e8) ev(S.tSis + 0.4, 'door'); };
