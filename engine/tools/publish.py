@@ -13,6 +13,7 @@ usage:
   python3 engine/tools/publish.py works/NNN-xxx thumb              # build/thumb.png をYouTube本編・ショートのサムネに設定
   python3 engine/tools/publish.py works/NNN-xxx playlist           # シリーズの再生リスト（ドット語り 文庫／記録）に本編・ショートを追加
   python3 engine/tools/publish.py works/NNN-xxx all                # youtube → thumb → blog → link をまとめて実行
+  python3 engine/tools/publish.py works/NNN-xxx reschedule         # publish.json の publish_at を書き換えたあと、予約済みの本編・ショート・ブログの公開日時を付け替える
     publish.json に "publish_at": "2026-11-09T19:00:00+09:00" があれば予約投稿（YouTubeは非公開アップ＋公開予約、
     Bloggerは予約記事）。"blog": {"slug": "dotgatari-kiroku-001-ed-gein"} で記事URLを英字にできる。
 
@@ -34,7 +35,7 @@ BLOG_ID = os.environ.get('BLOGGER_BLOG_ID', '6071876282678666099')
 BRAND = dict(re.findall(r"(\w+): '([^']*)'", re.search(r'const BRAND = \{(.*?)\};', open(os.path.join(ROOT, 'engine', 'src', 'brand.js'), encoding='utf-8').read()).group(1)))
 PH = re.compile(r'\{(BLOG_URL|MAIN_URL|SHORT_URL|TIKTOK_URL|MAIN_EMBED_URL|CHAPTERS|PLAYLIST_URL)\}')
 # each series has its own playlist on the channel (made by the owner; found by exact title)
-SERIES_PLAYLIST = {'bunko': 'ドット語り 文庫', 'kiroku': 'ドット語り 記録'}
+SERIES_PLAYLIST = {'bunko': 'ドット語り 文庫', 'kiroku': 'ドット語り 記録', 'toshi': 'ドット語り 都市伝説'}  # 都市伝説: 2026-11-18 Muse 指示8
 WORK_DIR = None  # set in __main__; build/chapters.txt (engine/tools/chapters.js) fills {CHAPTERS}
 
 
@@ -298,6 +299,31 @@ def retire(work):
     save_state(work, state)
 
 
+def reschedule(work):
+    """move an already scheduled work to the new publish_at in publish.json (YouTube publishAt + Blogger scheduled post)"""
+    import datetime
+    state = load_state(work); tok = token('youtube')
+    for kind in ('main', 'short'):
+        key = 'youtube_' + kind
+        if not state.get(key): continue
+        when = publish_at(work, kind)
+        if not when: sys.exit('publish_at が過去か未設定です: ' + work)
+        vid = yt_id(state[key]); cur, _ = call('GET', 'https://www.googleapis.com/youtube/v3/videos?part=status&id=' + vid, tok)
+        st = cur['items'][0]['status']
+        if st.get('privacyStatus') == 'public': sys.exit('すでに公開済みのため付け替えません: ' + state[key])
+        res, _ = call('PUT', 'https://www.googleapis.com/youtube/v3/videos?part=status', tok,
+                      {'id': vid, 'status': {'privacyStatus': 'private', 'publishAt': when.astimezone(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                                             'selfDeclaredMadeForKids': False, 'embeddable': st.get('embeddable', True)}})
+        print('youtube', kind, state[key], '→', res['status'].get('publishAt'))
+    if state.get('blog_post_id'):
+        btok = token('blogger'); base = f'https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/' + state['blog_post_id']
+        when = publish_at(work)
+        call('POST', base + '/revert', btok)
+        res, _ = call('POST', base + '/publish?publishDate=' + urllib.parse.quote(when.isoformat()), btok)
+        print('blog', res.get('status'), res.get('published'), res.get('url'))
+        if res.get('url') and res['url'] != state.get('blog_url'): state['blog_url'] = res['url']; save_state(work, state)
+
+
 def thumb(work, tok):
     """set <work>/build/thumb.png (engine/tools/thumb.js) as the thumbnail of the uploaded videos"""
     state, path = load_state(work), os.path.join(work, 'build', 'thumb.png')
@@ -367,5 +393,5 @@ if __name__ == '__main__':
      'thumb': lambda: thumb(os.path.abspath(work), token('youtube')),
      'all': lambda: (youtube(os.path.abspath(work), token('youtube')), thumb(os.path.abspath(work), token('youtube')), playlist(os.path.abspath(work)),
                      blog(os.path.abspath(work), token('blogger')), link(os.path.abspath(work)), audit()),
-     'playlist': lambda: playlist(os.path.abspath(work)),
+     'playlist': lambda: playlist(os.path.abspath(work)), 'reschedule': lambda: reschedule(os.path.abspath(work)),
      'audit': lambda: audit(), 'blogsync': lambda: blogsync()}[what]()

@@ -4,7 +4,7 @@ usage: python3 engine/tools/check_short.py works/<id>/build/video/<n>_short.mp4 
 import re, subprocess, sys
 ok = True
 brand = re.search(r"youtube:\s*'([^']+)'", open('engine/src/brand.js', encoding='utf-8').read()).group(1)
-if brand != '@dotteller': print('NG BRAND.youtube =', brand); ok = False
+if brand != '@ドット語り': print('NG BRAND.youtube =', brand); ok = False  # 2026-11-18 Muse 連絡7・9: ハンドル改名
 for f in sys.argv[1:]:
     w, h = 270, 480
     raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', f, '-frames:v', '1', '-vf', f'scale={w}:{h}', '-f', 'rawvideo', '-pix_fmt', 'gray', '-'], capture_output=True).stdout
