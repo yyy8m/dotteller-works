@@ -10,7 +10,7 @@ usage:
   python3 engine/voice/reading.py works/k001-ed-gein --all    # list the reading of every kanji word
 reading_fix.json:
   {"fix": {"殺人鬼": "サツジンキ"},      # surface → katakana (replaced in the spoken text)
-   "ok":  ["灯の神"]}                    # words whose Open JTalk reading is right although Sudachi differs
+   "ok":  ["灯の神", "噂の神"]}                    # words whose Open JTalk reading is right although Sudachi differs
 """
 import json, os, re, sys
 import pyopenjtalk

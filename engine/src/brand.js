@@ -1,6 +1,6 @@
 /* ================= ドット語り. branding: logo, intro scene, title, video frames ================= */
 const BR = { bg: '#0c2418', bg2: '#123222', bg3: '#1c4430', cream: '#f4ecd8', orange: '#f49a1c', dark: '#06140c', paper: '#ecdcb4', paper2: '#d4bc8c', ink: '#2c2018' };
-const SERIES = { bunko: { name: '文庫', narrator: 'narrator' }, kiroku: { name: '記録', narrator: 'lamp' } };
+const SERIES = { bunko: { name: '文庫', narrator: 'narrator' }, kiroku: { name: '記録', narrator: 'lamp' }, toshi: { name: '都市伝説', narrator: 'uwasa' } }; // 都市伝説: 2026-11-18 Muse 指示8
 /* subtitle under the title: 文庫 = 原作 author, 記録 = author field holds the year / place */
 const workSub = () => WORK.series === 'bunko' ? '原作　' + WORK.author : WORK.author;
 const workCredit = () => WORK.series === 'bunko' ? '原作　' + WORK.author + '「' + WORK.title + '」' : '参考　' + WORK.source;

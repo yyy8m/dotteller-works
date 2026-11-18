@@ -35,7 +35,8 @@ FIX = reading.load_fix()
 
 SPEAKERS = {
     'narrator': ('nitech_jp_atr503_m001.htsvoice', 0.55, 2.0, 1.18),  # 2026-11-15: 0.95 → 1.18（オーナー「話す速さは早く」）    # 記録の神 (青空文庫シリーズの語り部): やさしいおじいさん, 約142Hz
-    'lamp':     ('nitech_jp_atr503_m001.htsvoice', 0.50, -2.0, 1.18),  # 2026-11-15: 0.93 → 1.18   # 灯の神 (Wikipediaシリーズの語り部)
+    'lamp':     ('nitech_jp_atr503_m001.htsvoice', 0.50, -2.0, 1.18),
+    'uwasa':    ('nitech_jp_atr503_m001.htsvoice', 0.54, -0.5, 1.18),  # 2026-11-18: 噂の神 (都市伝説シリーズの語り部): 灯の神より少し高く、ささやくように  # 2026-11-15: 0.93 → 1.18   # 灯の神 (Wikipediaシリーズの語り部)
     'spider':   ('mei_happy.htsvoice', 0.53, 3.0, 1.02),
     'buddha':   ('nitech_jp_atr503_m001.htsvoice', 0.58, -4.5, 0.80),
     'buddha_sad': ('nitech_jp_atr503_m001.htsvoice', 0.58, -5.0, 0.76),
@@ -149,6 +150,12 @@ def post(spk, x, sr):
         b, a = peaking(sr, 5000, -6.0, 0.7)
         x = biquad(x, b, a)
         x = reverb(x, sr, 1.2, 0.2, seed=3)
+    elif spk == 'uwasa':  # 噂の神: a little breathy and far, with a longer room
+        b, a = peaking(sr, 180, 3.0, 0.8)
+        x = biquad(x, b, a)
+        b, a = peaking(sr, 4200, -4.0, 0.8)
+        x = biquad(x, b, a)
+        x = reverb(x, sr, 1.6, 0.26, seed=5)
     elif spk == 'spider':
         b, a = peaking(sr, 3200, 3.5, 0.9)
         x = biquad(x, b, a)

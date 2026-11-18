@@ -1,5 +1,5 @@
 /* ================= timeline, dialog UI, transitions, main loop ================= */
-const SPK = { narrator: { name: '記録の神', bg: ['#6c5430', '#b89c64'] }, lamp: { name: '灯の神', bg: ['#2c1c10', '#5c3c1c'] }, spider: { name: '蜘蛛', bg: ['#584c88', '#6c60a4'] }, buddha: { name: 'お釈迦様', bg: ['#8c6420', '#b88c30'] }, kandata: { name: '犍陀多', bg: ['#5c1c1c', '#7c2c24'] } };
+const SPK = { narrator: { name: '記録の神', bg: ['#6c5430', '#b89c64'] }, lamp: { name: '灯の神', bg: ['#2c1c10', '#5c3c1c'] }, uwasa: { name: '噂の神', bg: ['#140c1c', '#3c2448'] }, spider: { name: '蜘蛛', bg: ['#584c88', '#6c60a4'] }, buddha: { name: 'お釈迦様', bg: ['#8c6420', '#b88c30'] }, kandata: { name: '犍陀多', bg: ['#5c1c1c', '#7c2c24'] } };
 if (typeof SPEAKERS_EXTRA !== 'undefined') Object.assign(SPK, SPEAKERS_EXTRA); // per-work cast: { gein: { name: 'エド・ゲイン', bg: ['#3c1c1c', '#5c2c2c'] } }
 let TL = null;
 
@@ -125,7 +125,7 @@ function drawDialog(c, T) {
   const fb = cached('fbg' + Ln.spk, () => { const [cv, x] = mk(48, 48); VG(x, 0, 0, 48, 48, [sp.bg[1], sp.bg[0]]); return cv; });
   frameBox(c, 9, 175, 58, 58, null); c.drawImage(fb, 14, 180, 48, 48);
   c.save(); c.beginPath(); c.rect(14, 180, 48, 48); c.clip();
-  if (Ln.spk === 'buddha') halo(c, 38, 200, 17, T); else if (Ln.spk === 'narrator') { for (let i = 0; i < 7; i++) { const yy = 228 - fr(T * 0.3 + i / 7) * 50; P(c, 16 + i * 7 + Math.sin(T * 2 + i) * 2, yy, i & 1 ? C.gold0 : '#fcf4dc'); } } else if (Ln.spk === 'lamp') { for (let i = 0; i < 6; i++) { const u = fr(T * 0.35 + i / 6), yy = 228 - u * 48; if (u < 0.9) P(c, 20 + i * 7 + Math.sin(T * 2.5 + i) * 2, yy, i & 1 ? '#f8c860' : '#f49a1c'); } } else if (Ln.spk === 'kandata') { for (let i = 0; i < 6; i++) { const yy = 228 - fr(T * 0.5 + i / 6) * 50; P(c, 18 + i * 8, yy, C.hell5); } } else { for (let i = 0; i < 5; i++) { if ((Math.floor(T * 3) + i) % 4) P(c, 18 + i * 9, 184 + (i * 13 % 36), C.white); } }
+  if (Ln.spk === 'buddha') halo(c, 38, 200, 17, T); else if (Ln.spk === 'narrator') { for (let i = 0; i < 7; i++) { const yy = 228 - fr(T * 0.3 + i / 7) * 50; P(c, 16 + i * 7 + Math.sin(T * 2 + i) * 2, yy, i & 1 ? C.gold0 : '#fcf4dc'); } } else if (Ln.spk === 'lamp') { for (let i = 0; i < 6; i++) { const u = fr(T * 0.35 + i / 6), yy = 228 - u * 48; if (u < 0.9) P(c, 20 + i * 7 + Math.sin(T * 2.5 + i) * 2, yy, i & 1 ? '#f8c860' : '#f49a1c'); } } else if (Ln.spk === 'uwasa') { for (let i = 0; i < 6; i++) { const u = fr(T * 0.25 + i / 6), yy = 228 - u * 48; if (u < 0.92) P(c, 18 + i * 8 + Math.sin(T * 1.7 + i * 2) * 3, yy, i & 1 ? '#b88cf8' : '#e8242c'); } } else if (Ln.spk === 'kandata') { for (let i = 0; i < 6; i++) { const yy = 228 - fr(T * 0.5 + i / 6) * 50; P(c, 18 + i * 8, yy, C.hell5); } } else { for (let i = 0; i < 5; i++) { if ((Math.floor(T * 3) + i) % 4) P(c, 18 + i * 9, 184 + (i * 13 % 36), C.white); } }
   let mouth = 0;
   if (lt > Ln.ss - 0.02 && lt < Ln.se - Ln.t0 + 0.08 && lt >= 0) { const v = Ln.env[Math.floor(lt * 60)] || 0; mouth = v > 0.5 ? 2 : v > 0.16 ? 1 : 0; }
   let ex = 'normal'; const si = segIndex(Ln, lt); for (const [sx, e] of EXPR[Ln.id]) if (si >= sx && lt >= 0) ex = e;
@@ -176,7 +176,7 @@ function renderScene(i, tl, k) {
   if (k === 0) window.__focus = [(fx - x0) * z, (fy - y0) * z]; if (k === 0) window.__txtScreen = (txr || []).map(([a1, b1, a2, b2]) => [(a1 - x0) * z, (b1 - y0) * z, (a2 - x0) * z, (b2 - y0) * z]); // where the camera's focus lands on screen (video crops follow it)
   if (z === 1) ox.drawImage(WB, 0, 0); else ox.drawImage(WB, x0, y0, w, h, 0, 0, W, H);
   if (S.sc.post) { const im = ox.getImageData(0, 0, W, H); S.sc.post(im, tl, S); ox.putImageData(im, 0, 0); }
-  if (WORK.series === 'kiroku' && typeof horrorGrade === 'function') horrorGrade(ox, tl, S);
+  if ((WORK.series === 'kiroku' || WORK.series === 'toshi') && typeof horrorGrade === 'function') horrorGrade(ox, tl, S);
   for (const f of uiq) f(ox); // captions / year cards: drawn after the camera so they never get cropped
   return oc;
 }

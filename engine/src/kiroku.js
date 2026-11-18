@@ -361,7 +361,7 @@ function closeUp(c, t, face, o = {}) {
   if (o.lines) for (let i = 0; i < 18; i++) { const a = i / 18 * TAU + t * 0.2; L(c, 160 + Math.cos(a) * 90, 104 + Math.sin(a) * 90, 160 + Math.cos(a) * 200, 104 + Math.sin(a) * 200, DA(o.lines, 0.35)); }
   const br = Math.round(Math.sin(t * 2.2) * 1);
   const tk = window.__talk;
-  if (o.talk !== false && tk && tk.mouth && tk.spk !== 'lamp' && tk.spk !== 'narrator' && (!o.spk || o.spk === tk.spk)) { // the speaker's big face talks: draw the open mouth on a 1x copy, then enlarge
+  if (o.talk !== false && tk && tk.mouth && tk.spk !== 'lamp' && tk.spk !== 'uwasa' && tk.spk !== 'narrator' && (!o.spk || o.spk === tk.spk)) { // the speaker's big face talks: draw the open mouth on a 1x copy, then enlarge
     const [mc, mxc] = slot('cuMouth', face.width, face.height); mxc.clearRect(0, 0, face.width, face.height); mxc.drawImage(face, 0, 0); mxc.save(); mxc.translate(1, 1); const [mx, my] = o.mouthAt || [24, 31]; portraitMouth(mxc, face, mx, my, tk.mouth); mxc.restore(); face = mc; }
   blit(c, face, 160, 110 + br, 24, 24, { s: o.s || 3.5 });
   if (o.after) o.after(c, t);

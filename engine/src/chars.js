@@ -440,6 +440,22 @@ function facePortrait(who, p) {
       E(c, 24, 45, 1.5, 2.5 + fl, '#fffce8');
       // warm glow on the chin / beard
       c.fillStyle = DA('#f8c060', 0.25 + 0.15 * fl); c.fillRect(17, 30, 15, 6);
+    } else if (who === 'uwasa') { // 噂の神 (都市伝説シリーズの語り部): a deep hood, a white fox mask over the eyes, a pale chin and a red cord
+      const hood = '#1c1428', hood2 = '#2c2040', hoodHi = '#4c3c64', skin = '#e8cdb4', skin2 = '#b8987c';
+      PF(c, [0, 48, 4, 34, 12, 26, 24, 24, 36, 26, 44, 34, 48, 48], hood);
+      PF(c, [8, 32, 10, 12, 16, 4, 24, 1, 32, 4, 38, 12, 40, 32, 34, 37, 14, 37], hood);
+      L(c, 16, 5, 11, 14, hoodHi); L(c, 32, 5, 37, 14, hood2); L(c, 4, 36, 10, 44, hood2); L(c, 44, 36, 38, 44, hood2);
+      E(c, 24, 26, 9, 10, skin2); E(c, 24, 27, 8.5, 9, skin); // chin under the mask
+      // the fox mask (upper face): white with two ears, red markings, slit eyes
+      PF(c, [14, 26, 13, 15, 15, 7, 18, 12, 24, 10, 30, 12, 33, 7, 35, 15, 34, 26, 28, 28, 24, 29, 20, 28], '#f4f0e8');
+      PF(c, [15, 8, 17, 12, 15, 13], '#c81c2c'); PF(c, [33, 8, 31, 12, 33, 13], '#c81c2c');
+      L(c, 24, 11, 24, 15, '#c81c2c'); P(c, 23, 16, '#c81c2c'); P(c, 25, 16, '#c81c2c');
+      const sad = ex === 'sad';
+      for (const x0 of [17, 27]) { if (bl === 2) { L(c, x0, 20, x0 + 4, 20, '#2c2028'); continue; } L(c, x0, 20 + (sad ? 1 : 0), x0 + 4, 19 - (sad ? 0 : 1), '#141018', 2); if (bl !== 1) P(c, x0 + 2, 19 + (sad ? 1 : 0), '#e8242c'); }
+      L(c, 18, 23, 21, 24, '#c81c2c'); L(c, 27, 24, 30, 23, '#c81c2c'); R(c, 23, 24, 3, 2, '#3c2c34'); // whiskers & nose
+      R(c, 14, 25, 20, 1, '#d8d0c4');
+      if (m === 0) R(c, 22, 32, 5, 1, sad ? '#8c5c5c' : '#5c2c34'); else E(c, 24, 32.5, 1.5 + m, 0.7 + m * 0.6, '#3c1c1c');
+      L(c, 13, 17, 10, 22, '#d8b040'); L(c, 35, 17, 38, 22, '#d8b040'); E(c, 10, 23, 1.5, 1.5, '#e8c040'); // the mask's red cord with a little bell
     } else { // kandata
       const tt = stepT(t, 10);
       E(c, 24, 15, 18, 12, C.hairK0);
