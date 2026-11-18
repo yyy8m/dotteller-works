@@ -33,7 +33,10 @@ const PLAN_TIKTOK = [
   { sc: SS2, pre: 0.3, items: ['T1'], tr: 'dither', td: 0.5 },
 ];
 // YouTube Short (60 s+, CEO decision 2026-11-10): the TikTok cut, but the last line S2 loops back into the hook S1 instead of 「続きは、本編で。」
-const PLAN = SHORT ? PLAN_TIKTOK.map(p => ({ ...p, items: p.items.map(x => (x === 'T1' ? 'S2' : x)) })) : PLAN_FULL; // 2026-11-15: TikTok 版もショートと同じループ
+const PLAN_LOOP = PLAN_TIKTOK.map(p => ({ ...p, items: p.items.map(x => (x === 'T1' ? 'S2' : x)) }));
+// 2026-11-18 Muse 連絡6: TikTok 版は60秒を確実に超えるよう、駅で名前を書き留める L24 を足す（YouTube ショートは PLAN_LOOP のまま）
+const PLAN_TT = PLAN_LOOP.map(p => (p.sc === QI ? { ...p, items: ['L23', 0.6, 'L24'] } : p));
+const PLAN = SHORT ? (TIKTOK ? PLAN_TT : PLAN_LOOP) : PLAN_FULL; // 2026-11-15: TikTok 版もショートと同じループ
 QX.sfx = (S, ev) => { ev(0.2, 'wind', 5); for (let k = 0; k < 8; k++) ev(0.8 + k * 0.5, 'step'); if (S.tFace < 1e8) ev(S.tFace, 'heart'); if (S.tStain < 1e8) ev(S.tStain + 0.4, 'sting'); };
 QA.sfx = (S, ev) => { ev(0.2, 'wind', 5); ev(S.tWar, 'thunder'); ev(S.tWar + 0.3, 'burn', 4); ev(S.tBully, 'excl'); };
 QB.sfx = (S, ev) => { ev(0.3, 'tick'); ev(S.tFam, 'flash'); ev(S.tBad, 'sting'); ev(S.tBad + 2.6, 'stamp'); };
