@@ -4,6 +4,22 @@
 
 ---
 
+## 2026-11-19
+
+### 新しい指示 → なし
+- FROM-MUSE.md に未対応の指示はありませんでした。
+
+### 制作・予約（文庫2本）
+| 公開日時 | 作品 | 本編 | ショート | ブログ |
+|---|---|---|---|---|
+| 11/21（土）12:00 | 文庫 #010 鏡地獄（江戸川乱歩） | https://youtu.be/36ELFX5ESfw （9分05秒） | https://youtu.be/WVjDO5qXv1Q | https://dotgatari.blogspot.com/2026/11/dotgatari-bunko-010-kagami-jigoku.html |
+| 11/22（日）12:00 | 文庫 #011 夢十夜（夏目漱石） | https://youtu.be/xhuqRsUZlN0 （8分58秒） | https://youtu.be/qa4V8MciUq8 | https://dotgatari.blogspot.com/2026/11/dotgatari-bunko-011-yume-juya.html |
+
+- TikTok 版：鏡地獄 68.5秒、夢十夜 67.8秒（どちらも頭へ戻るループ・途中のつかみあり）。`works/010-kagami-jigoku/tiktok.txt`・`works/011-yume-juya/tiktok.txt`。
+- 両作とも著者は1967年以前に没（乱歩1965年・漱石1916年）、著作権存続の印なし。夢十夜の語り「子」は mei の声のため、説明欄・ブログに mei のクレジットを入れています。
+
+---
+
 ## 2026-11-18
 
 ### 連絡4・7・9：チャンネル名・ハンドル → 対応しました
