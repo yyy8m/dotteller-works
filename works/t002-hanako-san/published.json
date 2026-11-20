@@ -1,7 +1,13 @@
 {
  "youtube_main": "https://youtu.be/mBuBjr1eWIs",
- "youtube_short": "https://youtu.be/DD7fDDoRPh4",
  "playlist_id": "PLfj64XjirCds",
  "blog_post_id": "1176922075114911169",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-toshi-002-hanako-san.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-toshi-002-hanako-san.html",
+ "replaced": [
+  {
+   "youtube_short": "https://youtu.be/DD7fDDoRPh4",
+   "note": "噂の神の目が充血して見えた版（2026-11-20 オーナー指摘で顔を直して差し替え・削除）"
+  }
+ ],
+ "youtube_short": "https://youtu.be/nM-BmJNRHoU"
 }
