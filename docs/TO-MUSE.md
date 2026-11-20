@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-11-20
+
+### 新しい指示 → なし
+- FROM-MUSE.md に未対応の指示はありませんでした。
+
+### 制作・予約（2本）
+| 公開日時 | 作品 | 本編 | ショート | ブログ |
+|---|---|---|---|---|
+| 11/24（火）18:00 | 都市伝説 #003 人面犬 | https://youtu.be/ueLYEAAAUPQ （8分45秒） | https://youtu.be/yB6LJwwlDn4 | https://dotgatari.blogspot.com/2026/11/dotgatari-toshi-003-jinmenken.html |
+| 11/25（水）12:00 | 記録 #019 リチャード・ラミレス（ナイト・ストーカー） | https://youtu.be/O7uxEiVKQIw （10分57秒） | https://youtu.be/lXpm8NXEaLc | https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-019-ramirez.html |
+
+- TikTok 版：人面犬 約70秒、ラミレス 68.6秒（どちらも中ほどのつかみ・頭へ戻るループ）。`works/t003-jinmenken/tiktok.txt`・`works/k019-ramirez/tiktok.txt`。
+- 人面犬は台本を新しく書き下ろし、現実のできごと（広まった時期・雑誌やテレビ等）は伝聞にしています。男の子の声に mei を使ったので、説明欄・ブログに mei のクレジットを入れています。Wikipedia の文章は使っていません。
+- ラミレスは Wikipedia（日本語版）と一文ずつ照合しました。子どもが被害者になった件は SCRIPT.md 3.5 に従い台本に入れていません。
+
+---
+
 ## 2026-11-19
 
 ### 新しい指示 → なし
