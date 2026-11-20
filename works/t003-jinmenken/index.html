@@ -683,11 +683,18 @@ function facePortrait(who, p) {
       E(c, 24, 26, 9, 10, skin2); E(c, 24, 27, 8.5, 9, skin); // chin under the mask
       // the fox mask (upper face): white with two ears, red markings, slit eyes
       PF(c, [14, 26, 13, 15, 15, 7, 18, 12, 24, 10, 30, 12, 33, 7, 35, 15, 34, 26, 28, 28, 24, 29, 20, 28], '#f4f0e8');
-      PF(c, [15, 8, 17, 12, 15, 13], '#c81c2c'); PF(c, [33, 8, 31, 12, 33, 13], '#c81c2c');
+      PF(c, [15, 8, 16.5, 11, 15, 11], '#d84c5c'); PF(c, [33, 8, 31.5, 11, 33, 11], '#d84c5c');
       L(c, 24, 11, 24, 15, '#c81c2c'); P(c, 23, 16, '#c81c2c'); P(c, 25, 16, '#c81c2c');
       const sad = ex === 'sad';
-      for (const x0 of [17, 27]) { if (bl === 2) { L(c, x0, 20, x0 + 4, 20, '#2c2028'); continue; } L(c, x0, 20 + (sad ? 1 : 0), x0 + 4, 19 - (sad ? 0 : 1), '#141018', 2); if (bl !== 1) P(c, x0 + 2, 19 + (sad ? 1 : 0), '#e8242c'); }
-      L(c, 18, 23, 21, 24, '#c81c2c'); L(c, 27, 24, 30, 23, '#c81c2c'); R(c, 23, 24, 3, 2, '#3c2c34'); // whiskers & nose
+      // eye holes: dark almond slits (the dark behind the mask), a red flare sweeping up from each outer corner, a faint glint inside
+      for (const [x0, d] of [[17, -1], [27, 1]]) {
+        const y = 20 + (sad ? 1 : 0), X = dx => d < 0 ? x0 + dx : x0 + 4 - dx, ox = X(0);
+        L(c, ox, y - 2, ox + d * 3, y - 5, '#c81c2c'); P(c, ox + d * 3, y - 6, '#c81c2c');
+        if (bl === 2) { L(c, x0, y, x0 + 4, y + 1, '#2c2028'); continue; }
+        for (const [dx, dy] of sad ? [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [1, 1], [2, 1], [3, 1]] : [[0, -2], [0, -1], [1, -1], [2, -1], [1, 0], [2, 0], [3, 0], [4, 0], [2, 1], [3, 1], [4, 1]]) P(c, X(dx), y + dy, '#100c16');
+        if (bl !== 1) P(c, X(2), y, '#b8b0d0');
+      }
+      for (const [x, y] of [[16, 23], [17, 24], [31, 23], [30, 24]]) P(c, x, y, '#a89c94'); R(c, 23, 24, 3, 2, '#3c2c34'); // whisker dots & nose
       R(c, 14, 25, 20, 1, '#d8d0c4');
       if (m === 0) R(c, 22, 32, 5, 1, sad ? '#8c5c5c' : '#5c2c34'); else E(c, 24, 32.5, 1.5 + m, 0.7 + m * 0.6, '#3c1c1c');
       L(c, 13, 17, 10, 22, '#d8b040'); L(c, 35, 17, 38, 22, '#d8b040'); E(c, 10, 23, 1.5, 1.5, '#e8c040'); // the mask's red cord with a little bell
