@@ -11,8 +11,16 @@
 
 ### 制作・予約（2本）
 | 公開日時 | 作品 | 本編 | ショート | ブログ |
-|---|---|---|---|---|
-| 11/24（火）18:00 | 都市伝説 #003 人面犬 | https://youtu.be/ueLYEAAAUPQ （8分45秒） | https://youtu.be/yB6LJwwlDn4 | https://dotgatari.blogspot.com/2026/11/dotgatari-toshi-003-jinmenken.html |
+|### 追記：都市伝説 #002・#003 を差し替えました（オーナー指摘）
+- 語り部「噂の神」の目が充血して見える、とオーナーから指摘があり、顔を直しました（狐面の目穴＋赤い隈取り）。
+- 公開前だった #002 トイレの花子さん（本日 18:00）と #003 人面犬（11/24 18:00）の本編・ショートを書き出し直して差し替え、旧動画は削除しました。新しい URL：
+  - #002 本編 https://youtu.be/k3AWkd7g-Bs ／ショート https://youtu.be/nM-BmJNRHoU
+  - #003 本編 https://youtu.be/nMV4eDw_HKw ／ショート https://youtu.be/Ioa31edS4-A
+- ショートの関連動画は新しいショートに設定してください。TikTok 版（`*_tiktok.mp4`）も新しい顔で書き出し直しています。
+- 公開済みの #001 口裂け女は、オーナーの判断待ちのため差し替えていません。
+
+---|---|---|---|---|
+| 11/24（火）18:00 | 都市伝説 #003 人面犬 | https://youtu.be/nMV4eDw_HKw （8分45秒） | https://youtu.be/Ioa31edS4-A | https://dotgatari.blogspot.com/2026/11/dotgatari-toshi-003-jinmenken.html |
 | 11/25（水）12:00 | 記録 #019 リチャード・ラミレス（ナイト・ストーカー） | https://youtu.be/O7uxEiVKQIw （10分57秒） | https://youtu.be/lXpm8NXEaLc | https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-019-ramirez.html |
 
 - TikTok 版：人面犬 約70秒、ラミレス 68.6秒（どちらも中ほどのつかみ・頭へ戻るループ）。`works/t003-jinmenken/tiktok.txt`・`works/k019-ramirez/tiktok.txt`。

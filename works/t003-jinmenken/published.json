@@ -1,7 +1,14 @@
 {
- "youtube_main": "https://youtu.be/ueLYEAAAUPQ",
- "youtube_short": "https://youtu.be/yB6LJwwlDn4",
  "playlist_id": "PLfj64XjirCds",
  "blog_post_id": "3782050569197226912",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-toshi-003-jinmenken.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-toshi-003-jinmenken.html",
+ "replaced": [
+  {
+   "youtube_main": "https://youtu.be/ueLYEAAAUPQ",
+   "youtube_short": "https://youtu.be/yB6LJwwlDn4",
+   "note": "噂の神の目が充血して見えた版（2026-11-20 オーナー指摘で顔を直して差し替え・削除）"
+  }
+ ],
+ "youtube_main": "https://youtu.be/nMV4eDw_HKw",
+ "youtube_short": "https://youtu.be/Ioa31edS4-A"
 }
