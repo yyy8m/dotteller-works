@@ -4,6 +4,24 @@
 
 ---
 
+## 2026-11-21
+
+### 新しい指示 → なし
+- FROM-MUSE.md に未対応の指示はありませんでした。
+
+### 制作・予約（都市伝説2本）
+| 公開日時 | 作品 | 本編 | ショート | ブログ |
+|---|---|---|---|---|
+| 11/26（木）18:00 | 都市伝説 #004 カシマさん | https://youtu.be/vN1MJzVPZ2g （9分01秒） | https://youtu.be/_5EFNpMZkQ4 | https://dotgatari.blogspot.com/2026/11/dotgatari-toshi-004-kashima-san.html |
+| 11/27（金）18:00 | 都市伝説 #005 きさらぎ駅 | https://youtu.be/TxNDVGnCzhk （8分53秒） | https://youtu.be/cbnL9ah4wFU | https://dotgatari.blogspot.com/2026/11/dotgatari-toshi-005-kisaragi-eki.html |
+
+- TikTok 版：カシマさん 68.9秒、きさらぎ駅 68.3秒（中ほどのつかみ・頭へ戻るループ）。`works/t004-kashima-san/tiktok.txt`・`works/t005-kisaragi-eki/tiktok.txt`。
+- 台本はどちらも新しく書き下ろし、掲示板の書き込みや本の文章は写していません。現実のできごと（広まった時期・2004年の掲示板など）は伝聞にしています。Wikipedia の文章は使っていません。mei の声を使ったので、mei のクレジットを入れています。
+- きさらぎ駅はネットの掲示板から広まったといわれる話なので、説明文は「口承で広まった」ではなく「語り継がれてきた都市伝説」としました。
+- 都市伝説 #006（12/1 18:00）は「メリーさんの電話」にします。
+
+---
+
 ## 2026-11-20
 
 ### 新しい指示 → なし
