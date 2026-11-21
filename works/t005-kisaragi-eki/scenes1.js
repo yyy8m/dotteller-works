@@ -82,9 +82,9 @@ function roujinFace(o = {}) { // the old man by the tracks: white stubble, deep 
 function otokoFace(o = {}) { // the driver: neat hair, a smile that doesn't reach the eyes (eyes in shadow)
   return SPR('okF' + (o.blink || 0), 48, 48, c => {
     const sk = '#e0c0a0'; PF(c, [2, 48, 6, 37, 42, 37, 46, 48], '#2c2c34'); PF(c, [18, 37, 24, 44, 30, 37], '#c8c8c8'); L(c, 24, 38, 24, 48, '#3c1c1c', 2); R(c, 20, 32, 8, 6, sk);
-    E(c, 24, 21, 12, 14, sk); E(c, 12, 22, 2, 3, sk); E(c, 36, 22, 2, 3, sk); PF(c, [11, 18, 12, 8, 22, 5, 34, 7, 37, 16, 33, 11, 16, 11], '#141414');
-    c.save(); c.globalAlpha = 0.3; c.fillStyle = '#1c1420'; c.fillRect(14, 16, 20, 8); c.restore(); for (const x0 of [17, 27]) { R(c, x0, 19, 4, 2, '#0c0808'); if (o.blink !== 2) P(c, x0 + 1, 19, '#a8a0b0'); }
-    L(c, 24, 22, 23, 27, '#c0a080'); L(c, 19, 30, 22, 32, '#7c4c3c'); L(c, 22, 32, 26, 32, '#7c4c3c'); L(c, 26, 32, 29, 30, '#7c4c3c');
+    E(c, 24, 21, 12, 14, sk); E(c, 12, 22, 2, 3, sk); E(c, 36, 22, 2, 3, sk); E(c, 24, 11, 13, 7, '#141414'); R(c, 11, 11, 4, 9, '#141414'); R(c, 33, 11, 4, 9, '#141414'); PF(c, [14, 14, 30, 10, 34, 15, 22, 13], '#141414'); L(c, 18, 8, 30, 7, '#3c3c44');
+    c.save(); c.globalAlpha = 0.18; c.fillStyle = '#1c1420'; c.fillRect(14, 16, 20, 8); c.restore(); L(c, 16, 16, 21, 15, '#141414', 2); L(c, 27, 15, 32, 16, '#141414', 2); for (const x0 of [17, 27]) { R(c, x0, 19, 4, 2, '#0c0808'); if (o.blink !== 2) P(c, x0 + 1, 19, '#a8a0b0'); }
+    L(c, 24, 22, 23, 27, '#c0a080'); L(c, 19, 30, 22, 31, '#8c6450'); L(c, 22, 31, 26, 31, '#8c6450'); L(c, 26, 31, 29, 30, '#8c6450'); E(c, 24, 26, 3, 1, '#c8a888');
   });
 }
 const PORTRAITS = { onna: p => withMouth('pmon', onnaFace({ blink: p.blink, scared: true }), p, 24, 31), roujin: p => withMouth('pmrj', roujinFace({ blink: p.blink }), p, 24, 31), otoko: p => withMouth('pmok', otokoFace({ blink: p.blink }), p, 24, 31) };

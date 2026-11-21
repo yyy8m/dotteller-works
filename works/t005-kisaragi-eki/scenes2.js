@@ -12,7 +12,7 @@ const YZ = withCuts({
   init(S) { S.tLong = at(S, 'C1', 0) - 0.3; S.tStop = at(S, 'C2', 0) - 0.3; S.tSign = at(S, 'C2', 2) - 0.3; S.dur = lastSe(S) + 1.4; },
   draw(c, t, S) {
     if (t > S.tStop) { kisaragi(c, t, { sign: t > S.tSign }); walker(c, t, 100, 150, { stop: true, k: 'z1' }); return { z: 1.04 + (t > S.tSign ? 0.2 * ss(sg(t, S.tSign, S.tSign + 2)) : 0), fx: t > S.tSign ? 183 : 140, fy: 100 }; }
-    trainInside(c, t, { lights: t < S.tLong }); person(c, OL, 160, 150, { k: 'zs', blink: 2 }); if (t > S.tLong) { const m = 12 + Math.floor(sg(t, S.tLong, S.tStop) * 9); plate(c, 120, 40, m + '分　止まらない', '#f8e8b0'); }
+    trainInside(c, t, { lights: t < S.tLong }); person(c, OL, 160, 150, { k: 'zs', blink: 2 }); R(c, 130, 126, 60, 24, '#5c7c5c'); R(c, 130, 126, 60, 3, '#7c9c7c'); if (t > S.tLong) { const m = 12 + Math.floor(sg(t, S.tLong, S.tStop) * 9); plate(c, 120, 40, m + '分　止まらない', '#f8e8b0'); }
     return { z: 1.03, fx: 160, fy: 100, sx: Math.round(Math.sin(t * 9) * 0.6) };
   }
 }, [['M1', OCLOSE], ['V0', OCLOSE]]);
@@ -23,7 +23,7 @@ const YA = {
   init(S) { S.tBoard = at(S, 'L1b', 0) - 0.3; S.tTime = at(S, 'L1bx', 0) - 0.3; S.tHer = at(S, 'L2', 0) - 0.3; S.tReply = at(S, 'L2b', 0) - 0.3; S.tSleep = at(S, 'L2bx', 0) - 0.3; S.tNight = at(S, 'L3', 0) - 0.3; S.tWords = at(S, 'L3x', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     if (t > S.tWords) { board(c, t, [['名無し', 'がんばれ'], ['名無し', '落ち着いて'], ['名無し', 'ここにいるぞ']], { cursor: true }); return { z: 1.03, fx: 160, fy: 90 }; }
-    if (t > S.tNight) { R(c, 0, 0, W, H, '#0c0c14'); for (let i = 0; i < 4; i++) { const x = 30 + i * 76; R(c, x, 70, 56, 40, '#c8c8c0'); R(c, x + 4, 74, 48, 32, '#efefef'); glow(c, x + 28, 90, 40, 30, '#c8d8f8', 0.2); person(c, READERS[i], x + 28, 166, { k: 'rn' + i, blink: blinkOf(t, i + 2) }); } plate(c, 20, 40, 'すぐそばで見ているように', '#f8e8b0'); return { z: 1.03, fx: 160, fy: 110 }; }
+    if (t > S.tNight) { R(c, 0, 0, W, H, '#0c0c14'); for (let i = 0; i < 4; i++) { const x = 28 + i * 70; R(c, x, 70, 56, 40, '#c8c8c0'); R(c, x + 4, 74, 48, 32, '#efefef'); glow(c, x + 28, 90, 40, 30, '#c8d8f8', 0.2); person(c, READERS[i], x + 28, 166, { k: 'rn' + i, blink: blinkOf(t, i + 2) }); } plate(c, 20, 40, 'すぐそばで見ているように', '#f8e8b0'); return { z: 1.03, fx: 160, fy: 110 }; }
     const posts = []; if (t > S.tHer) posts.push(['電車の人', '電車の様子がおかしい', true]); if (t > S.tReply) posts.push(P0[1]); if (t > S.tSleep) posts.push(P0[0]); if (t > S.tTime) posts.unshift(['', '2004年　23:14', false]);
     if (t > S.tBoard) { board(c, t, posts, { cursor: true }); return { z: 1.03, fx: 160, fy: 90 }; }
     R(c, 0, 0, W, H, '#141420'); bigCap(c, '違う生まれ方', 60, 32, '#f8e8b0', sg(t, 0.3, 0.9)); for (let i = 0; i < 3; i++) TX(c, ['学校の怪談', '昔話', '？'][i], 70 + i * 90, 126, '#8c8cac', 16, null);
@@ -59,7 +59,7 @@ const YC = withCuts({
     if (t > S.tVoice) { trackWalk(c, t, {}); walker(c, t, 200, 150, { stop: true, expr: 'shock', k: 'c3' }); return { z: 1.06, fx: 200, fy: 110 }; }
     if (t > S.tDont) { board(c, t, [['電車の人', 'ずっと、ついてくる', true], ['名無し', '振り向くな'], ['名無し', '振り向くな']]); return { z: 1.03, fx: 160, fy: 90 }; }
     if (t > S.tFollow) { trackWalk(c, t, { v: 30 }); walker(c, t, 200, 150, { k: 'c4', expr: 'shock' }); notes(c, t, 80, 90); return { z: 1.04, fx: 170, fy: 110 }; }
-    if (t > S.tWinter) { trackWalk(c, t, {}); for (let i = 0; i < 30; i++) { const y = fr(t * 0.3 + i * 0.13) * 180; P(c, (i * 47) % W, y, '#e8ecf0'); } walker(c, t, 200, 150, { k: 'c5', stop: true }); plate(c, 20, 40, '真冬の、山の中', '#c8d8f0'); return { z: 1.03, fx: 160, fy: 110 }; }
+    if (t > S.tWinter) { trackWalk(c, t, {}); for (let i = 0; i < 30; i++) { const y = fr(t * 0.3 + i * 0.13) * 180; P(c, (i * 47) % W, y, '#e8ecf0'); } walker(c, t, 170, 150, { k: 'c5', stop: true }); plate(c, 20, 40, '真冬の、山の中', '#c8d8f0'); return { z: 1.03, fx: 160, fy: 110 }; }
     if (t > S.tSound) { trackWalk(c, t, { v: 20 }); walker(c, t, 200, 150, { k: 'c6', stop: true }); notes(c, t, 60, 90); return { z: 1.03, fx: 160, fy: 110 }; }
     trackWalk(c, t, { v: 40 }); walker(c, t, 160, 150, { k: 'c7', phone: true });
     return { z: 1.03, fx: 160, fy: 110 };
@@ -83,6 +83,7 @@ const YE = withCuts({
   init(S) { S.tCar = at(S, 'L11b', 0) - 0.3; S.tSaved = at(S, 'L12', 0) - 0.3; S.tTired = at(S, 'L12x', 0) - 0.3; S.tDont = at(S, 'L12b', 0) - 0.3; S.tGo = at(S, 'L13', 0) - 0.3; S.tMtn = at(S, 'L13b', 0) - 0.3; S.tRelief = at(S, 'L13x', 0) - 0.3; S.tDark = at(S, 'L13bx', 0) - 0.3; S.tSilent = at(S, 'L14', 0) - 0.3; S.tMutter = at(S, 'L14x', 0) - 0.3; S.tBat = at(S, 'L14b', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     if (t > S.tBat) { R(c, 0, 0, W, H, '#06060c'); keitai(c, 140, 50, t, { bat: 0.15 + 0.05 * Math.sin(t * 3) }); TX(c, '逃げようと思う', 110, 110, '#c8d8f8', 16, null); return { z: 1.08, fx: 150, fy: 80 }; }
+    if (t > S.tMutter && Math.sin(t * 0.9) > 0.3) { R(c, 0, 0, W, H, '#0c0c10'); blit(c, otokoFace({ blink: blinkOf(t, 9) }), 120, 100, 24, 24, { s: 2.4 }); blit(c, onnaFace({ scared: true, blink: blinkOf(t, 4) }), 230, 104, 24, 24, { s: 1.6 }); plate(c, 20, 40, '……………', '#8c8cac'); return { z: 1.03, fx: 160, fy: 100 }; }
     if (t > S.tSilent) { mountainRoad(c, t); oldCar(c, 120, 156, { col: '#3c3c44', head: true, tail: true }); inCar(c, DRIVER, 120, 156, 1, { k: 'e1' }); inCar(c, OL, 120, 156, 0, { k: 'e2', expr: 'shock' }); if (t > S.tMutter && Math.sin(t * 3) > 0) plate(c, 150, 70, '……………', '#8c8cac'); return { z: 1.1, fx: 160, fy: 130 }; }
     if (t > S.tMtn) { mountainRoad(c, t); oldCar(c, 120, 156, { col: '#3c3c44', head: true, tail: true }); inCar(c, DRIVER, 120, 156, 1, { k: 'e3' }); inCar(c, OL, 120, 156, 0, { k: 'e4' }); if (t > S.tDark) plate(c, 20, 40, '街の明かりは、ひとつもない', '#c8c0d0'); else plate(c, 20, 40, '駅とは反対の、山の奥へ', '#c8c0d0'); return { z: 1.04, fx: 160, fy: 120 }; }
     if (t > S.tRelief) { R(c, 0, 0, W, H, '#04040c'); R(c, 0, 128, W, 62, '#1c1c1c'); oldCar(c, 120, 156, { col: '#3c3c44', head: true, tail: true }); inCar(c, DRIVER, 120, 156, 1, { k: 'rl1' }); inCar(c, OL, 120, 156, 0, { k: 'rl2', expr: 'smile' }); plate(c, 20, 40, 'これで、帰れる', '#5c3c2c', '#f8f0e0'); return { z: 1.06, fx: 160, fy: 130 }; }
@@ -115,7 +116,7 @@ const YG = {
     if (t > S.tCheck) { R(c, 0, 0, W, H, '#141420'); for (let i = 0; i < 3; i++) TX(c, '?', 80 + i * 80, 90 + Math.sin(t * 2 + i) * 6, '#8c8cac', 16, null); plate(c, 60, 130, '確かめる方法は、ない', '#f8e8b0'); return { z: 1.03, fx: 160, fy: 100 }; }
     if (t > S.tBack) { board(c, t, [['名無し', '7年たって、', true], ['名無し', '帰ってきました', true]], { cursor: true }); return { z: 1.04, fx: 160, fy: 90 }; }
     if (t > S.tNext) { R(c, 0, 0, W, H, '#0c0c18'); R(c, 20, 110, 280, 3, '#8c8c94'); const sg_ = [['かたす', 60], ['きさらぎ', 160], ['やみ', 260]]; sg_.forEach(([n, x], i) => { R(c, x - 40, 60, 80, 26, '#e8e4d8'); R(c, x - 40, 60, 80, 3, '#2c4c8c'); TX(c, n, x - n.length * 8, 66, '#1c1c1c', 16, null); E(c, x, 111, 4, 4, i === 1 ? '#c81c2c' : '#f4f4f0'); }); return { z: 1.03, fx: 160, fy: 90 }; }
-    if (t > S.tIkai) { R(c, 0, 0, W, H, '#0c0c18'); bigCap(c, '異界の駅', 50, 32, '#c8c0f0', sg(t, S.tIkai + 0.4, S.tIkai + 1)); for (let i = 0; i < 4; i++) { const x = 20 + i * 76; R(c, x, 128, 64, 20, '#c8c4b8'); TX(c, '？？', x + 16, 130, '#2c2c2c', 16, null); } return { z: 1.03, fx: 160, fy: 100 }; }
+    if (t > S.tIkai) { R(c, 0, 0, W, H, '#0c0c18'); bigCap(c, '異界の駅', 50, 32, '#c8c0f0', sg(t, S.tIkai + 0.4, S.tIkai + 1)); for (let i = 0; i < 4; i++) { const x = 24 + i * 70; R(c, x, 128, 64, 20, '#c8c4b8'); TX(c, '？？', x + 16, 130, '#2c2c2c', 16, null); } return { z: 1.03, fx: 160, fy: 100 }; }
     if (t > S.tMore) { const n = Math.min(4, 1 + Math.floor(sg(t, S.tMore, S.tIkai) * 4)); board(c, t, [['名無し', '知らない駅に着いた'], ['名無し', '地図にない駅で'], ['名無し', '降りてしまった'], ['名無し', '前にもあった話']].slice(0, n)); return { z: 1.03, fx: 160, fy: 90 }; }
     if (t > S.tView) { R(c, 0, 0, W, H, '#141420'); plate(c, 30, 60, '作り話だ', '#c8c0d0'); plate(c, 170, 100, '本当にあった', '#f8e8b0'); return { z: 1.03, fx: 160, fy: 100 }; }
     if (t > S.tNot) { R(c, 0, 0, W, H, '#c8d8c0'); for (let i = 0; i < 6; i++) L(c, 0, 30 + i * 26, W, 40 + i * 20, '#a8b8a0'); L(c, 20, 140, 300, 50, '#3c3c3c', 3); for (let i = 0; i < 4; i++) { const x = 40 + i * 76, y = 134 - i * 26; E(c, x, y, 4, 4, '#f4f4f0'); ER(c, x, y, 4, 4, '#3c3c3c'); } TX(c, '？', 170, 70, '#c81c2c', 16, null); return { z: 1.03, fx: 160, fy: 100 }; }
@@ -129,12 +130,12 @@ const YH = {
   name: 'なぜ広まったか', ch: 'なぜ広まったか', bgm: 'memory',
   init(S) { S.tWho = at(S, 'L19x', 0) - 0.3; S.tHeard = at(S, 'L20', 0) - 0.3; S.tRead = at(S, 'L20b', 0) - 0.3; S.tAdv = at(S, 'L20bx', 0) - 0.3; S.tTrain = at(S, 'L21', 0) - 0.3; S.tRail = at(S, 'L21x', 0) - 0.3; S.tWake = at(S, 'L21b', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
-    if (t > S.tWake) { trainInside(c, t, {}); for (let i = 0; i < 3; i++) person(c, COMMUTERS[i], 70 + i * 90, 150, { k: 'wk' + i, blink: i === 1 ? 0 : 2 }); c.save(); c.beginPath(); c.rect(16, 36, 296, 56); c.clip(); kisaragi(c, t, {}); c.restore(); return { z: 1.04, fx: 160, fy: 80 }; }
+    if (t > S.tWake) { trainInside(c, t, {}); for (let i = 0; i < 3; i++) person(c, COMMUTERS[i], 70 + i * 90, 150, { k: 'wk' + i, blink: i === 1 ? 0 : 2 }); c.save(); c.beginPath(); c.rect(16, 36, 296, 56); c.clip(); c.translate(0, -30); kisaragi(c, t, {}); c.restore(); return { z: 1.04, fx: 160, fy: 80 }; }
     if (t > S.tRail) { trackWalk(c, t, { v: 120 }); bigCap(c, '逃げ場は、ない', 60, 32, '#f8c8c8', sg(t, S.tRail + 0.3, S.tRail + 0.9)); return { z: 1.03, fx: 160, fy: 100 }; }
     if (t > S.tTrain) { trainInside(c, t, { lights: true }); for (let i = 0; i < 3; i++) person(c, COMMUTERS[i], 70 + i * 90, 150, { k: 'tr' + i, blink: (Math.floor(t * 0.7) + i) % 3 === 0 ? 2 : 0 }); plate(c, 20, 40, '仕事の帰り、学校の帰り', '#f8e8b0'); return { z: 1.03, fx: 160, fy: 110, sx: Math.round(Math.sin(t * 9) * 0.6) }; }
     if (t > S.tAdv) { board(c, t, [['名無し', '線路を歩け'], ['名無し', '戻れるはず'], ['電車の人', 'わかった', true]]); return { z: 1.03, fx: 160, fy: 90 }; }
-    if (t > S.tRead) { R(c, 0, 0, W, H, '#0c0c14'); for (let i = 0; i < 4; i++) { const x = 30 + i * 76; R(c, x, 70, 56, 40, '#c8c8c0'); R(c, x + 4, 74, 48, 32, '#efefef'); TX(c, '…', x + 20, 80, '#2c2c2c', 16, null); person(c, READERS[i], x + 28, 166, { k: 'rr' + i, expr: 'shock' }); } plate(c, 20, 40, 'みんな、同じ時間に', '#f8e8b0'); return { z: 1.03, fx: 160, fy: 110 }; }
-    R(c, 0, 0, W, H, '#141420'); if (t > S.tWho && t < S.tHeard) { for (let i = 0; i < 5; i++) { person(c, READERS[i % 4], 40 + i * 60, 160, { k: 'wh' + i, flip: i % 2 === 1 }); } plate(c, 20, 40, '最初は、誰？', '#c8c0d0'); return { z: 1.03, fx: 160, fy: 110 }; } bigCap(c, 'なぜ、広まったのか', 60, 32, '#f8e8b0', sg(t, 0.3, 0.9)); if (t > S.tHeard) { plate(c, 60, 126, '人から伝わる話', '#8c8cac'); plate(c, 200, 126, '画面で読む話', '#f8e8b0'); }
+    if (t > S.tRead) { R(c, 0, 0, W, H, '#0c0c14'); for (let i = 0; i < 4; i++) { const x = 28 + i * 70; R(c, x, 70, 56, 40, '#c8c8c0'); R(c, x + 4, 74, 48, 32, '#efefef'); TX(c, '…', x + 20, 80, '#2c2c2c', 16, null); person(c, READERS[i], x + 28, 166, { k: 'rr' + i, expr: 'shock' }); } plate(c, 20, 40, 'みんな、同じ時間に', '#f8e8b0'); return { z: 1.03, fx: 160, fy: 110 }; }
+    R(c, 0, 0, W, H, '#141420'); if (t > S.tWho && t < S.tHeard) { for (let i = 0; i < 5; i++) { person(c, READERS[i % 4], 40 + i * 60, 160, { k: 'wh' + i, flip: i % 2 === 1 }); } plate(c, 20, 40, '最初は、誰？', '#c8c0d0'); return { z: 1.03, fx: 160, fy: 110 }; } bigCap(c, 'なぜ、広まったのか', 60, 32, '#f8e8b0', sg(t, 0.3, 0.9)); if (t > S.tHeard) { plate(c, 70, 140, '人から伝わる話', '#8c8cac'); plate(c, 200, 140, '画面で読む話', '#f8e8b0'); }
     return { z: 1.03, fx: 160, fy: 100 };
   }
 };
@@ -144,7 +145,7 @@ const YI = withCuts({
   name: '次の駅', ch: 'おわりに', bgm: 'requiem',
   init(S) { S.tCheck = at(S, 'L22b', 0) - 0.3; S.tEnd = lastSe(S) + 1.0; S.dur = 1e9; },
   draw(c, t, S) {
-    trainInside(c, t, { lights: t < S.tCheck }); person(c, OL, 160, 150, { k: 'yi', blink: blinkOf(t, 5) });
+    trainInside(c, t, { lights: t < S.tCheck }); person(c, OL, 250, 150, { k: 'yi', blink: blinkOf(t, 5) }); R(c, 226, 126, 48, 24, '#5c7c5c');
     if (t > S.tCheck) { c.save(); c.beginPath(); c.rect(120, 36, 88, 56); c.clip(); c.translate(120 - 140 * 0.6, 36 - 50 * 0.6); c.scale(0.6, 0.6); kisaragi(c, t, {}); c.restore(); }
     return { z: 1.04 + 0.1 * ss(sg(t, S.tCheck, S.tCheck + 4)), fx: 164, fy: 70 };
   }

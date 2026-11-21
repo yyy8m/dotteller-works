@@ -2,7 +2,7 @@
 const EXPR = {};
 ['L15b', 'L18c'].forEach(id => EXPR[id] = [[0, 'sad']]);
 const SPEAKERS_EXTRA = { onna: { name: '電車の女性', bg: ['#0c0c18', '#2c2c48'] }, roujin: { name: '片足の老人', bg: ['#04040c', '#1c1c2c'] }, otoko: { name: '車の男', bg: ['#0c0c10', '#2c2430'] } };
-const HOOK = ['きさらぎ駅', '地図にない駅で、降りてしまった――'];
+const HOOK = ['きさらぎ駅', '地図にない駅で、降りた――'];
 const PLAN_FULL = [
   { sc: YZ, pre: 0.8, items: ['M1', 1.2, 'C0', 0.8, 'C1', 1.0, 'C2', 0.8, 'V0'], tr: 'fromBlack', td: 0.6 },
   { sc: S0, pre: 0.8, items: ['L0'], tr: 'white', td: 1.0 },
