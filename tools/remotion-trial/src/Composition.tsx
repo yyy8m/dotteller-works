@@ -35,9 +35,9 @@ export const ShortTitle: React.FC<Props> = ({ title, hook }) => {
       <div style={{ position: "absolute", top: 72, left: 0, width: 1080, height: 318, background: "#05080a" }} />
       <div style={{ position: "absolute", top: 92, width: 1080, display: "flex", justifyContent: "center", fontFamily, fontSize: titleSize, color: "#ffffff", textShadow: "6px 6px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000" }}>
         {chars.map((ch, i) => {
-          const s = spring({ frame: frame - i * 2, fps, config: { damping: 9, stiffness: 180 } });
-          const scale = interpolate(s, [0, 1], [0.55, 1]);
-          const y = interpolate(s, [0, 1], [-46, 0]);
+          const s = spring({ frame: frame - i, fps, config: { damping: 9, stiffness: 180 } });
+          const scale = interpolate(s, [0, 1], [1.3, 1]);
+          const y = interpolate(s, [0, 1], [0, 0]);
           return <span key={i} style={{ display: "inline-block", transform: `translateY(${y}px) scale(${scale})` }}>{ch}</span>;
         })}
       </div>
