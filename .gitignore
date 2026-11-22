@@ -2,3 +2,4 @@
 works/*/build/
 node_modules/
 __pycache__/
+tools/remotion-trial/out/
