@@ -29,7 +29,7 @@ function horse(c, x, y, t, o = {}) { // a pale cream (tsukige) horse, side view,
   if (o.saddle) { R(c, x - 8, y - 30 + b, 16, 4, '#8c2c2c'); }
 }
 function knife(c, x, y, a = -0.8, glint = 0) { L(c, x, y, x + Math.cos(a) * 12, y + Math.sin(a) * 12, '#e0e4ec', 2); L(c, x, y, x - Math.cos(a) * 5, y - Math.sin(a) * 5, '#5c3c24', 2); if (glint > 0) { const gx = x + Math.cos(a) * 10, gy = y + Math.sin(a) * 10; c.save(); c.globalAlpha = glint; L(c, gx - 5, gy, gx + 5, gy, '#ffffff'); L(c, gx, gy - 5, gx, gy + 5, '#ffffff'); c.restore(); } }
-function ropes(c, x, y, n = 4) { for (let i = 0; i < n; i++) L(c, x - 8, y + i * 6, x + 8, y + 2 + i * 6, '#e8c888', 2); }
+function ropes(c, x, y, n = 4) { for (let i = 0; i < n; i++) L(c, x - 10, y + i * 5, x + 10, y + 2 + i * 5, '#e8c888', 2); }
 function blackFlash(c, t, t0, col = '#000000', len = 0.5) { if (t > t0 && t < t0 + len) dim(c, 1 - (t - t0) / len, col); }
 
 /* ---- cast (Heian period) ---- */
@@ -122,13 +122,13 @@ function masagoFace(o = {}) { // Masago: pale oval face, long black hair, a mole
     R(c, 20, 31, 8, 7, sk2); E(c, 24, 22, 10, 13, sk2); E(c, 23.5, 21.5, 9.5, 12.5, sk); PF(c, [14, 14, 18, 6, 30, 6, 34, 14, 30, 10, 18, 10], hr);
     R(c, 17, 15, 4, 1, hr); R(c, 27, 15, 4, 1, hr);
     for (const x0 of [16, 27]) { if (o.blink === 2) { L(c, x0, 20, x0 + 5, 21, hr); continue; } R(c, x0, 19, 5, 3, '#f8f0e8'); R(c, x0 + 1, 19, 3, 3, o.burn ? '#6c1c14' : '#1c1414'); P(c, x0 + 1, 19, o.burn ? '#f8c040' : '#ffffff'); L(c, x0 - 1, 18, x0 + 5, 18, hr); }
-    P(c, 15, 23, '#2c1c1c'); // the mole by the left eye
+    P(c, 33, 23, '#2c1c1c'); // the mole by her left eye (viewer's right)
     L(c, 24, 22, 23, 26, sk2); E(c, 24, 30, 3, 1, '#c84c5c'); R(c, 22, 30, 5, 1, '#a83c4c');
     if (o.tear) { R(c, 18, 23, 1, 6, '#88c8f8'); R(c, 30, 23, 1, 5, '#88c8f8'); }
     E(c, 17, 26, 2, 1, '#f0b8b0'); E(c, 31, 26, 2, 1, '#f0b8b0');
   });
 }
-function takehiroFace(o = {}) { // Takehiro the samurai: eboshi cap, calm features; o.ghost: blue-pale, hollow; o.glare: cold contempt
+function takehiroFace(o = {}) { if (o.gag) { const f = takehiroFace(Object.assign({}, o, { gag: false })); return SPR('thFg' + (o.blink || 0) + (o.glare ? 'c' : ''), 48, 48, c => { c.drawImage(f, 0, 0); for (let i = 0; i < 5; i++) PF(c, [17 + i * 3, 29, 21 + i * 3, 27 + (i % 2) * 2, 22 + i * 3, 32, 18 + i * 3, 33], i % 2 ? '#5c8c3c' : '#7cac4c'); }); } // Takehiro the samurai: eboshi cap, calm features; o.ghost: blue-pale, hollow; o.glare: cold contempt
   return SPR('thF' + (o.blink || 0) + (o.ghost ? 'g' : '') + (o.glare ? 'c' : ''), 48, 48, c => {
     const sk = o.ghost ? '#c8d8e8' : '#e0c0a0', sk2 = o.ghost ? '#8ca0b8' : '#b89878', hr = o.ghost ? '#1c2434' : '#141418';
     PF(c, [2, 48, 8, 37, 40, 37, 46, 48], o.ghost ? '#6c8cb4' : '#5c84ac'); PF(c, [16, 37, 24, 45, 32, 37], '#d8e0e8'); R(c, 19, 31, 10, 7, sk2);
