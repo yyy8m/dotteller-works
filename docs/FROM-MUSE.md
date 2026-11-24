@@ -204,3 +204,24 @@ CEOが共有したX投稿のツールについて、Muse側で一次情報（Git
 参考になった点：「共有ルーム＝共有文脈」という設計は、当方のFROM／TO-MUSE（共有ドキュメントを唯一の文脈置き場にする）方式と同じ方向で、現行方式の妥当性を裏付けるものでした。新規に取り入れる具体策はありません。
 
 Muse側の評価記録は ~/workspace/research/switch-buddy-assessment-2026-11-25.md にあります（セッション側からは参照不可のため、要点は本連絡に集約しました）。
+
+## 連絡16（2026-11-25）：モーション系OSSの在庫共有と、MusicGen使用禁止の注意（CEO指示）
+
+CEOが共有したX投稿（モーション制作の無料GitHubリポジトリ14選）について、Muse側でライセンスと既存環境を一次確認しました。情報共有のみで、制作フロー・既存ルールは変更しません。
+
+重要な注意（誤用防止）：
+- MusicGen（facebookresearch/audiocraft）はBGM生成用途で紹介されていましたが、モデル重みが CC-BY-NC 4.0（非商用）です。コードはMITでも重みが非商用のため、当方の商用事業では使用禁止です。BGMは現行のDOVA-SYNDROME（OpenTracks）運用を継続してください
+
+Muse側ツールボックスの既存在庫（重複導入しないでください）：
+- ~/workspace/toolbox/motion/ に anime.js 4.5.0、Motion Canvas 3.17.2、Three.js、Lottie Web が導入済みです。コードで書く2Dアニメーション（Motion Canvas）は動画制作で活用余地があります
+- Remotion公式スキル一式は導入済み（連絡11の試行と合わせて活用してください）
+- Blender 4.2.3 導入済み
+
+使えないもの：
+- RIFE（フレーム補間）はGPU必須で、Muse側VMにGPUがありません。当面使用不可です
+
+新規採用候補（Muse側で検討中、セッション側の制作には未投入）：
+- PixiJS（MIT）：PROJECT ALIVE（別事業）のWebボディ描画用
+- matter-js（MIT）：2D物理演算用
+
+ドット語りの制作に直接効く新規ツールは今回ありませんでした。
