@@ -25,12 +25,12 @@ const PLAN_FULL = [
 ];
 // Short / TikTok (same cut): S1 → the visitor's card → he drinks first, "舌を出して" → the two doses → mid-hook T2 → the false-name deposit, the silence → S2 loops into S1
 const PLAN_TIKTOK = [
-  { sc: SS1, pre: 0.3, items: ['S1'], tr: 'fromBlack', td: 0.3 },
-  { sc: TB, pre: 0.3, items: ['L4', 0.3, 'H2'], tr: 'dither', td: 0.4 },
-  { sc: TC, pre: 0.3, items: ['L6', 0.4, 'H3'], tr: 'dither', td: 0.4 },
-  { sc: TJ, pre: 0.3, items: ['T2', 0.3, 'L24'], tr: 'dither', td: 0.4 },
-  { sc: TN, pre: 0.3, items: ['L36', 0.6, 'L37'], tr: 'dither', td: 0.4 },
-  { sc: SS2, pre: 0.3, items: ['S2'], tr: 'dither', td: 0.4 },
+  { sc: SS1, pre: 0.2, items: ['S1'], tr: 'fromBlack', td: 0.3 },
+  { sc: TB, pre: 0.2, items: ['L4', 0.1, 'H2'], tr: 'dither', td: 0.4 },
+  { sc: TC, pre: 0.2, items: ['L6', 0.2, 'H3'], tr: 'dither', td: 0.4 },
+  { sc: TJ, pre: 0.2, items: ['T2', 0.2, 'L24'], tr: 'dither', td: 0.4 },
+  { sc: TN, pre: 0.2, items: ['L36', 0.2, 'L37'], tr: 'dither', td: 0.4 },
+  { sc: SS2, pre: 0.2, items: ['S2'], tr: 'dither', td: 0.4 },
 ];
 const PLAN = SHORT ? PLAN_TIKTOK : PLAN_FULL;
 TZ.sfx = (S, ev) => { ev(0.3, 'tick'); ev(1.8, 'clang'); if (S.tFall < 1e8) { ev(S.tFall + 0.2, 'sting'); for (let k = 0; k < 6; k++) ev(S.tFall + 0.4 + k * 0.45, 'thud'); } if (S.tGone < 1e8) ev(S.tGone + 0.3, 'wind', 3); };

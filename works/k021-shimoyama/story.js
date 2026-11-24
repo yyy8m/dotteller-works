@@ -23,12 +23,12 @@ const PLAN_FULL = [
 ];
 // Short / TikTok (same cut): S1 → the morning zigzag → "5分くらいだから" → the inn → mid-hook T2 → luminol, the oil → S2 loops into S1
 const PLAN_TIKTOK = [
-  { sc: SS1, pre: 0.3, items: ['S1'], tr: 'fromBlack', td: 0.3 },
-  { sc: MC, pre: 0.3, items: ['K1', 0.3, 'K2'], tr: 'dither', td: 0.4 },
-  { sc: MD, pre: 0.3, items: ['K3', 0.5, 'L11'], tr: 'dither', td: 0.4 },
-  { sc: MF, pre: 0.3, items: ['X1', 0.2, 'O1'], tr: 'dither', td: 0.4 },
-  { sc: MI, pre: 0.3, items: ['T2', 0.3, 'L24', 0.3, 'L25'], tr: 'dither', td: 0.4 },
-  { sc: SS2, pre: 0.3, items: ['S2'], tr: 'dither', td: 0.4 },
+  { sc: SS1, pre: 0.1, items: ['S1'], tr: 'fromBlack', td: 0.3 },
+  { sc: MC, pre: 0.1, items: ['K1', 0.2, 'K2'], tr: 'dither', td: 0.4 },
+  { sc: MD, pre: 0.1, items: ['K3', 0.3, 'L11'], tr: 'dither', td: 0.4 },
+  { sc: MF, pre: 0.1, items: ['X1', 0.1, 'O1'], tr: 'dither', td: 0.4 },
+  { sc: MI, pre: 0.1, items: ['T2', 0.2, 'L24', 0.2, 'L25'], tr: 'dither', td: 0.4 },
+  { sc: SS2, pre: 0.1, items: ['S2'], tr: 'dither', td: 0.3 },
 ];
 const PLAN = SHORT ? PLAN_TIKTOK : PLAN_FULL;
 MZ.sfx = (S, ev) => { ev(0.3, 'rain', 6); ev(1.0, 'thunder'); if (S.tWho < 1e8) ev(S.tWho + 0.2, 'sting'); if (S.tQ < 1e8) { ev(S.tQ + 0.3, 'stamp'); ev(at(S, 'C2', 1), 'stamp'); } };

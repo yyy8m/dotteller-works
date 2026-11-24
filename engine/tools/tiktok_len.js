@@ -5,7 +5,7 @@ const { chromium } = require('playwright'); const path = require('path');
   const b = await chromium.launch(); const p = await b.newPage(); p.on('pageerror', e => console.error('PAGEERR', e.message));
   await p.goto('file://' + path.resolve(process.argv[2])); await p.waitForTimeout(1000);
   const [total, last, voice] = await p.evaluate(async () => { await window.__prep(); let v = 0; TL.scenes.forEach(s => s.lines.forEach(l => v += l.se - l.t0)); const ls = TL.scenes.flatMap(s => s.lines.map(l => s.start + l.se)); return [TL.total, Math.max(...ls), v]; });
-  const ok = voice >= 63 && total <= 75.05 && total > 60;
-  console.log(`total ${total.toFixed(1)}  lastLine ${last.toFixed(1)}  voice ${voice.toFixed(1)}  ${ok ? 'OK' : 'NG（音声63秒以上・全体75秒以内）'}`);
+  const ok = voice >= 63 && total <= 73.5 && total > 60; // the exported file runs about 1.5 s longer than the timeline
+  console.log(`total ${total.toFixed(1)}  lastLine ${last.toFixed(1)}  voice ${voice.toFixed(1)}  ${ok ? 'OK' : 'NG（音声63秒以上・タイムライン73.5秒以内＝書き出し後75秒以内）'}`);
   await b.close();
 })();
