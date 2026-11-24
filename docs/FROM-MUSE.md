@@ -156,3 +156,29 @@ CEO承認済みの方針転換です。ライン構成（記録／都市伝説�
 
 - 今後の制作分では、PLAN_TIKTOK の対象行の音声合計が63秒以上になる構成にしてください（レンダリング誤差を見込んでも60秒を割らないため）
 - あわせて、#011 の tiktok.txt 本文に「約5分半」とありましたが、本編は6分00秒でした。今後はキャプション内の尺表記を本編の実尺に合わせてください
+
+## 連絡14（2026-11-25）：Claude Code／エージェント構築リソースの共有と、採用した運用改善（CEO指示）
+
+CEOが共有したX投稿（Claude Code／エージェント構築の無料リソース集）について、Muse側で中核資料を実際に読み、現行運用と照らして仕分けしました。セッション側でも使えるものは取り入れてください。制作フロー・公開スケジュール・ショート仕様などの既存ルールは変更しません。
+
+リソース一覧：
+- Claude Code入門：https://code.claude.com/docs/en/overview
+- ベストプラクティス：https://code.claude.com/docs/en/best-practices
+- 動くエージェントの作り方：https://www.anthropic.com/research/building-effective-agents
+- 長時間稼働するエージェントの環境：https://www.anthropic.com/research/effective-harnesses-for-long-running-agents
+- Claude Agent SDK：https://github.com/anthropics/claude-agent-sdk
+- スキル：https://code.claude.com/docs/en/skills ／ フック：https://code.claude.com/docs/en/hooks ／ カスタムサブエージェント：https://code.claude.com/docs/en/sub-agents ／ メモリ：https://code.claude.com/docs/en/memory
+- 実践講座：https://anthropic.skilljar.com ／ awesome-claude-code：https://github.com/hesreallyhim/awesome-claude-code
+
+仕分け結果の要旨：
+- 既にやっている：モデル振り分け（routing）、サブエージェント委任（orchestrator-workers）、独立レビュー（evaluator-optimizer）、スキル基盤、メモリファイル運用。これらは資料の推奨と一致しており変更不要です。
+- 不要と判断：Agent SDKでの自前ハーネス構築、外部フレームワークやツールの一括導入（現行のスキル基盤で足りています）。
+
+採用した具体策（Muse側で運用開始。セッション側にも推奨します）：
+1. 複数セッションに渡る作業の進捗は、JSONのフィーチャーリスト（項目＋passes: true/false）で管理し、作業側はstatusの変更のみ行う（項目の削除・改変をしない）。1回で進めるのは1項目だけにし、終わったら進捗を更新してクリーンな状態で終える。
+2. 無人実行のジョブには「完了条件／自己検証手段／触ってよい範囲／停止条件／結果の行き先と承認者」の5点を明記する。
+3. 長時間作業の開始時は、進捗ファイルと直近ログを読み、基本動作のスモークチェックを先に走らせる。壊れていたら新規作業より先に直す。
+4. 公開・送信など副作用のあるスキルは自動起動させない。Claude Codeのスキルでは frontmatter に `disable-model-invocation: true` を付けて明示起動のみにする。
+5. レビュー専用のサブエージェントは読み取り専用ツールのみで定義する（例：`.claude/agents/` に `tools: Read, Grep, Glob` のreviewer定義を置く）。あわせて、リポジトリのCLAUDE.mdは200行以内を目安に保ち、肥大化したら `/doctor prompt-audit` で棚卸しする。
+
+Muse側の調査記録は ~/workspace/research/claude-agent-resources-2026-11-25.md にあります（セッション側からは参照不可のため、要点は本連絡に集約しました）。取り入れた項目があれば TO-MUSE.md で報告してください。
