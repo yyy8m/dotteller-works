@@ -30,6 +30,8 @@ TikTok アプリ → プロフィール → 「プロフィールを編集」で
 
 ## 2. 投稿の決まり
 - 投稿するのは **TikTok 版（`works/<作品>/build/video/<n>_tiktok.mp4`）**。11/10 の三毛別から。
+  - **PLAN_TIKTOK の対象行の音声の合計を63秒以上にする**（2026-11-24 Muse 連絡13。書き出しの誤差で60秒を割らないため）。全体の長さは75秒以内。音声の合計は `node engine/tools/tiktok_len.js works/<id>/build/index_tiktok.html` で確かめる。
+  - キャプションの「フル（約○分）」は、本編の実際の長さに合わせる（連絡13）。
   - 尺は **60〜75秒**（TikTok のクリエイター報酬プログラムの対象が「1分以上の動画」のため）。本編全部ではなく予告編：完結させず、山場の手前で切る。**2026-11-15 からショートと同じループ**（最後の一文が冒頭に戻る。「続きは、本編で。」の札は出さない）。
   - 冒頭2秒の決まりは YouTube ショートと同じ（結果・異常さから始める）。
   - 作り方：`story.js` の `PLAN_TIKTOK`（ショートの冒頭 S1 → 本編の場面を3〜4つ → 締めの `T1`）、`python3 engine/tools/build.py works/<id> --tiktok`、`node engine/tools/export_video.js works/<id>/build/index_tiktok.html tall works/<id>/build/video/<n>_tiktok.mp4 30 1`。

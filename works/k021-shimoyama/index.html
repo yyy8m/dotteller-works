@@ -1399,7 +1399,7 @@ function crossing(c, t, o = {}) {
 function lantern(c, x, y, t) { L(c, x, y, x, y + 10, '#3c3c3c'); E(c, x, y + 14, 4, 5, '#f8c060'); glow(c, x, y + 14, 22, 16, '#f8c060', 0.3 + 0.05 * Math.sin(t * 6 + x)); }
 // Nihonbashi Mitsukoshi: the grand stone front, the lion, the south entrance
 function mitsukoshi(c, t, o = {}) {
-  VG(c, 0, 0, W, 120, ['#8ca8c8', '#b8c8d8', '#e0e0d8']); R(c, 30, 14, 260, 106, '#d8d0bc'); for (let i = 0; i < 6; i++) { R(c, 46 + i * 44, 30, 14, 56, '#c8c0ac'); R(c, 44 + i * 44, 28, 18, 4, '#e8e0cc'); } R(c, 30, 12, 260, 5, '#a89c88'); R(c, 120, 86, 80, 34, '#3c2c20'); R(c, 100, 72, 120, 10, '#2c2c2c'); TX(c, '三越', 144, 70, '#e8d8a0', 16, null);
+  VG(c, 0, 0, W, 120, ['#8ca8c8', '#b8c8d8', '#e0e0d8']); R(c, 30, 14, 260, 106, '#d8d0bc'); for (let i = 0; i < 6; i++) { R(c, 46 + i * 44, 30, 14, 56, '#c8c0ac'); R(c, 44 + i * 44, 28, 18, 4, '#e8e0cc'); } R(c, 30, 12, 260, 5, '#a89c88'); R(c, 120, 92, 80, 28, '#3c2c20'); R(c, 120, 68, 80, 20, '#2c2c2c'); TX(c, '三越', 144, 70, '#e8d8a0', 16, null);
   E(c, 92, 112, 10, 7, '#7c6c4c'); E(c, 86, 104, 6, 6, '#7c6c4c'); E(c, 84, 103, 3, 3, '#5c4c34'); // the bronze lion
   R(c, 0, 120, W, 70, '#8c8478'); for (let i = 0; i < 30; i++) P(c, (i * 37) % W, 124 + (i * 17) % 60, '#7c7468');
 }
@@ -1426,19 +1426,20 @@ function shimoFace(o = {}) { // Shimoyama Sadanori: a broad, fleshy face, round 
     const sk = '#e0c0a0', sk2 = '#b89878';
     PF(c, [2, 48, 8, 37, 40, 37, 46, 48], '#7c7c7c'); PF(c, [18, 37, 24, 44, 30, 37], '#f4f0e8'); L(c, 24, 40, 24, 48, '#3c2c2c', 2); R(c, 18, 31, 12, 7, sk2);
     E(c, 24, 22, 13, 14, sk2); E(c, 23.5, 21.5, 12.5, 13.5, sk); PF(c, [11, 16, 12, 7, 20, 3, 34, 5, 37, 12, 36, 16, 31, 9, 21, 9], '#4c4844'); L(c, 21, 4, 23, 9, '#6c6864');
-    L(c, 14, 15, 21, 16, '#2c2824', 2); L(c, 27, 16, 34, 15, '#2c2824', 2);
+    L(c, 14, 17, 21, 15, '#2c2824', 2); L(c, 27, 15, 34, 17, '#2c2824', 2);
     for (const x0 of [15, 27]) { E(c, x0 + 3, 21, 4.5, 4, '#2c241c'); E(c, x0 + 3, 21, 3.4, 3, '#e8ecf0'); if (o.blink === 2) L(c, x0 + 1, 21, x0 + 5, 21, '#2c241c'); else { R(c, x0 + 2, 20, 2, 2, '#1c1814'); P(c, x0 + 4, 19, '#ffffff'); } }
     L(c, 21, 21, 24, 21, '#2c241c'); L(c, 24, 22, 23, 28, sk2); R(c, 21, 28, 6, 1, sk2); E(c, 15, 28, 2, 2, '#e8b8a0'); E(c, 33, 28, 2, 2, '#e8b8a0'); R(c, 20, 32, 8, 1, '#7c4c3c'); L(c, 14, 31, 16, 34, sk2); L(c, 34, 31, 32, 34, sk2);
   });
 }
 function ohnishiFace(o = {}) { return SPR('onF' + (o.blink || 0), 48, 48, c => { const sk = '#c8946c', sk2 = '#a0704c'; PF(c, [2, 48, 8, 37, 40, 37, 46, 48], '#2c2c34'); R(c, 19, 31, 10, 7, sk2); E(c, 24, 22, 11, 14, sk2); E(c, 23.5, 21.5, 10.5, 13.5, sk); R(c, 12, 4, 24, 9, '#1c1c24'); R(c, 10, 12, 28, 3, '#141418'); R(c, 20, 6, 8, 3, '#c8a848'); L(c, 15, 17, 21, 17, '#1c1814', 2); L(c, 27, 17, 33, 17, '#1c1814', 2); for (const x0 of [16, 27]) { if (o.blink === 2) { L(c, x0, 21, x0 + 5, 21, '#1c1410'); continue; } R(c, x0, 20, 5, 3, '#f0e4d0'); R(c, x0 + 2, 20, 2, 3, '#1c1410'); } L(c, 24, 22, 23, 27, sk2); R(c, 21, 31, 6, 1, '#6c3c2c'); }); }
 function okamiFace(o = {}) { return SPR('okF' + (o.blink || 0), 48, 48, c => { const sk = '#e8c4a4', sk2 = '#c4a084'; PF(c, [6, 48, 10, 38, 38, 38, 42, 48], '#7c5c5c'); PF(c, [18, 38, 24, 45, 30, 38], '#f0e8e0'); R(c, 20, 31, 8, 7, sk2); E(c, 24, 22, 10, 13, sk2); E(c, 23.5, 21.5, 9.5, 12.5, sk); E(c, 24, 6, 9, 6, '#1c1814'); PF(c, [13, 18, 14, 8, 24, 4, 34, 8, 35, 18, 31, 11, 17, 11], '#1c1814'); R(c, 30, 3, 6, 2, '#c8a848'); for (const x0 of [16, 27]) { if (o.blink === 2) { L(c, x0, 20, x0 + 5, 20, '#2c1c14'); continue; } L(c, x0, 19, x0 + 5, 19, '#2c1c14'); R(c, x0 + 1, 20, 3, 2, '#2c1c14'); } L(c, 24, 22, 23, 26, sk2); L(c, 21, 30, 24, 31, '#a8584c'); L(c, 24, 31, 27, 30, '#a8584c'); E(c, 17, 26, 2, 1, '#f0b0a0'); E(c, 31, 26, 2, 1, '#f0b0a0'); }); }
+function d51Face(o = {}) { return SPR('d5F', 48, 48, c => { R(c, 0, 0, 48, 48, '#0c0c10'); E(c, 24, 26, 20, 20, '#1c1c24'); ER(c, 24, 26, 20, 20, '#3c3c44'); E(c, 24, 26, 14, 14, '#24242c'); R(c, 20, 4, 8, 8, '#2c2c34'); R(c, 4, 40, 40, 6, '#2c2c34'); R(c, 10, 44, 28, 4, '#3c3c44'); E(c, 24, 14, 4, 4, '#c8b880'); for (let i = 0; i < 5; i++) L(c, 12 + i * 6, 34, 12 + i * 6, 40, '#3c3c44'); }); }
 function otokoFace(o = {}) { // the man at the inn / by the tracks: half in shadow, the glint of spectacles, no clear features
   return SPR('otF' + (o.blink || 0) + (o.dark ? 'd' : ''), 48, 48, c => {
     const sk = o.dark ? '#6c5c4c' : '#a8907c', sk2 = o.dark ? '#3c3028' : '#7c6858';
     PF(c, [2, 48, 8, 37, 40, 37, 46, 48], '#5c5448'); R(c, 18, 31, 12, 7, sk2); E(c, 24, 22, 13, 14, sk2); E(c, 23.5, 21.5, 12.5, 13.5, sk); PF(c, [11, 16, 12, 7, 20, 3, 34, 5, 37, 12, 36, 16, 31, 9, 21, 9], '#2c2824');
-    c.save(); c.globalAlpha = 0.6; PF(c, [24, 0, 48, 0, 48, 48, 24, 48], '#000000'); c.restore();
-    for (const x0 of [15, 27]) { E(c, x0 + 3, 21, 4.5, 4, '#141010'); if (o.blink !== 2) R(c, x0 + 1, 19, 3, 2, '#e8e8f0'); }
+    c.save(); c.globalAlpha = 0.3; PF(c, [30, 0, 48, 0, 48, 48, 30, 48], '#000000'); c.restore();
+    L(c, 14, 16, 21, 15, '#2c2824', 2); L(c, 27, 15, 34, 16, '#2c2824', 2); for (const x0 of [15, 27]) { if (o.blink === 2) { L(c, x0 + 1, 21, x0 + 5, 21, '#2c241c'); continue; } R(c, x0 + 1, 20, 5, 2, '#e8e0d4'); R(c, x0 + 3, 20, 2, 2, '#1c1814'); }
     L(c, 24, 22, 23, 28, sk2); R(c, 20, 32, 8, 1, '#3c2c24');
   });
 }
@@ -1488,7 +1489,7 @@ const MB = {
   init(S) { S.tNotice = at(S, 'L6', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     office(c, t);
-    if (t > S.tNotice) { const n = Math.min(20, Math.floor((t - S.tNotice) * 6)); for (let i = 0; i < n; i++) R(c, 30 + (i % 10) * 8, 140 - Math.floor(i / 10) * 4 - i * 0.6, 40, 4, i % 2 ? '#f4f0e8' : '#e0dcd0'); person(c, SHIMO, 200, 152, { k: 'nt', expr: 'sad', blink: blinkOf(t, 5) }); stamp(c, t, S.tNotice + 0.6, 120, 60, '解雇通告　3万700人', 170); yearFlash(c, t, S.tNotice + 0.2, '7.5', 216, 10, '1949年'); return { z: 1.06, fx: 160, fy: 104 }; }
+    if (t > S.tNotice) { const n = Math.min(20, Math.floor((t - S.tNotice) * 6)); for (let i = 0; i < n; i++) R(c, 30 + (i % 10) * 8, 140 - Math.floor(i / 10) * 4 - i * 0.6, 40, 4, i % 2 ? '#f4f0e8' : '#e0dcd0'); person(c, SHIMO, 200, 152, { k: 'nt', expr: 'sad', blink: blinkOf(t, 5) }); stamp(c, t, S.tNotice + 0.6, 140, 96, '解雇通告　3万700人', 170); yearFlash(c, t, S.tNotice + 0.2, '7.5', 216, 10, '1949年'); return { z: 1.06, fx: 160, fy: 104 }; }
     person(c, SHIMO, 160, 152, { k: 'ds', blink: blinkOf(t, 5) }); plate(c, 40, 46, '初代国鉄総裁　下山定則', '#f8e8b0');
     return { z: 1.1, fx: 160, fy: 110 };
   }
@@ -1511,10 +1512,10 @@ const MD = withCuts({
   name: '三越', ch: '三越南口', bgm: 'eerie',
   init(S) { S.tLast = at(S, 'L11', 0) - 0.3; S.tBag = at(S, 'L11', 2) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
-    if (t > S.tBag) { R(c, 0, 0, W, H, '#1c1c20'); R(c, 40, 50, 240, 90, '#5c4c3c'); R(c, 40, 50, 240, 6, '#3c2c20'); R(c, 80, 90, 60, 34, '#3c2c1c'); R(c, 100, 84, 20, 8, '#3c2c1c'); R(c, 180, 100, 50, 24, '#c8a870'); R(c, 180, 100, 50, 4, '#8c6c44'); plate(c, 70, 130, '鞄', '#f8e8b0'); plate(c, 180, 130, '弁当', '#f8e8b0'); return { z: 1.04, fx: 160, fy: 100 }; }
-    if (t > S.tLast) { mitsukoshi(c, t); const k = sg(t, S.tLast, S.tLast + 3); c.save(); c.globalAlpha = 1 - k * 0.8; person(c, SHIMO, lerp(160, 160, k), lerp(150, 132, k), { k: 'gone', f: Math.floor(t * 3) % 4, s: lerp(1, 0.7, k) }); c.restore(); buick(c, 10, 160, t, { driver: true }); yearFlash(c, t, S.tLast + 0.2, '9:37', 216, 10, '午前'); return { z: 1.06, fx: 150, fy: 110 }; }
+    if (t > S.tBag) { R(c, 0, 0, W, H, '#2c2824'); R(c, 40, 50, 240, 90, '#8c7458'); R(c, 40, 50, 240, 6, '#5c4c3c'); R(c, 90, 86, 60, 38, '#5c3c24'); R(c, 92, 88, 56, 4, '#7c5434'); R(c, 108, 80, 24, 8, '#3c2c1c'); R(c, 118, 100, 4, 6, '#c8a848'); R(c, 170, 100, 50, 24, '#e8d8a8'); R(c, 170, 100, 50, 4, '#a8885c'); L(c, 170, 112, 220, 112, '#c83c3c', 2); plate(c, 106, 128, '鞄', '#f8e8b0'); plate(c, 180, 128, '弁当', '#f8e8b0'); return { z: 1.04, fx: 160, fy: 100 }; }
+    if (t > S.tLast) { mitsukoshi(c, t); const k = sg(t, S.tLast, S.tLast + 3); c.save(); c.globalAlpha = 1 - k * 0.8; person(c, SHIMO, lerp(160, 160, k), lerp(150, 132, k), { k: 'gone', f: Math.floor(t * 3) % 4, s: lerp(1, 0.7, k) }); c.restore(); buick(c, 30, 150, t, { driver: true }); yearFlash(c, t, S.tLast + 0.2, '9:37', 216, 10, '午前'); return { z: 1.06, fx: 150, fy: 110 }; }
     if (t < at(S, 'L10', 1) - 0.3) { R(c, 0, 0, W, H, '#2c2824'); R(c, 60, 30, 200, 120, '#6c6c74'); for (let i = 0; i < 12; i++) R(c, 70 + (i % 6) * 32, 40 + Math.floor(i / 6) * 50, 26, 40, '#8c8c94'); const k = sg(t, 0.5, 3); for (let i = 0; i < 5; i++) R(c, 130 + i * 6, lerp(90, 140, k) - i * 2, 24, 10, '#c8b890'); plate(c, 40, 46, '貸金庫から百円札25枚', '#f8e8b0'); return { z: 1.04, fx: 160, fy: 96 }; }
-    mitsukoshi(c, t); buick(c, 10, 160, t, { driver: true }); person(c, SHIMO, 140, 150, { k: 'mk', blink: blinkOf(t, 5) });
+    mitsukoshi(c, t); buick(c, 30, 150, t, { driver: true }); person(c, SHIMO, 150, 150, { k: 'mk', blink: blinkOf(t, 5) });
     return { z: 1.08, fx: 150, fy: 110 };
   }
 }, [['K3', SMC]]);
@@ -1524,19 +1525,19 @@ const ME = withCuts({
   name: '総裁が来ない', ch: '行方不明', bgm: 'eerie',
   init(S) { S.tRadio = at(S, 'L12', 1) - 0.3; S.tWait = at(S, 'L13', 0) - 0.3; S.tQ = at(S, 'L13b', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
-    if (t > S.tQ) { R(c, 0, 0, W, H, '#3c3834'); R(c, 0, 120, W, 70, '#2c2824'); R(c, 120, 104, 80, 8, '#5c4c3c'); glow(c, 160, 40, 40, 30, '#f8e8b0', 0.3); L(c, 160, 0, 160, 34, '#2c2c2c'); E(c, 160, 38, 6, 4, '#f8e8b0'); person(c, OHNISHI, 120, 150, { k: 'oq', expr: 'sad' }); person(c, DETS[0], 200, 150, { k: 'dq', flip: true, arm: 'wave' }); return { z: 1.1, fx: 160, fy: 108 }; }
-    if (t > S.tWait) { mitsukoshi(c, t); dim(c, 0.3 * sg(t, S.tWait, S.tQ), '#3c2c1c'); buick(c, 110, 160, t, { driver: true }); const h = lerp(9.6, 17.5, sg(t, S.tWait, S.tQ)); E(c, 60, 50, 14, 14, '#f4f0e8'); ER(c, 60, 50, 14, 14, '#2c2c2c'); const a = (h % 12) / 12 * TAU - Math.PI / 2, m = (h % 1) * TAU - Math.PI / 2; L(c, 60, 50, 60 + Math.cos(a) * 7, 50 + Math.sin(a) * 7, '#141414', 2); L(c, 60, 50, 60 + Math.cos(m) * 11, 50 + Math.sin(m) * 11, '#141414'); plate(c, 90, 40, '8時間、待ち続けた', '#f8e8b0'); return { z: 1.06, fx: 160, fy: 110 }; }
+    if (t > S.tQ) { R(c, 0, 0, W, H, '#3c3834'); R(c, 0, 120, W, 70, '#2c2824'); R(c, 120, 112, 80, 8, '#5c4c3c'); R(c, 124, 120, 4, 30, '#4c3c2c'); R(c, 192, 120, 4, 30, '#4c3c2c'); glow(c, 160, 40, 40, 30, '#f8e8b0', 0.3); L(c, 160, 0, 160, 34, '#2c2c2c'); E(c, 160, 38, 6, 4, '#f8e8b0'); person(c, OHNISHI, 120, 150, { k: 'oq', expr: 'sad' }); person(c, DETS[0], 200, 150, { k: 'dq', flip: true, arm: 'wave' }); return { z: 1.1, fx: 160, fy: 108 }; }
+    if (t > S.tWait) { mitsukoshi(c, t); dim(c, 0.3 * sg(t, S.tWait, S.tQ), '#3c2c1c'); buick(c, 120, 148, t, {}); person(c, OHNISHI, 100, 150, { k: 'ow', blink: blinkOf(t, 3) }); const h = lerp(9.6, 17.5, sg(t, S.tWait, S.tQ)); E(c, 60, 50, 14, 14, '#f4f0e8'); ER(c, 60, 50, 14, 14, '#2c2c2c'); const a = (h % 12) / 12 * TAU - Math.PI / 2, m = (h % 1) * TAU - Math.PI / 2; L(c, 60, 50, 60 + Math.cos(a) * 7, 50 + Math.sin(a) * 7, '#141414', 2); L(c, 60, 50, 60 + Math.cos(m) * 11, 50 + Math.sin(m) * 11, '#141414'); plate(c, 90, 40, '8時間、待ち続けた', '#f8e8b0'); return { z: 1.06, fx: 160, fy: 110 }; }
     if (t > S.tRadio) { R(c, 0, 0, W, H, '#2c2420'); R(c, 120, 60, 80, 60, '#6c4c2c'); E(c, 145, 90, 16, 16, '#3c2c1c'); for (let i = 0; i < 4; i++) R(c, 170, 74 + i * 8, 22, 3, '#3c2c1c'); for (let i = 0; i < 3; i++) { const u = fr(t + i / 3); c.save(); c.globalAlpha = 1 - u; ER(c, 160, 90, 50 + u * 60, 30 + u * 40, '#f8e8b0'); c.restore(); } plate(c, 40, 46, '総裁、行方不明', '#f8a0a0'); return { z: 1.04, fx: 160, fy: 96 }; }
     office(c, t); R(c, 60, 116, 200, 12, '#5c3c24'); for (let i = 0; i < 6; i++) { if (i === 3) { R(c, 64 + i * 32, 96, 20, 20, '#7c5c3c'); continue; } person(c, DETS[i % 4], 74 + i * 32, 128, { k: 'mt' + i, s: 0.8 }); } plate(c, 40, 46, '空いた総裁の席', '#f8e8b0');
     return { z: 1.06, fx: 160, fy: 106 };
   }
 }, [['N1', ONC]]);
-const MH0 = { name: '男', bgm: null, init(S) { S.dur = 4.2; }, draw(c, t, S) { horrorCloseup(c, t, otokoFace({ dark: true, blink: 0 }), [[17, 19], [29, 19]], S.dur); return { z: 1, fx: 160, fy: 120, sx: t < 0.5 ? Math.round(Math.sin(t * 90) * 2) : 0 }; } };
+const MH0 = { name: '男', bgm: null, init(S) { S.dur = 4.2; }, draw(c, t, S) { horrorCloseup(c, t, d51Face({}), [[23, 13]], S.dur); return { z: 1, fx: 160, fy: 120, sx: t < 0.5 ? Math.round(Math.sin(t * 90) * 2) : 0 }; } };
 
 /* ---- MF: the trail — 1,050 sightings; Mitsukoshi → subway → Gotanno; the inn: "それは、勘弁してくれ", "おひとりで、さびしいですね"; at dusk a gentleman wandering the tracks, his back to the trains (moves: the map line, the inn's fan, the walker) ---- */
 const MF = withCuts({
   name: '目撃', ch: '目撃された男', bgm: 'eerie',
-  init(S) { S.tInn = at(S, 'L15', 0) - 0.3; S.tFutton = at(S, 'L15b', 0) - 0.3; S.tWalk = at(S, 'L16', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
+  init(S) { S.tInn = Math.min(at(S, 'L15', 0), at(S, 'X1', 0)) - 0.3; S.tFutton = at(S, 'L15b', 0) - 0.3; S.tWalk = at(S, 'L16', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
     if (t > S.tWalk) { crossing(c, t, { dusk: true }); const x = lerp(260, 80, fr(t * 0.06)); person(c, STRANGER, x, 136, { k: 'wa', f: Math.floor(t * 2) % 4, flip: true }); if (t > at(S, 'L16b', 0) - 0.3) { R(c, 300, 120, 20, 20, '#2c2c34'); E(c, 310, 124, 3, 3, '#f8f0c0'); } return { z: 1.08, fx: 160, fy: 108 }; }
     if (t > S.tInn) { ryokan(c, t); person(c, STRANGER, 230, 120, { k: 'rk', blink: blinkOf(t, 6) }); if (t > S.tFutton) person(c, OKAMI, 110, 150, { k: 'ok', arm: 'wave', flip: true }); plate(c, 40, 46, '末広旅館', '#f8e8b0'); return { z: 1.1, fx: 170, fy: 104 }; }
@@ -1565,10 +1566,10 @@ const MH = {
   name: '死後轢断', ch: '自殺か、他殺か', bgm: 'pulse',
   init(S) { S.tKeio = at(S, 'L21', 0) - 0.3; S.tPapers = at(S, 'L22', 0) - 0.3; S.tConf = at(S, 'L22b', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
-    if (t > S.tConf) { R(c, 0, 0, W, H, '#2c2c34'); R(c, 0, 0, W, 50, '#1c1c24'); for (let i = 0; i < 6; i++) R(c, i * 56, 0, 40, 50, '#3c2c2c'); for (let i = 0; i < 12; i++) person(c, DETS[i % 4], 20 + (i % 6) * 54, 150 + Math.floor(i / 6) * 14, { k: 'au' + i, s: 0.8 }); person(c, DOCS[1], 160, 120, { k: 'sp', arm: 'wave' }); plate(c, 40, 56, '緊急の法医学会', '#f8e8b0'); return { z: 1.04, fx: 160, fy: 104 }; }
+    if (t > S.tConf) { R(c, 0, 0, W, H, '#2c2c34'); R(c, 0, 0, W, 50, '#1c1c24'); for (let i = 0; i < 6; i++) R(c, i * 56, 0, 40, 50, '#3c2c2c'); for (let i = 0; i < 6; i++) person(c, DETS[i % 4], 40 + i * 48, 160, { k: 'au' + i, s: 0.8 }); person(c, DOCS[1], 230, 124, { k: 'sp', arm: 'wave' }); plate(c, 40, 56, '緊急の法医学会', '#f8e8b0'); return { z: 1.04, fx: 160, fy: 104 }; }
     if (t > S.tPapers) { R(c, 0, 0, W, H, '#3c3830'); for (let i = 0; i < 2; i++) { const k = eOut(sg(t, S.tPapers + i * 0.8, S.tPapers + i * 0.8 + 0.4)); const x = lerp(i ? 360 : -150, i ? 170 : 20, k); R(c, x, 40, 130, 100, '#f0ece0'); R(c, x + 4, 44, 122, 14, '#2c2c2c'); TX(c, i ? '自殺' : '他殺', x + 46, 64, i ? '#2c4c8c' : '#c81818', 16, null); for (let j = 0; j < 5; j++) R(c, x + 8, 90 + j * 8, 114, 2, '#8c8c8c'); } return { z: 1.03, fx: 160, fy: 96 }; }
     lab(c, t); person(c, DOCS[0], 100, 156, { k: 'td', arm: 'wave' }); plate(c, 40, 46, '東大　死後轢断', '#f8a0a0');
-    if (t > S.tKeio) { person(c, DOCS[1], 220, 156, { k: 'kd', arm: 'wave', flip: true }); plate(c, 150, 64, '慶應など　生体轢断', '#c8d0f0'); }
+    if (t > S.tKeio) { person(c, DOCS[1], 220, 156, { k: 'kd', arm: 'wave', flip: true }); plate(c, 150, 76, '慶應など　生体轢断', '#c8d0f0'); }
     return { z: 1.06, fx: 160, fy: 108 };
   }
 };
@@ -1579,10 +1580,10 @@ const MI = {
   name: 'ルミノール', ch: '光る枕木', bgm: 'dread',
   init(S) { S.tGlow = at(S, 'L24', 0) - 0.3; S.tOil = at(S, 'L25', 0) - 0.3; S.tTheory = at(S, 'L26', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
-    if (t > S.tTheory) { crossing(c, t, { night: true, glow: 1 }); shadow(c, DETS[1], 120, 150, { k: 'th1', col: '#06060a' }); shadow(c, DETS[3], 150, 150, { k: 'th2', col: '#06060a' }); plate(c, 40, 46, '他殺説、勢いづく', '#f8a0a0'); return { z: 1.06, fx: 160, fy: 110 }; }
-    if (t > S.tOil) { R(c, 0, 0, W, H, '#1c1c20'); PF(c, [110, 40, 210, 40, 230, 70, 214, 76, 214, 150, 106, 150, 106, 76, 90, 70], '#e8e4d8'); for (let i = 0; i < 9; i++) { const k = sg(t, S.tOil + i * 0.3, S.tOil + i * 0.3 + 1); c.save(); c.globalAlpha = 0.6 * k; E(c, 130 + (i % 3) * 26 + Math.sin(i) * 6, 70 + Math.floor(i / 3) * 26, 10 + (i % 2) * 4, 7, '#5c4c24'); c.restore(); } plate(c, 40, 46, '植物性の油　下山油', '#f8e8b0'); return { z: 1.04, fx: 160, fy: 96 }; }
+    if (t > S.tTheory) { crossing(c, t, { night: true, glow: 1 }); shadow(c, DETS[1], 120, 150, { k: 'th1', col: '#4c5468' }); shadow(c, DETS[3], 150, 150, { k: 'th2', col: '#4c5468' }); plate(c, 40, 46, '他殺説、勢いづく', '#f8a0a0'); return { z: 1.06, fx: 160, fy: 110 }; }
+    if (t > S.tOil) { R(c, 0, 0, W, H, '#1c1c20'); PF(c, [110, 66, 140, 62, 160, 72, 180, 62, 210, 66, 236, 92, 218, 100, 214, 96, 214, 156, 106, 156, 106, 96, 102, 100, 84, 92], '#e8e4d8'); PF(c, [140, 62, 160, 82, 180, 62, 172, 62, 160, 74, 148, 62], '#c8c4b8'); for (let i = 0; i < 5; i++) E(c, 160, 90 + i * 12, 1.5, 1.5, '#a8a49c'); for (let i = 0; i < 9; i++) { const k = sg(t, S.tOil + i * 0.3, S.tOil + i * 0.3 + 1); c.save(); c.globalAlpha = 0.6 * k; E(c, 130 + (i % 3) * 26 + Math.sin(i) * 6, 96 + Math.floor(i / 3) * 20, 10 + (i % 2) * 4, 7, '#5c4c24'); c.restore(); } plate(c, 40, 46, '植物性の油　下山油', '#f8e8b0'); return { z: 1.04, fx: 160, fy: 96 }; }
     if (t > S.tGlow) { crossing(c, t, { night: true, glow: sg(t, S.tGlow + 0.5, S.tOil - 1) }); person(c, DOCS[0], 270, 150, { k: 'lu', arm: 'wave', flip: true }); for (let i = 0; i < 6; i++) { const u = fr(t * 2 + i / 6); c.save(); c.globalAlpha = 0.5 * (1 - u); P(c, 250 - u * 20, 120 + u * 16 + i, '#c8f8f8'); c.restore(); } plate(c, 40, 46, '約200メートル', '#a8f8f0'); return { z: 1.06, fx: 200, fy: 112 }; }
-    R(c, 0, 0, W, H, '#0c0c10'); yearFlash(c, t, 0.3, '7.25', 216, 10, '約3週間後'); TX(c, '？', 156, 90, '#f8e8b0', 16, null);
+    crossing(c, t, { night: true }); dim(c, 0.4); for (let i = 0; i < 3; i++) shadow(c, DETS[i], 100 + i * 40, 150, { k: 'lv' + i, col: '#4c5468' }); yearFlash(c, t, 0.3, '7.25', 216, 10, '約3週間後');
     return { z: 1.02, fx: 160, fy: 100 };
   }
 };
@@ -1594,7 +1595,7 @@ const MJ = {
   draw(c, t, S) {
     if (t > S.tGHQ) { R(c, 0, 0, W, H, '#2c3028'); R(c, 90, 30, 140, 110, '#f0ece0'); R(c, 94, 34, 132, 12, '#3c4c3c'); TX(c, 'Murder of', 110, 54, '#141414', 16, null); TX(c, 'Shimoyama', 110, 74, '#141414', 16, null); for (let i = 0; i < 5; i++) R(c, 100, 96 + i * 8, 120, 2, '#8c8c8c'); stamp(c, t, S.tGHQ + 0.6, 240, 60, 'GHQ', 60, '#2c4c8c'); return { z: 1.04, fx: 160, fy: 96 }; }
     if (t > S.tStop) { R(c, 0, 0, W, H, '#1c1c20'); R(c, 100, 40, 120, 90, '#f0ece0'); TX(c, '捜査結果', 128, 52, '#2c2c2c', 16, null); TX(c, '自殺', 144, 76, '#2c4c8c', 16, null); stamp(c, t, at(S, 'L29', 1), 160, 90, '公表中止', 110); return { z: 1.04, fx: 160, fy: 96 }; }
-    if (t > S.tMeet) { R(c, 0, 0, W, H, '#3c3834'); R(c, 0, 120, W, 70, '#2c2824'); R(c, 40, 104, 240, 12, '#5c3c24'); for (let i = 0; i < 7; i++) person(c, DETS[i % 4], 50 + i * 36, 150, { k: 'mm' + i, arm: t > S.tMeet + 1 + i * 0.2 ? 'up' : null }); plate(c, 40, 46, '全員が「自殺」', '#c8d0f0'); yearFlash(c, t, S.tMeet + 0.2, '8.1', 216, 10, '捜査会議'); return { z: 1.04, fx: 160, fy: 104 }; }
+    if (t > S.tMeet) { R(c, 0, 0, W, H, '#3c3834'); R(c, 0, 120, W, 70, '#2c2824'); R(c, 40, 104, 240, 12, '#5c3c24'); for (let i = 0; i < 6; i++) person(c, DETS[i % 4], 40 + i * 30, 150, { k: 'mm' + i, arm: t > S.tMeet + 1 + i * 0.2 ? 'up' : null }); plate(c, 40, 46, '全員が「自殺」', '#c8d0f0'); yearFlash(c, t, S.tMeet + 0.2, '8.1', 216, 10, '捜査会議'); return { z: 1.04, fx: 160, fy: 104 }; }
     crossing(c, t, { dusk: true }); person(c, STRANGER, 140, 136, { k: 'al', f: Math.floor(t * 2) % 4, flip: true }); plate(c, 40, 46, '目撃された男は、いつも一人', '#c8d0f0');
     return { z: 1.06, fx: 160, fy: 104 };
   }
@@ -1616,7 +1617,7 @@ const ML = {
   name: '空白', ch: '消えた2時間', bgm: 'eerie',
   init(S) { S.tItems = at(S, 'L34', 0) - 0.3; S.tQ = at(S, 'L35', 0) - 0.3; S.dur = lastSe(S) + 1.2; },
   draw(c, t, S) {
-    if (t > S.tQ) { crossing(c, t, { night: true }); glow(c, 160, 110, 60, 40, '#8c9cc8', 0.25); shadow(c, STRANGER, 160, 136, { k: 'q', col: '#4c5470' }); TX(c, '？', 156, 60, '#f8e8b0', 16, null); return { z: 1.06 + 0.06 * sg(t, S.tQ, S.dur), fx: 160, fy: 104 }; }
+    if (t > S.tQ) { crossing(c, t, { night: true }); lantern(c, 160, 100, t); TX(c, '？', 156, 60, '#f8e8b0', 16, null); return { z: 1.06 + 0.06 * sg(t, S.tQ, S.dur), fx: 160, fy: 104 }; }
     if (t > S.tItems) { R(c, 0, 0, W, H, '#0c0c10'); const items = ['眼鏡', 'ネクタイ', 'ライター']; for (let i = 0; i < 3; i++) { const x = 60 + i * 100; c.save(); c.globalAlpha = 0.5 + 0.5 * Math.sin(t * 3 + i); if (i === 0) { ER(c, x - 8, 80, 8, 6, '#a8a8b0'); ER(c, x + 8, 80, 8, 6, '#a8a8b0'); L(c, x - 1, 80, x + 1, 80, '#a8a8b0'); } if (i === 1) PF(c, [x - 4, 60, x + 4, 60, x + 8, 100, x, 108, x - 8, 100], '#5c3c3c'); if (i === 2) { R(c, x - 8, 70, 16, 24, '#a8a8b0'); R(c, x - 6, 64, 8, 6, '#8c8c94'); } c.restore(); plate(c, x - 20, 116, items[i], '#f8e8b0'); } return { z: 1.03, fx: 160, fy: 96 }; }
     R(c, 0, 0, W, H, '#14141c'); R(c, 30, 90, 260, 10, '#3c3c44'); const k = sg(t, 0.5, S.tItems - 1); const xs = [[30, 110], [110, 150], [150, 190], [190, 290]]; for (let i = 0; i < 4; i++) { if (k * 4 > i) R(c, xs[i][0], 90, Math.min(1, k * 4 - i) * (xs[i][1] - xs[i][0]), 10, i === 2 ? '#0c0c0c' : '#c8a050'); } if (k > 0.6) { ER(c, 170, 95, 26, 14, '#c81818'); plate(c, 140, 116, '空白の2時間', '#f8a0a0'); } plate(c, 40, 60, '9:37', '#f8e8b0'); plate(c, 250, 60, '0:19', '#f8e8b0');
     return { z: 1.03, fx: 160, fy: 96 };
@@ -1635,8 +1636,8 @@ const MM = {
 };
 
 /* ---- SS1 / SS2: Short & TikTok bookends ---- */
-const SS1 = { name: '消えた総裁', ch: '', bgm: 'eerie', init(S) { S.dur = lastSe(S) + 0.3; }, draw(c, t, S) { crossing(c, t, { night: true, rain: 1 }); for (let i = 0; i < 3; i++) lantern(c, 90 + i * 70, 112, t); photo(c, 160, 70, 0.9); return { z: 1.1, fx: 160, fy: 100 }; } };
-const SS2 = { name: '三越', ch: '', bgm: 'eerie', init(S) { S.dur = lastSe(S) + 0.2; }, draw(c, t, S) { mitsukoshi(c, t); buick(c, 10, 160, t, { driver: true }); person(c, SHIMO, lerp(140, 160, sg(t, 0, S.dur)), 150, { k: 's2', f: Math.floor(t * 3) % 4 }); return { z: 1.08, fx: 150, fy: 110 }; } };
+const SS1 = { name: '消えた総裁', ch: '', bgm: 'eerie', init(S) { S.dur = lastSe(S) + 0.3; }, draw(c, t, S) { crossing(c, t, { night: true, rain: 1 }); for (let i = 0; i < 3; i++) { person(c, i % 2 ? POLICE : DETS[i], 110 + i * 50, 152, { k: 's1' + i, flip: i > 0 }); lantern(c, 120 + i * 50, 112, t); } R(c, 150, 136, 40, 8, '#3c3c34'); return { z: 1.12, fx: 160, fy: 110 }; } };
+const SS2 = { name: '三越', ch: '', bgm: 'eerie', init(S) { S.dur = lastSe(S) + 0.2; }, draw(c, t, S) { mitsukoshi(c, t); buick(c, 40, 150, t, { driver: true }); person(c, SHIMO, lerp(150, 170, sg(t, 0, S.dur)), 150, { k: 's2', f: Math.floor(t * 3) % 4 }); return { z: 1.08, fx: 150, fy: 110 }; } };
 
 /* ================= ドット語り. branding: logo, intro scene, title, video frames ================= */
 const BR = { bg: '#0c2418', bg2: '#123222', bg3: '#1c4430', cream: '#f4ecd8', orange: '#f49a1c', dark: '#06140c', paper: '#ecdcb4', paper2: '#d4bc8c', ink: '#2c2018' };
