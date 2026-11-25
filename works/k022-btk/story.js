@@ -2,7 +2,7 @@
 const EXPR = {};
 ['L37', 'L38'].forEach(id => EXPR[id] = [[0, 'sad']]);
 const SPEAKERS_EXTRA = { rader: { name: 'デニス・レイダー', bg: ['#14141c', '#3c3c4c'] }, keikan: { name: '捜査員', bg: ['#0c1424', '#2c3c5c'] }, shocho: { name: 'ウィチタ警察署長', bg: ['#0c1424', '#2c3c5c'] } };
-const HOOK = ['BTK', '30年間、街を恐怖させた男'];
+const HOOK = ['BTK絞殺魔', '30年間、街を恐怖させた男'];
 const PLAN_FULL = [
   { sc: QZ, pre: 0.8, items: ['C0', 1.0, 'C1', 1.2, 'C2'], tr: 'fromBlack', td: 0.6 },
   { sc: S0, pre: 0.8, items: ['L0'], tr: 'white', td: 1.0 },
