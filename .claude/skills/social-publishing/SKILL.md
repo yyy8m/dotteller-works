@@ -1,5 +1,6 @@
 ---
 name: social-publishing
+disable-model-invocation: true
 description: >
   Schedule and publish social media posts across 13 platforms (X, LinkedIn, Instagram,
   Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) via
