@@ -31,7 +31,7 @@ const DETS = ['#3c3c44', '#4c4438', '#2c3440', '#443c34'].map((col, i) => ({ id:
 // the two-storey supermarket of 1995 (o.night, o.lit office window, o.closed shutters); outer stairs to the office on the right
 function superFront(c, t, o = {}) {
   const n = !!o.night; VG(c, 0, 0, W, 120, n ? ['#04040c', '#0c0c1c', '#141428'] : ['#e8a85c', '#f8c880', '#f8e0b0']);
-  R(c, 30, 40, 220, 98, n ? '#3c3c44' : '#d8d0c0'); R(c, 30, 40, 220, 4, n ? '#2c2c34' : '#a8a090'); R(c, 30, 56, 220, 18, n ? '#2c3c5c' : '#3c6cac'); TX(c, 'スーパー', 104, 57, '#f8f8f0', 16, null);
+  R(c, 30, 40, 220, 98, n ? '#3c3c44' : '#d8d0c0'); R(c, 30, 40, 220, 4, n ? '#2c2c34' : '#a8a090'); R(c, 30, 56, 220, 18, n ? '#2c3c5c' : '#3c6cac'); TX(c, 'スーパー', 156, 57, '#f8f8f0', 16, null);
   for (let i = 0; i < 4; i++) R(c, 44 + i * 50, 86, 40, 52, o.closed ? '#8c8c84' : n ? '#f8e8a0' : '#c8e0f0'); if (o.closed) for (let i = 0; i < 4; i++) for (let y = 88; y < 138; y += 4) R(c, 44 + i * 50, y, 40, 1, '#6c6c64');
   R(c, 252, 44, 40, 40, n ? '#3c3c44' : '#c8c0b0'); R(c, 262, 52, 20, 14, o.lit ? '#f8e8a0' : n ? '#1c1c24' : '#8cacc8'); if (o.lit) glow(c, 272, 59, 22, 16, '#f8e8a0', 0.35);
   for (let i = 0; i < 9; i++) R(c, 252 + i * 5, 84 + i * 6, 12, 2, n ? '#5c5c64' : '#8c8c84'); L(c, 252, 84, 300, 138, n ? '#4c4c54' : '#7c7c74');
@@ -41,7 +41,7 @@ function superFront(c, t, o = {}) {
 function superInside(c, t, o = {}) {
   R(c, 0, 0, W, H, '#e8e4d8'); R(c, 0, 0, W, 14, '#c8c4b8'); for (let i = 0; i < 4; i++) R(c, 20 + i * 80, 4, 40, 4, '#f8f8f0');
   for (let i = 0; i < 3; i++) { const x = 10 + i * 100; R(c, x, 40, 80, 70, '#b8a88c'); for (let r = 0; r < 4; r++) { R(c, x, 50 + r * 16, 80, 2, '#8c7c64'); for (let k = 0; k < 8; k++) R(c, x + 3 + k * 10, 42 + r * 16, 7, 8, ['#c84c3c', '#e8c848', '#5c9c5c', '#5c7cc8', '#f0f0e8'][(k + r + i) % 5]); } }
-  if (o.sale) { R(c, 100, 18, 120, 18, '#c81818'); TX(c, '涼風セール', 120, 19, '#f8f8f0', 16, null); }
+  if (o.sale) { R(c, 100, 30, 120, 18, '#c81818'); TX(c, '涼風セール', 120, 31, '#f8f8f0', 16, null); }
   R(c, 0, 120, W, 70, '#c8c0b0'); for (let i = 0; i < 2; i++) { R(c, 200 + i * 60, 112, 40, 20, '#5c5c64'); R(c, 204 + i * 60, 104, 16, 10, '#2c2c34'); }
 }
 // the bon-odori in the park: a yagura with lanterns, drum, dancers (shadow figures) circling
@@ -91,3 +91,5 @@ function kinkoFace(o = {}) {
   });
 }
 const PORTRAITS = {};
+function sedan(c, x, y, col = '#5c6c7c', o = {}) { R(c, x, y - 15, 64, 10, col); R(c, x + 12, y - 25, 38, 10, shadeCol(col, 0.85)); R(c, x + 15, y - 23, 14, 7, '#8cacc8'); R(c, x + 32, y - 23, 14, 7, '#8cacc8'); for (const wx of [x + 12, x + 52]) E(c, wx, y - 4, 6, 6, '#141414'); if (o.lights) { R(c, x + 61, y - 13, 3, 3, '#f8f0a0'); glow(c, x + 72, y - 12, 20, 7, '#f8f0a0', 0.3); } }
+function bicycle(c, x, y, col = '#5c8cc8') { for (const wx of [x, x + 26]) { E(c, wx, y - 8, 8, 8, '#2c2c2c'); E(c, wx, y - 8, 6.5, 6.5, '#a8a8a8'); } L(c, x, y - 8, x + 10, y - 20, col, 2); L(c, x + 10, y - 20, x + 26, y - 8, col, 2); L(c, x + 8, y - 8, x + 22, y - 20, col, 2); L(c, x + 22, y - 20, x + 26, y - 8, col, 2); R(c, x + 6, y - 23, 8, 3, '#2c2c2c'); L(c, x + 22, y - 20, x + 24, y - 26, '#2c2c2c', 2); R(c, x + 20, y - 27, 8, 2, '#2c2c2c'); }
