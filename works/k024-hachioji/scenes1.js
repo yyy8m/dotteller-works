@@ -81,13 +81,13 @@ const COUPLE = [{ id: 'cp1', top: 'tee', coat: '#e8e0c8', pants: '#3c4c6c', shoe
 const CHIJIN = { id: 'cj', top: 'shirt', coat: '#6c7c8c', pants: '#3c3c44', shoes: '#2c2c2c', skin: '#d0a07c', hair: '#3c3834', hairStyle: 'short' };
 const OKAMI = { id: 'om', top: 'dress', coat: '#5c4c6c', skin: '#e8c4a0', hair: '#2c2018', hairStyle: 'long' };
 const DANCERS = ['#c8c0d8', '#d8a0a0', '#a0c0d8', '#d8d0a0'].map((col, i) => ({ id: 'dc' + i, top: 'dress', coat: col, skin: '#e8c4a0', hair: '#1c1418', hairStyle: 'long' }));
+const TEENS = [{ id: 'tn1', top: 'shirt', coat: '#e8e8f0', pants: '#2c2c3c', shoes: '#2c2c2c', skin: '#e0c0a0', hair: '#1c1418', hairStyle: 'side' }, { id: 'tn2', top: 'tee', coat: '#e8c848', pants: '#4c5c8c', shoes: '#2c2c2c', skin: '#f0c8a8', hair: '#1c1418', hairStyle: 'long' }];
 const STUDENTS = ['#2c3c5c', '#2c3c5c', '#2c3c5c', '#2c3c5c'].map((col, i) => ({ id: 'sd' + i, top: i % 2 ? 'dress' : 'jacket', coat: col, shirt: '#f0f0ec', tie: '#8c1c1c', pants: col, shoes: '#1c1c1c', skin: ['#f0c8a8', '#e8c4a0'][i % 2], hair: '#1c1418', hairStyle: i % 2 ? 'long' : 'short' }));
 
 /* ---- the safe as a face (48x48), for the horror cut: its dial an eye, its keyhole a mouth ---- */
 function kinkoFace(o = {}) {
   return SPR('knF' + (o.dark ? 'd' : ''), 48, 48, c => {
-    R(c, 4, 4, 40, 44, o.dark ? '#2c2c34' : '#4c4c54'); R(c, 7, 7, 34, 38, o.dark ? '#3c3c44' : '#5c5c64'); E(c, 18, 20, 7, 7, '#8c8c94'); E(c, 18, 20, 3, 3, '#141418'); E(c, 32, 20, 4, 4, '#8c8c94'); P(c, 32, 20, '#141418');
-    R(c, 22, 32, 4, 8, '#c8a048'); R(c, 23, 34, 2, 3, '#141414'); for (let i = 0; i < 4; i++) P(c, 8 + i * 10, 44, '#2c2c2c'); if (o.dark) { P(c, 18, 20, '#f83c3c'); P(c, 32, 20, '#f83c3c'); }
+    R(c, 4, 4, 40, 44, '#4c4c54'); R(c, 7, 7, 34, 38, '#5c5c64'); E(c, 22, 24, 9, 9, '#8c8c94'); E(c, 22, 24, 4, 4, '#2c2c34'); for (let i = 0; i < 12; i++) { const a = i / 12 * TAU; P(c, 22 + Math.cos(a) * 7, 24 + Math.sin(a) * 7, '#c8c8d0'); } R(c, 36, 18, 3, 14, '#c8a048'); for (let i = 0; i < 4; i++) P(c, 8 + i * 10, 44, '#2c2c2c');
   });
 }
 const PORTRAITS = {};

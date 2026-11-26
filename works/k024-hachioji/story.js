@@ -9,7 +9,6 @@ const PLAN_FULL = [
   { sc: MA, pre: 1.3, items: ['L1', 1.1, 'L2', 1.1, 'L3', 1.1, 'L4'], tr: 'dither', td: 1.0 },
   { sc: MB, pre: 1.3, items: ['L5', 1.1, 'L6', 1.1, 'L7', 1.1, 'L8', 1.1, 'L9', 1.1, 'L10', 0.9, 'L11', 1.2, 'L12'], tr: 'dither', td: 1.0 },
   { sc: MC, pre: 1.3, items: ['L13', 1.0, 'L14', 1.4, 'L15', 1.6, 'L15b', 1.2, 'L16', 1.2, 'L17', 1.1, 'L18', 1.2, 'L19'], tr: 'blinds', td: 0.6 },
-  { sc: MH0, pre: 0, items: [], tr: 'dither', td: 0.3 },
   { sc: MD, pre: 1.3, items: ['L20', 1.1, 'L21', 1.1, 'L22', 1.6, 'L23', 1.2, 'L24', 1.1, 'L25', 1.1, 'L26', 1.2, 'L27'], tr: 'blinds', td: 1.2 },
   { sc: ME, pre: 1.3, items: ['L28', 1.1, 'L29', 1.1, 'L30', 1.1, 'L31', 1.2, 'L32', 1.1, 'L33', 1.1, 'L34', 1.1, 'L35'], tr: 'dither', td: 1.0 },
   { sc: MF, pre: 1.3, items: ['L36', 1.1, 'L37', 1.1, 'L38', 1.1, 'L39', 1.1, 'L40', 1.2, 'L41', 1.1, 'L42', 1.1, 'L43', 1.4, 'L44', 1.2, 'L45'], tr: 'dither', td: 1.2 },
@@ -36,6 +35,6 @@ SS1.sfx = (S, ev) => { ev(0.2, 'sting'); ev(0.8, 'gun'); };
 SS2.sfx = (S, ev) => { for (let k = 0; k < 6; k++) ev(0.2 + k * 0.45, 'thump'); };
 MM.bgmTrack = (S, tr) => { tr.fin = 3; };
 MM.ending = true;
-[MZ, MA, MB, MC, MH0, MD, ME, MF, MM, SS1, SS2].forEach(sc => sc.wideDY = 30);
+[MZ, MA, MB, MC, MD, ME, MF, MM, SS1, SS2].forEach(sc => sc.wideDY = 30);
 function TITLE_DECO(c, t) { flowers3(c, t, 262, 214); }
-function THUMB(c, t) { thumbBigFace(c, { face: kinkoFace({}), s: 3.6, rim: '#c81818', rimA: 0.35, title: ['八王子スーパー', '強盗殺人事件'], hook: '金庫の金は残されていた', bg: ['#0c0c14', '#3c3c4c'] }, t); }
+function THUMB(c, t) { thumbBigFace(c, { face: kinkoFace({}), s: 3.6, rim: '#c81818', rimA: 0.35, title: ['八王子スーパー', '強盗殺人事件'], hook: '金庫の金は残された', bg: ['#0c0c14', '#3c3c4c'] }, t); }
