@@ -7,7 +7,7 @@ function withCuts(sc, cuts) { const base = sc.draw; sc.draw = function (c, t, S)
 function yearFlash(c, t, t0, year, x = 216, y = 10, sub) { if (t > t0) { const k = eOut(sg(t, t0, t0 + 0.35)); if (k > 0) yearCard(c, x, lerp(-70, y, k), year, sub || ''); } }
 function dim(c, a, col = '#06040a') { if (a <= 0) return; c.save(); c.globalAlpha = Math.min(1, a); c.fillStyle = col; c.fillRect(0, 0, W, H); c.restore(); }
 function plate(c, x, y, txt, col = '#f8e8b0', bg = '#000000') { const s = textSpr(txt, 16, col); R(c, x - 4, y - 3, s.width + 8, 22, bg); TX(c, txt, x, y, col, 16, null); }
-function person(c, st, x, y, o = {}) { blit(c, modFig(st, { f: o.f == null ? -1 : o.f, arm: o.arm || null, expr: o.expr || 'normal', blink: o.blink || 0, k: o.k || '' }), x, y, FIG_AX2, FIG_AY2, { flip: !!o.flip, s: o.s || 1 }); }
+function person(c, st, x, y, o = {}) { blit(c, modFig(st, { f: o.f == null ? -1 : o.f, arm: o.arm || null, expr: o.expr || 'normal', blink: o.blink || 0, k: o.k || '' }), x, y, FIG_AX2, FIG_AY2, { flip: !!o.flip, s: o.s || 1, rot: o.rot }); }
 function lampPost(c, t, x, y = 160, o = {}) { R(c, x, y - 110, 3, 110, '#4c4c54'); R(c, x - 12, y - 112, 16, 3, '#4c4c54'); glow(c, x - 6, y - 106, 40, 60, '#f8d890', 0.3 + 0.03 * Math.sin(t * 2)); R(c, x - 10, y - 109, 9, 2, '#f8f0c0'); c.save(); c.globalAlpha = 0.12; PF(c, [x - 8, y - 106, x - 50, y, x + 36, y], '#f8e8b0'); c.restore(); }
 
 
@@ -26,9 +26,9 @@ function lineRoad(c, t, o = {}) {
 function crossing(c, t, o = {}) {
   const n = !!o.night; VG(c, 0, 0, W, 120, o.snow ? ['#5c6c8c', '#8c9cb0', '#c8d0d8'] : n ? ['#04040c', '#0c0c1c', '#1c1428'] : ['#3c2c4c', '#8c4c4c', '#e8905c']);
   R(c, 0, 110, W, 80, o.snow ? '#e8ecf0' : n ? '#1c1c24' : '#4c3c3c'); R(c, 120, 110, 80, 80, o.snow ? '#d8dce4' : '#3c3c44'); R(c, 0, 132, W, 3, '#8c8c94'); R(c, 0, 146, W, 3, '#8c8c94'); for (let x = -8; x < W; x += 18) R(c, x, 135, 10, 11, o.snow ? '#a8a8b0' : '#3c3028');
-  const ph = Math.floor(t * 3) % 2; R(c, 90, 60, 4, 50, '#e8e8e0'); R(c, 84, 56, 16, 4, '#2c2c2c'); for (const [dx, on] of [[-6, ph], [12, !ph]]) { E(c, 92 + dx, 66, 5, 5, on && o.flash ? '#ff3030' : '#4c1c1c'); if (on && o.flash) glow(c, 92 + dx, 66, 16, 14, '#ff3030', 0.4); }
+  const ph = Math.floor(t * 3) % 2; R(c, 90, 60, 4, 50, '#e8e8e0'); R(c, 84, 56, 16, 4, '#2c2c2c'); for (const [dx, on0] of [[-6, ph], [12, !ph]]) { const on = o.steady ? dx < 0 : on0 && o.flash; E(c, 92 + dx, 66, 5, 5, on ? '#ff3030' : '#4c1c1c'); if (on) glow(c, 92 + dx, 66, 16, 14, '#ff3030', 0.4); }
   for (let i = 0; i < 6; i++) R(c, 96 + i * 4, 62, 3, 3, i % 2 ? '#141414' : '#f8d838');
-  if (o.down) { for (let i = 0; i < 9; i++) R(c, 94 + i * 12, 100, 12, 4, i % 2 ? '#141414' : '#f8d838'); } else { c.save(); c.translate(94, 100); c.rotate(-1.4); for (let i = 0; i < 9; i++) R(c, i * 12, 0, 12, 4, i % 2 ? '#141414' : '#f8d838'); c.restore(); }
+  if (o.down) { for (let i = 0; i < 9; i++) R(c, 94 + i * 12, 100, 12, 4, i % 2 ? '#141414' : '#f8d838'); } else { c.save(); c.translate(100, 104); c.rotate(-1.4); for (let i = 0; i < 4; i++) R(c, i * 12, 0, 12, 4, i % 2 ? '#141414' : '#f8d838'); c.restore(); }
   if (o.snow) for (let i = 0; i < 50; i++) { const x = (i * 37 + t * 15) % W, y = (i * 23 + t * 30) % 180; P(c, x, y, '#ffffff'); }
 }
 // a train passing (x = nose)
