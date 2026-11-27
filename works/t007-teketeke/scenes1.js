@@ -38,7 +38,7 @@ function corridor(c, t, o = {}) { R(c, 0, 0, W, H, '#c8c4b4'); R(c, 0, 0, W, 12,
 // a classroom with desks (kids drawn by the scene)
 function classroom(c, t, o = {}) { R(c, 0, 0, W, H, '#d8cca8'); R(c, 40, 24, 240, 50, '#2c4c3c'); R(c, 40, 74, 240, 4, '#8c6c44'); R(c, 0, 124, W, 66, '#a8885c'); for (let i = 0; i < 4; i++) { R(c, 30 + i * 74, 116, 40, 6, '#8c6c44'); R(c, 34 + i * 74, 122, 3, 20, '#6c4c30'); R(c, 63 + i * 74, 122, 3, 20, '#6c4c30'); } if (o.night) { dim(c, 0.6, '#06060c'); } }
 // a footbridge over the road: stairs on the left, a deck across
-function footbridge(c, t, o = {}) { VG(c, 0, 0, W, 130, ['#04040c', '#0c0c1c', '#1c1428']); R(c, 0, 128, W, 62, '#1c1c24'); R(c, 0, 150, W, 2, '#e8e8e0'); R(c, 40, 50, 260, 8, '#5c6c7c'); R(c, 40, 42, 260, 2, '#8c9cac'); for (let x = 44; x < 300; x += 12) R(c, x, 42, 1, 8, '#8c9cac'); R(c, 280, 58, 6, 92, '#5c6c7c'); for (let i = 0; i < 10; i++) R(c, 40 - i * 4 + 40, 58 + i * 9, 30, 3, '#5c6c7c'); R(c, 50, 58, 4, 92, '#4c5c6c'); lampPost(c, t, 200, 150); }
+function footbridge(c, t, o = {}) { VG(c, 0, 0, W, 130, ['#04040c', '#0c0c1c', '#1c1428']); R(c, 0, 128, W, 62, '#1c1c24'); R(c, 0, 150, W, 2, '#e8e8e0'); R(c, 40, 76, 260, 8, '#5c6c7c'); R(c, 40, 68, 260, 2, '#8c9cac'); for (let x = 44; x < 300; x += 12) R(c, x, 68, 1, 8, '#8c9cac'); R(c, 280, 84, 6, 66, '#5c6c7c'); for (let i = 0; i < 9; i++) R(c, 80 - i * 4, 84 + i * 7, 30, 3, '#5c6c7c'); R(c, 50, 84, 4, 66, '#4c5c6c'); lampPost(c, t, 200, 150); }
 // the snowy field at night
 function snowField(c, t) { VG(c, 0, 0, W, 120, ['#1c2438', '#3c4c68', '#6c7c98']); R(c, 0, 110, W, 80, '#d8dce8'); for (let i = 0; i < 60; i++) { const x = (i * 37 + t * 10) % W, y = (i * 23 + t * 24) % 190; P(c, x, y, '#ffffff'); } }
 
@@ -75,3 +75,4 @@ function shonenFace(o = {}) { // a junior-high boy in a gakuran, short black hai
   });
 }
 const PORTRAITS = { teke: p => withMouth('pmtk', tekeFace({ blink: p.blink }), p, 28, 31, 4), shonen: p => withMouth('pmsn', shonenFace({ blink: p.blink }), p, 24, 31) };
+function shadow(c, st, x, y, o = {}) { blit(c, tintSpr(modFig(st, { f: o.f == null ? -1 : o.f, arm: o.arm || null, k: 'sh' + (o.k || '') }), o.col || '#06060a', 'shd' + st.id + (o.k || '') + (o.arm || '') + (o.f == null ? -1 : o.f)), x, y, FIG_AX2, FIG_AY2, { flip: !!o.flip, s: o.s || 1 }); }
