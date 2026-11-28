@@ -85,7 +85,7 @@ function scheduleAll(T0) {
     if (L0) { ev(s0 + L0.t0 - 0.25, 'open'); ev(s0 + Ll.se + 0.7, 'close'); }
     for (const Ln of S.lines) {
       const src = ac.createBufferSource(); src.buffer = Ln.buf; src.connect(AU.voice); src.start(T0 + s0 + Ln.t0);
-      AU.duck.gain.setTargetAtTime(0.55, T0 + s0 + Ln.t0 - 0.15, 0.08); /* Muse 連絡19: duck floor 0.32 -> 0.55 so the BGM stays audible */ AU.duck.gain.setTargetAtTime(1, T0 + s0 + Ln.se + 0.25, 0.35);
+      AU.duck.gain.setTargetAtTime(0.6, T0 + s0 + Ln.t0 - 0.15, 0.08); /* Muse 連絡19: duck floor 0.32 -> 0.6 so the BGM stays audible */ AU.duck.gain.setTargetAtTime(1, T0 + s0 + Ln.se + 0.25, 0.35);
     }
     if (S.sc.sfx) S.sc.sfx(S, (t, f, ...a) => ev(s0 + t, f, ...a));
   });

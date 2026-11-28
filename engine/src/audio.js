@@ -7,7 +7,7 @@ function audioInit(given) {
   const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3; comp.connect(ac.destination);
   AU.master = ac.createGain(); AU.master.gain.value = 0.9; AU.master.connect(comp);
   AU.duck = ac.createGain(); AU.duck.connect(AU.master);
-  AU.bgm = ac.createGain(); AU.bgm.gain.value = 1.1; // 2026-11-28 Muse 連絡19: BGM was ~-20 dB under the narration AU.bgm.connect(AU.duck);
+  AU.bgm = ac.createGain(); AU.bgm.gain.value = 2.0; /* Muse 連絡19: BGM was ~-20 dB under the narration */ AU.bgm.connect(AU.duck);
   AU.sfx = ac.createGain(); AU.sfx.gain.value = 0.6; AU.sfx.connect(AU.master);
   AU.voice = ac.createGain(); AU.voice.gain.value = 1.0; AU.voice.connect(AU.master);
   // reverb for music
