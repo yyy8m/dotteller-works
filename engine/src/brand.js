@@ -174,7 +174,7 @@ function composeFrame(mode, T) {
   R(f, 0, 130, 360, 2, BR.orange); R(f, 0, 492, 360, 2, BR.orange);
   // captions / year cards of the scene, redrawn inside the frame so the crop never cuts them
   for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], 140); else yearCard(f, 258, 140, u[1], u[2]); }
-  if (st) { drawSubs(f, st, 180, 604, 13, 28, false, 24, 3); outlineText(f, st.name, 12, 498, C.uiY, 16, 1); }
+  if (st) { drawSubs(f, st, 180, 604, 13, 28, false, 24, 3); outlineText(f, st.name, 16, 498, C.uiY, 16, 1); }
   const cta = '▶ 本編はチャンネルで ' + BRAND.youtube; TX(f, cta, 180 - textSpr(cta, 16, BR.cream).width / 2, 612, BR.cream, 16, null);
   return fc;
 }
