@@ -1,7 +1,10 @@
 {
  "youtube_main": "https://youtu.be/ostPAtPyneE",
- "youtube_short": "https://youtu.be/K01xgUSVux8",
+ "youtube_short": "https://youtu.be/0WsU1JqpQKw",
  "playlist_id": "PLB1Jw-JyKW5k",
  "blog_post_id": "7201947387625714635",
- "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-kiroku-024-hachioji.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-kiroku-024-hachioji.html",
+ "retired_shorts": [
+  "https://youtu.be/K01xgUSVux8"
+ ]
 }

@@ -1,7 +1,10 @@
 {
  "youtube_main": "https://youtu.be/FARLyUGglos",
- "youtube_short": "https://youtu.be/ohluLyxUi_c",
+ "youtube_short": "https://youtu.be/UeFCK903epQ",
  "playlist_id": "PLB1Jw-JyKW5k",
  "blog_post_id": "5763140662808649990",
- "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-kiroku-023-okubo-kiyoshi.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-kiroku-023-okubo-kiyoshi.html",
+ "retired_shorts": [
+  "https://youtu.be/ohluLyxUi_c"
+ ]
 }

@@ -1,13 +1,13 @@
 /* ================= audio: synthesized BGM / SFX, embedded voices ================= */
 const AU = { ctx: null };
-const NOTE = n => 440 * Math.pow(2, (n - 69) / 12); // midi -> Hz
+const NOTE = n => 440 * Math.pow(2, (n + (AU.tr || 0) - 69) / 12); // midi -> Hz (AU.tr: per-work transposition, set only while BGM steps run)
 function audioInit(given) {
   const ac = given || new (window.AudioContext || window.webkitAudioContext)();
   AU.ctx = ac;
   const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3; comp.connect(ac.destination);
   AU.master = ac.createGain(); AU.master.gain.value = 0.9; AU.master.connect(comp);
   AU.duck = ac.createGain(); AU.duck.connect(AU.master);
-  AU.bgm = ac.createGain(); AU.bgm.gain.value = 0.75; AU.bgm.connect(AU.duck);
+  AU.bgm = ac.createGain(); AU.bgm.gain.value = 1.1; // 2026-11-28 Muse 連絡19: BGM was ~-20 dB under the narration AU.bgm.connect(AU.duck);
   AU.sfx = ac.createGain(); AU.sfx.gain.value = 0.6; AU.sfx.connect(AU.master);
   AU.voice = ac.createGain(); AU.voice.gain.value = 1.0; AU.voice.connect(AU.master);
   // reverb for music
@@ -103,21 +103,21 @@ const STYLES = {
   /* ---- 記録 (true stories) ---- */
   /* ---- 記録 (true stories): 8-bit horror, triangle bass + square lead + noise drums ---- */
   eerie: { bpm: 76, step(i, w, d) { // slow exploration: triangle pedal, detuned square motif, wind
-    const s = i % 16, bar = Math.floor(i / 16), sd = 60 / 76 / 4, root = [45, 45, 44, 41][bar % 4];
+    const s = i % 16, bar = Math.floor(i / 16), sd = 60 / 76 / 4, root = [45, 45, 44, 41, 45, 48, 47, 44][bar % 8];
     if (s === 0) { tone(d, w, NOTE(root - 12), sd * 15, { type: 'triangle', a: 0.05, sus: 1, d: 0.1, r: 0.3, v: 0.11 }); noise(d, w, sd * 16, { type: 'bandpass', f: 500 + (bar % 3) * 160, f2: 280, q: 3, a: 1.2, sus: 1, d: 0.4, r: 0.8, v: 0.035 }); }
     const mel = [[69, 0, 0, 72, 0, 71, 0, 0, 68, 0, 0, 0, 64, 0, 0, 0], [69, 0, 0, 72, 0, 75, 0, 74, 0, 0, 71, 0, 0, 0, 0, 0]][bar % 2];
     const n = mel[s]; if (n && bar % 4 !== 3) { tone(d, w, NOTE(n), sd * 2.6, { type: 'square', lp: 1800, v: 0.03 }); tone(d, w + 0.012, NOTE(n) * 1.01, sd * 2.4, { type: 'square', lp: 1400, v: 0.016 }); }
     if (s === 12 && bar % 2) tone(d, w, NOTE(93), 0.6, { type: 'square', f2: NOTE(92), v: 0.012, rev: 1 });
   } },
   pulse: { bpm: 84, step(i, w, d) { // investigation: heartbeat kick, ticking hats, minor arpeggio
-    const s = i % 16, bar = Math.floor(i / 16), ch = [[57, 60, 64], [56, 60, 63], [53, 57, 60], [52, 56, 59]][bar % 4];
+    const s = i % 16, bar = Math.floor(i / 16), ch = [[57, 60, 64], [56, 60, 63], [53, 57, 60], [52, 56, 59], [57, 60, 64], [60, 63, 67], [58, 62, 65], [52, 56, 59]][bar % 8];
     if (s === 0 || s === 3) { tone(d, w, 70, 0.14, { f2: 42, v: s ? 0.22 : 0.32 }); }
     if (s % 2 === 1) noise(d, w, 0.025, { type: 'highpass', f: 7000, v: s % 4 === 3 ? 0.05 : 0.028 });
     if (s % 2 === 0) tone(d, w, NOTE(ch[(s / 2) % 3] - 12), 0.11, { type: 'triangle', v: 0.09 });
     if (s === 8 || s === 14) tone(d, w, NOTE(ch[2] + 12), 0.12, { type: 'square', lp: 2200, v: 0.024 });
     if (s === 0 && bar % 4 === 3) tone(d, w, NOTE(ch[0] + 24), 0.5, { type: 'square', f2: NOTE(ch[0] + 23), lp: 2400, v: 0.022 });
   } },
-  dread: { bpm: 132, step(i, w, d) { // the crime: driving bass, snare, stabbing square chords
+  chase: { bpm: 132, step(i, w, d) { // (was a duplicate 'dread' that never played) a chase: driving bass, snare, stabbing square chords
     const s = i % 16, bar = Math.floor(i / 16), bs = [40, 40, 52, 40, 40, 51, 40, 40, 40, 40, 52, 40, 43, 42, 41, 40];
     tone(d, w, NOTE(bs[s] - 12 + (bar % 4 === 3 ? 1 : 0)), 0.1, { type: 'triangle', v: 0.12 });
     if (s === 4 || s === 12) noise(d, w, 0.09, { type: 'bandpass', f: 1800, q: 0.8, v: 0.14 });
@@ -127,7 +127,7 @@ const STYLES = {
     if (bar % 2 && s >= 8) tone(d, w, NOTE([76, 75, 74, 73, 72, 71, 70, 69][s - 8]), 0.08, { type: 'square', lp: 3000, v: 0.02 });
   } },
   requiem: { bpm: 60, step(i, w, d) { // aftermath: slow minor chorale on squares, triangle bass, a bell
-    const bar = Math.floor(i / 16), s = i % 16, sd = 60 / 60 / 4, ch = [[57, 60, 64], [53, 57, 60], [55, 59, 62], [52, 56, 59]][bar % 4];
+    const bar = Math.floor(i / 16), s = i % 16, sd = 60 / 60 / 4, ch = [[57, 60, 64], [53, 57, 60], [55, 59, 62], [52, 56, 59], [57, 60, 64], [50, 53, 57], [52, 55, 59], [52, 56, 59]][bar % 8];
     if (s === 0) { tone(d, w, NOTE(ch[0] - 24), sd * 15, { type: 'triangle', a: 0.05, sus: 1, d: 0.2, r: 0.5, v: 0.1 }); for (const n of ch) tone(d, w, NOTE(n), sd * 15, { type: 'square', lp: 1100, a: 0.3, sus: 1, d: 0.3, r: 0.8, v: 0.012 }); }
     const mel = [76, 0, 0, 74, 72, 0, 0, 0, 71, 0, 72, 0, 74, 0, 0, 0]; const n = mel[s]; if (n && bar % 2 === 0) tone(d, w, NOTE(n), sd * 3, { type: 'square', lp: 2000, v: 0.022, rev: 1 });
     if (s === 0 && bar % 4 === 0) bell(d, w, NOTE(ch[2] + 12), 0.03);
@@ -139,7 +139,7 @@ const STYLES = {
   } },
   dread: { bpm: 84, step(i, w, d) { // low ostinato + ticking, for the crimes
     const s = i % 16, bar = Math.floor(i / 16), bs = [40, 0, 40, 41, 0, 40, 0, 0, 40, 0, 40, 43, 0, 41, 0, 0];
-    if (bs[s]) tone(d, w, NOTE(bs[s] - 12 + (bar % 4 === 3 ? 1 : 0)), 0.22, { type: 'sawtooth', lp: 500, v: 0.07 });
+    if (bs[s]) tone(d, w, NOTE(bs[s] - 12 + [0, 0, 0, 1, 3, 3, 1, 1][bar % 8]), 0.22, { type: 'sawtooth', lp: 500, v: 0.08 });
     if (s % 4 === 0) noise(d, w, 0.02, { type: 'highpass', f: 6000, v: 0.06 });
     if (s === 0 && bar % 2 === 0) for (const n of [64, 65]) tone(d, w, NOTE(n), 2.6, { type: 'sawtooth', lp: 1400, a: 0.8, sus: 1, d: 0.3, r: 0.6, v: 0.016, trem: 7 });
   } },
@@ -200,15 +200,18 @@ function bgmStart(tracks, T0) {
     if (isFinite(b)) { if (tr.cut) { g.gain.setValueAtTime(1, b - 0.02); g.gain.linearRampToValueAtTime(0.0001, b); } else { g.gain.setValueAtTime(1, b - (tr.fout || 1.2)); g.gain.linearRampToValueAtTime(0.0001, b); } }
     return Object.assign({ g, A: a, B: b, next: 0 }, tr);
   });
+  // per-work variation (Muse 連絡19): tempo x0.94–1.06 and a transposition of -2..+3 semitones from the work number
+  const no = parseInt((typeof WORK !== 'undefined' && WORK.no) || '0', 10) || 0, VAR = { tempo: [1, 0.94, 1.04, 0.97, 1.06][no % 5], tr: [0, 2, -2, 3, 1, -1][no % 6] };
+  const stepV = (st, k, w, g) => { AU.tr = VAR.tr; try { st.step(k, w, g); } finally { AU.tr = 0; } };
   const tick = () => {
     const now = ac.currentTime, ahead = now + 0.3;
     for (const tr of BGM.tracks) {
-      const st = STYLES[tr.style], sd = 60 / st.bpm / 4;
-      while (true) { const w = tr.A + tr.next * sd; if (w > ahead || w > tr.B) break; if (w >= now - 0.05) st.step(tr.next, Math.max(w, now), tr.g); tr.next++; }
+      const st = STYLES[tr.style], sd = 60 / (st.bpm * VAR.tempo) / 4;
+      while (true) { const w = tr.A + tr.next * sd; if (w > ahead || w > tr.B) break; if (w >= now - 0.05) stepV(st, tr.next, Math.max(w, now), tr.g); tr.next++; }
     }
   };
   if (BGM.all) { // offline test: schedule everything now
-    for (const tr of BGM.tracks) { const st = STYLES[tr.style], sd = 60 / st.bpm / 4; for (let k = 0; ; k++) { const w = tr.A + k * sd; if (w > tr.B || w > BGM.all) break; st.step(k, w, tr.g); } }
+    for (const tr of BGM.tracks) { const st = STYLES[tr.style], sd = 60 / (st.bpm * VAR.tempo) / 4; for (let k = 0; ; k++) { const w = tr.A + k * sd; if (w > tr.B || w > BGM.all) break; stepV(st, k, w, tr.g); } }
     return;
   }
   tick(); BGM.timer = setInterval(tick, 50);

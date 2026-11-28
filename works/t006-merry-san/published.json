@@ -1,7 +1,10 @@
 {
  "youtube_main": "https://youtu.be/6JGmd8bfh3w",
- "youtube_short": "https://youtu.be/WEawZv49T0M",
+ "youtube_short": "https://youtu.be/TQK0Rw7p8gE",
  "playlist_id": "PLfj64XjirCds",
  "blog_post_id": "81484259693041683",
- "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-toshi-006-merry-san.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-toshi-006-merry-san.html",
+ "retired_shorts": [
+  "https://youtu.be/WEawZv49T0M"
+ ]
 }

@@ -1,7 +1,10 @@
 {
  "youtube_main": "https://youtu.be/s0bQc5tG0Bo",
- "youtube_short": "https://youtu.be/sjBM3EJWIds",
+ "youtube_short": "https://youtu.be/RgREwfCKjs8",
  "playlist_id": "PLfj64XjirCds",
  "blog_post_id": "329701066885104934",
- "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-toshi-007-teketeke.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-toshi-007-teketeke.html",
+ "retired_shorts": [
+  "https://youtu.be/sjBM3EJWIds"
+ ]
 }

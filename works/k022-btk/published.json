@@ -1,7 +1,10 @@
 {
  "youtube_main": "https://youtu.be/VIHIdxK1Cac",
- "youtube_short": "https://youtu.be/kz_nKfEEiZc",
+ "youtube_short": "https://youtu.be/U8aYwO83Be4",
  "playlist_id": "PLB1Jw-JyKW5k",
  "blog_post_id": "2822611222965618703",
- "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-kiroku-022-btk.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/12/dotgatari-kiroku-022-btk.html",
+ "retired_shorts": [
+  "https://youtu.be/kz_nKfEEiZc"
+ ]
 }

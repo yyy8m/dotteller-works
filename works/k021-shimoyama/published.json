@@ -1,7 +1,10 @@
 {
  "youtube_main": "https://youtu.be/6XGXx9YHvt0",
- "youtube_short": "https://youtu.be/ZT7IbIuArgI",
+ "youtube_short": "https://youtu.be/rU47HUsQsRg",
  "playlist_id": "PLB1Jw-JyKW5k",
  "blog_post_id": "1384476643383428053",
- "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-021-shimoyama.html"
+ "blog_url": "https://dotgatari.blogspot.com/2026/11/dotgatari-kiroku-021-shimoyama.html",
+ "retired_shorts": [
+  "https://youtu.be/ZT7IbIuArgI"
+ ]
 }
