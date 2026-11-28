@@ -109,7 +109,8 @@ function drawSubs(f, st, cx, yBottom, perLine, lh, face, size = 16, maxL = 3) {
   if (lines.length > maxL) { const last = Math.max(maxL, lines.findLastIndex(x => x[1]) + 1); lines = lines.slice(last - maxL, last); }
   const y0 = yBottom - lines.length * lh;
   f.fillStyle = DA('#000000', 0.55); f.fillRect(0, y0 - 8, f.canvas.width, lines.length * lh + 12);
-  lines.forEach(([l, v], i) => { const w = textSpr(l, size, '#fff').width - 2; if (v) outlineText(f, v, cx - w / 2, y0 + i * lh, C.white, size, size > 16 ? 3 : 2); });
+  const maxW = f.canvas.width * 0.92; // >=4% margin on each side (Muse 連絡20): a line that is still too wide is drawn smaller
+  lines.forEach(([l, v], i) => { const z = [size, 20, 16].find(q => textSpr(l, q, '#fff').width - 2 <= maxW) || 16, w = textSpr(l, z, '#fff').width - 2; if (v) outlineText(f, v, cx - w / 2, y0 + i * lh + (size - z) / 2, C.white, z, z > 16 ? 3 : 2); });
   if (face) { const fx = 8, fy = y0 - 8 - 54; R(f, fx - 2, fy - 2, 52, 52, '#000000'); R(f, fx - 1, fy - 1, 50, 50, BR.cream); R(f, fx, fy, 48, 48, (SPK[st.spk] || { bg: ['#222', '#444'] }).bg[0]); f.drawImage(st.face, fx - 1, fy - 1); outlineText(f, st.name, fx + 56, fy + 30, C.uiY, 16, 1); }
 }
 /* wide video: the game's dialog window (chunky 2x frame, name plate, face, typewriter text, blinking ▼) */
@@ -158,21 +159,22 @@ function composeFrame(mode, T) {
     // hook (top)
     logoAt(f, 10, 8, 16, t); const ser = SERIES[WORK.series].name + ' #' + WORK.no; TX(f, ser, 350 - textSpr(ser, 16, BR.orange).width, 8, BR.orange, 16, null);
     const hook = (typeof HOOK !== 'undefined' && HOOK) || [WORK.title];
-    hook.forEach((h, i) => { const size = textSpr(h, 32, '#fff').width - 2 <= 344 ? 32 : 24, w = textSpr(h, size, '#fff').width - 2; outlineText(f, h, 180 - w / 2, 34 + i * 44, i === hook.length - 1 && hook.length > 1 ? '#ff3c3c' : C.white, size, 3); });
+    hook.forEach((h, i) => { const size = [32, 24, 20, 16].find(z => textSpr(h, z, '#fff').width - 2 <= 328) || 16, w = textSpr(h, size, '#fff').width - 2; /* Muse 連絡20: >=4% side margins */ outlineText(f, h, 180 - w / 2, 34 + i * 44, i === hook.length - 1 && hook.length > 1 ? '#ff3c3c' : C.white, size, 3); });
   }
   // scene: 180x180 around the camera focus, x2
   const fx = (window.__focus || [160, 120])[0]; let sx = Math.round(clamp(fx - 90, 0, W - 180));
   const Sc = T >= 0 && TL ? TL.scenes[sceneAt(T)] : null; let fit = !!(Sc && Sc.sc.tallFit);
   if (!fit && window.__txtScreen) { // text that the 180-px crop would cut: shift the crop to hold it, or show the whole width
     const rs = window.__txtScreen.filter(r => r[3] > 2 && r[1] < 178 && r[2] > 2 && r[0] < W - 2);
-    if (rs.length) { const tlo = Math.max(0, Math.min(...rs.map(r => r[0]))), thi = Math.min(W, Math.max(...rs.map(r => r[2]))), lo = Math.min(tlo, fx - 24), hi = Math.max(thi, fx + 24); // keep the camera's subject in view too
+    if (rs.length) fit = true; // any scene text: show the whole width so the crop never cuts a caption (Muse 連絡20)
+    if (rs.length && !fit) { const tlo = Math.max(0, Math.min(...rs.map(r => r[0]))), thi = Math.min(W, Math.max(...rs.map(r => r[2]))), lo = Math.min(tlo, fx - 24), hi = Math.max(thi, fx + 24); // keep the camera's subject in view too
       if (tlo < sx || thi > sx + 180) { if (hi - lo <= 180) sx = Math.round(clamp(tlo < sx ? lo : hi - 180, 0, W - 180)); else fit = true; window.__tallAdj = (window.__tallAdj || 0) + 1; } } }
   if (fit) { R(f, 0, 132, 360, 360, '#000000'); f.drawImage(cv, 0, 0, W, 180, 0, 132 + 79, 360, 202); } // whole width (text that must not be cut)
   else f.drawImage(cv, sx, 0, 180, 180, 0, 132, 360, 360);
   R(f, 0, 130, 360, 2, BR.orange); R(f, 0, 492, 360, 2, BR.orange);
   // captions / year cards of the scene, redrawn inside the frame so the crop never cuts them
   for (const u of ui) { if (u[0] === 'cap') capPlate(f, u[1], u[2], u[3], 140); else yearCard(f, 258, 140, u[1], u[2]); }
-  if (st) { drawSubs(f, st, 180, 604, 14, 28, false, 24, 3); outlineText(f, st.name, 12, 498, C.uiY, 16, 1); }
+  if (st) { drawSubs(f, st, 180, 604, 13, 28, false, 24, 3); outlineText(f, st.name, 12, 498, C.uiY, 16, 1); }
   const cta = '▶ 本編はチャンネルで ' + BRAND.youtube; TX(f, cta, 180 - textSpr(cta, 16, BR.cream).width / 2, 612, BR.cream, 16, null);
   return fc;
 }

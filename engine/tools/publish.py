@@ -384,6 +384,54 @@ def blogsync():
         WORK_DIR = work; link(work)
     pages(tok)
 
+
+def replace_short(work):
+    """upload a re-rendered Short in place of the scheduled one (2026-11-27 Muse 連絡20): keep the live title / description / tags /
+    publishAt, set the tall thumbnail, swap it in the series playlist, unschedule the old one (private, kept, not deleted),
+    and point the main description and the blog post at the new Short"""
+    import datetime
+    tok = token('youtube'); state = load_state(work)
+    pub = json.load(open(os.path.join(work, 'publish.json'), encoding='utf-8'))
+    old_url = state['youtube_short']; old = yt_id(old_url)
+    cur, _ = call('GET', 'https://www.googleapis.com/youtube/v3/videos?part=snippet,status&id=' + old, tok)
+    it = cur['items'][0]; sn, st = it['snippet'], it['status']
+    if st.get('privacyStatus') == 'public': sys.exit('すでに公開済みです: ' + old_url)
+    path = os.path.join(work, [v for v in pub['youtube'] if v['kind'] == 'short'][0]['video'])
+    meta = {'snippet': {k: sn[k] for k in ('title', 'description', 'tags', 'categoryId', 'defaultLanguage', 'defaultAudioLanguage') if k in sn},
+            'status': {'privacyStatus': 'private', 'selfDeclaredMadeForKids': False, 'embeddable': st.get('embeddable', True)}}
+    if st.get('publishAt'): meta['status']['publishAt'] = st['publishAt']
+    size = os.path.getsize(path)
+    _, hd = call('POST', 'https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', tok, meta,
+                 {'X-Upload-Content-Type': 'video/mp4', 'X-Upload-Content-Length': str(size)})
+    res, _ = call('PUT', hd['Location'], tok, raw=open(path, 'rb').read(), headers={'Content-Type': 'video/mp4'})
+    new = res['id']; new_url = 'https://youtu.be/' + new
+    print('short uploaded:', new_url, res.get('status', {}).get('publishAt'), 'tags:', len(meta['snippet'].get('tags', [])))
+    tall = os.path.join(work, 'build', 'thumb_tall.png')
+    if os.path.exists(tall):
+        try: call('POST', 'https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=' + new, tok, raw=open(tall, 'rb').read(), headers={'Content-Type': 'image/png'}); print('thumbnail set:', new)
+        except urllib.error.HTTPError as e: print('thumbnail failed:', e.code, file=sys.stderr)
+    pid = state.get('playlist_id') or series_playlist(work, tok)
+    if pid:
+        pt = ''
+        while True:
+            r, _ = call('GET', f'https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=50&playlistId={pid}' + (f'&pageToken={pt}' if pt else ''), tok)
+            for i in r.get('items', []):
+                if i['contentDetails']['videoId'] == old: call('DELETE', 'https://www.googleapis.com/youtube/v3/playlistItems?id=' + i['id'], tok); print('playlist: removed old', old)
+            pt = r.get('nextPageToken')
+            if not pt: break
+        call('POST', 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet', tok, {'snippet': {'playlistId': pid, 'resourceId': {'kind': 'youtube#video', 'videoId': new}}})
+        print('playlist: added', new)
+    call('PUT', 'https://www.googleapis.com/youtube/v3/videos?part=status', tok, {'id': old, 'status': {'privacyStatus': 'private', 'selfDeclaredMadeForKids': False, 'embeddable': True}})
+    print('old short unscheduled (private, kept):', old_url)
+    state.setdefault('retired_shorts', []).append(old_url); state['youtube_short'] = new_url; save_state(work, state)
+    if state.get('youtube_main'):
+        mid = yt_id(state['youtube_main']); m, _ = call('GET', 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + mid, tok)
+        msn = m['items'][0]['snippet']; desc = msn['description'].replace(old_url, new_url).replace('https://www.youtube.com/shorts/' + old, new_url).replace(old, new)
+        body = {k: msn[k] for k in ('title', 'tags', 'categoryId', 'defaultLanguage', 'defaultAudioLanguage') if k in msn}; body['description'] = desc
+        call('PUT', 'https://www.googleapis.com/youtube/v3/videos?part=snippet', tok, {'id': mid, 'snippet': body}); print('main description → new Short link')
+    if state.get('blog_post_id'): blog(work, token('blogger'))
+    p = tiktok_txt(work, pub, links(state))
+
 if __name__ == '__main__':
     work, what = sys.argv[1], sys.argv[2]
     if work != '-': WORK_DIR = os.path.abspath(work)
@@ -394,4 +442,4 @@ if __name__ == '__main__':
      'all': lambda: (youtube(os.path.abspath(work), token('youtube')), thumb(os.path.abspath(work), token('youtube')), playlist(os.path.abspath(work)),
                      blog(os.path.abspath(work), token('blogger')), link(os.path.abspath(work)), audit()),
      'playlist': lambda: playlist(os.path.abspath(work)), 'reschedule': lambda: reschedule(os.path.abspath(work)),
-     'audit': lambda: audit(), 'blogsync': lambda: blogsync()}[what]()
+     'audit': lambda: audit(), 'blogsync': lambda: blogsync(), 'replace_short': lambda: replace_short(os.path.abspath(work))}[what]()
